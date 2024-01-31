@@ -1,0 +1,16 @@
+/* SignUp.css */
+.bg-light {
+    background-color: #eee;
+  }
+  
+  .card {
+    border-radius: 25px;
+  }
+  
+.Icon {
+    display: flex;
+    align-items: center;
+    height: 150px;
+    width: 410px;
+}
+      
