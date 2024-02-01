@@ -3,14 +3,22 @@ import './Login.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEnvelope, faKey } from '@fortawesome/free-solid-svg-icons';
 import Icon from './../../../../assets/icon.png'
+import ThreeDBackground from '../../../vantaJS/ThreeDBackground';
+// vanta js (background 3 - d)
+
+
 
 
 const Login = () => {
+  
+
   return (
     <>
-    <section className="vh-75 bg-light">
+    <ThreeDBackground>
+
+      <section className="vh-100 style={{ border: 'none' , backgroundColor: 'transparent', boxShadow: 'none' }}">
       <div className="container h-100">
-        <div className="row d-flex justify-content-center align-items-center h-75">
+        <div className="row d-flex justify-content-center align-items-center h-100">
           <div className="col-lg-12 col-xl-11">
             <div className="card text-black " style={{ border: 'none' , backgroundColor: 'transparent', boxShadow: 'none' }} >
               <div className="card-body p-md-5">
@@ -18,7 +26,7 @@ const Login = () => {
                   <div className="col-md-10 col-lg-6 col-xl-5 order-2 order-lg-1">
 
                     <p className="text-center h1 fw-bold mb-5 mx-1 mx-md-4 mt-4" style={{color:'violet'}}>Log In</p>
-                    <p className='text-center'>We suggest using the email address that you use for work </p>
+                    <p className='text-center '>We suggest using the email address that you use for work </p>
                     
                     <form className="mx-1 mx-md-4">
                       
@@ -27,7 +35,7 @@ const Login = () => {
                         <FontAwesomeIcon icon={faEnvelope} className="fa-lg me-3 fa-fw" />
                         <div className="form-outline flex-fill mb-0">
                           <input type="email" id="form3Example3c" className="form-control" />
-                          <label className="form-label" htmlFor="form3Example3c">Your Email</label>
+                          <label className="form-label" htmlFor="form3Example3c">Email</label>
                         </div>
                       </div>
 
@@ -36,7 +44,7 @@ const Login = () => {
                         <FontAwesomeIcon icon={faKey} className="fa-lg me-3 fa-fw" />
                         <div className="form-outline flex-fill mb-0">
                           <input type="password" id="form3Example4cd" className="form-control" />
-                          <label className="form-label" htmlFor="form3Example4cd">Repeat your password</label>
+                          <label className="form-label" htmlFor="form3Example4cd">Password</label>
                         </div>
                       </div>
 
@@ -70,6 +78,9 @@ const Login = () => {
       </div>
     </section>  
       
+      
+   
+  </ThreeDBackground>
 
     </>
   )

@@ -1,0 +1,90 @@
+.NavbarItems {
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 1.2rem;
+    padding: 0.30px;
+    background-color: white;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.25);
+    width: 95%;
+    height: 85px;
+    border-radius: 13px;
+    position:fixed;
+    top: 20px;
+    left: 50%;
+    transform: translate(-50%);
+    
+
+
+}
+
+.nav-menu {
+    display: grid;
+    grid-template-columns: repeat(6, auto);
+    grid-gap: 10px;
+    list-style: none;
+    align-items: center;
+    text-align: center;
+    justify-content: end;
+}
+
+
+.nav-menu button:hover {
+    background-color: blueviolet;
+    border-radius: 4px;
+    transition: all 0.2s ease-in-out;
+
+}
+
+.fa-bars,
+ .fa-times {
+    color: black;
+}
+
+.menu-icons {
+    display: none;
+    
+}
+
+
+
+@media screen and (max-width: 850px){
+    .NavbarItems{
+        z-index: 99;
+        display: flex;
+        justify-content: space-around;
+
+    }
+    .nav-menu{
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        background-color:rgba(255, 255, 255, 0.25);
+        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, .37);
+        backdrop-filter: blur(4px);
+        border-radius: 13px;
+        width: 100%;
+        height: auto;
+        position: absolute;
+        top:0;
+        left:-110%;
+        align-items: stretch;
+        padding: 80px 0 30px 0;
+        margin:0;
+        z-index: -1;
+        transition: all 0.3s ease-in-out;        
+    }
+    .btn:hover{
+        background-color: rgba(255, 255, 255, 0.25);
+        backdrop-filter: blur(20px);
+        
+    }
+    .menu-icons {
+        display: block;
+        
+    }
+    .nav-menu.active {
+        left:0%;
+    }
+}

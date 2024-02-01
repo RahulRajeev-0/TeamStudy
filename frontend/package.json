@@ -17,7 +17,9 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.21.3",
-    "three": "^0.121.0"
+    "react-toastify": "^10.0.4",
+    "three": "^0.121.0",
+    "vanta": "^0.5.24"
   },
   "devDependencies": {
     "@types/react": "^18.2.43",

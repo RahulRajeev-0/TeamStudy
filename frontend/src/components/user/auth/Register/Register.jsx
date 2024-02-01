@@ -3,12 +3,18 @@ import './Register.css'
 import Icon from './../../../../assets/icon.png' 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser, faEnvelope, faLock, faKey } from '@fortawesome/free-solid-svg-icons';
+import ThreeDBackground from '../../../vantaJS/ThreeDBackground';
+
+
 
 
 const Register = () => {
-  return (
  
-    <section className="vh-75 bg-light">
+  return (
+    
+ <ThreeDBackground>
+
+    <section className="vh-75 " style={{ border: 'none' , backgroundColor: 'transparent', boxShadow: 'none' }}>
       <div className="container h-100">
         <div className="row d-flex justify-content-center align-items-center h-100">
           <div className="col-lg-12 col-xl-11">
@@ -73,7 +79,7 @@ const Register = () => {
                       src={Icon}
                       className="img-fluid"
                       alt="Sample image"
-                    />
+                      />
                   </div>
                 </div>
               </div>
@@ -82,7 +88,8 @@ const Register = () => {
         </div>
       </div>
     </section>
-  
+   
+                      </ThreeDBackground>
   )
 }
 
