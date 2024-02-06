@@ -4,13 +4,42 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEnvelope, faKey } from '@fortawesome/free-solid-svg-icons';
 import Icon from './../../../../assets/icon.png'
 import ThreeDBackground from '../../../vantaJS/ThreeDBackground';
-// vanta js (background 3 - d)
+
+// alert
+import { toast } from 'react-toastify';
 
 
 
 
 const Login = () => {
+  const validate = (e) =>{
+    let email = e.target.email.value;
+    let password = e.target.password.value;
+
+    if (!email.includes('@') || !email.includes('.com') || email.includes(' ')){
+      toast.warning('Invalid Email Format')
+      return false;
+     }
   
+     if (password.includes(' ')){
+      toast.warning('Password should not include blank space')
+      return false;
+     }
+     if (password.length <= 8 ){
+      toast.warning('Password Should Contain Atleast 8 Characters')
+      return false;
+     }
+
+  }
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    if (validate(e)){
+      toast.success('login success')
+    }
+
+  }
 
   return (
     <>
@@ -28,13 +57,13 @@ const Login = () => {
                     <p className="text-center h1 fw-bold mb-5 mx-1 mx-md-4 mt-4" style={{color:'violet'}}>Log In</p>
                     <p className='text-center '>We suggest using the email address that you use for work </p>
                     
-                    <form className="mx-1 mx-md-4">
+                    <form onSubmit={handleSubmit} className="mx-1 mx-md-4">
                       
 
                       <div className="d-flex flex-row align-items-center mb-4">
                         <FontAwesomeIcon icon={faEnvelope} className="fa-lg me-3 fa-fw" />
                         <div className="form-outline flex-fill mb-0">
-                          <input type="email" id="form3Example3c" className="form-control" />
+                          <input type="email" id="form3Example3c" className="form-control" name='email' required/>
                           <label className="form-label" htmlFor="form3Example3c">Email</label>
                         </div>
                       </div>
@@ -43,7 +72,7 @@ const Login = () => {
                       <div className="d-flex flex-row align-items-center mb-4">
                         <FontAwesomeIcon icon={faKey} className="fa-lg me-3 fa-fw" />
                         <div className="form-outline flex-fill mb-0">
-                          <input type="password" id="form3Example4cd" className="form-control" />
+                          <input type="password" id="form3Example4cd" className="form-control" name='password' required/>
                           <label className="form-label" htmlFor="form3Example4cd">Password</label>
                         </div>
                       </div>
@@ -56,7 +85,7 @@ const Login = () => {
                       </div>
 
                       <div className="d-flex justify-content-center mx-4 mb-3 mb-lg-4">
-                            <button type="button" className="btn btn-primary btn-lg me-3">Log In</button>
+                            <button type="submit" className="btn btn-primary btn-lg me-3">Log In</button>
                             <button type="button" className="btn btn-lg ms-3 btn-dark">Google</button>
                         </div>
 
