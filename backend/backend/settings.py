@@ -37,16 +37,18 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    "corsheaders",
     'users',
 
     # drf
-      'rest_framework',
-    
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    "corsheaders.middleware.CorsMiddleware",
+
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -150,3 +152,4 @@ EMAIL_HOST_USER = 'ravanan0908@gmail.com' # EMAIL
 EMAIL_HOST_PASSWORD = "qsyz duay caoi wuir" # PASSWORD
 
 
+CORS_ORIGIN_ALLOW_ALL = True

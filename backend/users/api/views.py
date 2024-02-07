@@ -24,13 +24,27 @@ class RegisterView(APIView):
                 serializer.save()
                 send_otp_via_email(serializer.data['email'])
             else:
-                return Response(serializer.errors, status=status.HTTP_406_NOT_ACCEPTABLE)
+                error_messages = []
+                for field, errors in serializer.errors.items():
+                    for error in errors:
+                        if field == 'email' and 'unique' in error:
+                            error_messages.append("Email already exists")
+                        elif field == 'password' and 'min_length' in error:
+                            error_messages.append("Password must be at least 8 characters long")
+                        # Add more conditions for other fields and error types as needed
+                        else:
+                            error_messages.append(f"{field.capitalize()}: {error}")
+                
+                content = {"message": error_messages}
+                return Response(content, status=status.HTTP_406_NOT_ACCEPTABLE)
             
-            content = {'Message':"User Registration Succssful , Check Email for OTP "}
+            content = {"Message":"User Registration Succssful , Check Email for OTP "}
+            print(serializer)
             return Response(content, status=status.HTTP_201_CREATED,)
         
         except Exception as e:
             print(e)
+        return Response(status=status.HTTP_400_BAD_REQUEST)
 
 class VerifyOTP(APIView):
     def post(self, request):
@@ -42,7 +56,7 @@ class VerifyOTP(APIView):
                 
                 user = User.objects.filter(email=email).first()
                 if not user:
-                    content = {'message': "Invalid Email"}
+                    content = {'message': "Something went wrong please Register again"}
                     return Response(content, status=status.HTTP_406_NOT_ACCEPTABLE)
                 
                 if user.otp != otp :

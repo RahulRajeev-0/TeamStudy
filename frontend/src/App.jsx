@@ -9,6 +9,7 @@ import './App.css'
 // toastify ( for alerts )
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import EmailVerifiyOTP from './components/user/auth/otp/EmailVerifiyOTP';
 
 function App() {
   
@@ -23,7 +24,7 @@ function App() {
          <Route path='/' element={<BaseHomePage/>} />
          <Route path='/signUp' element={<Register/>} />
          <Route path='/Login' element={ <Login/>} />
-         
+         <Route path='/otp' element={<EmailVerifiyOTP/>} />
        </Routes>
       
       </BrowserRouter>

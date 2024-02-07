@@ -1,9 +1,11 @@
 import React,{useReducer, useState} from 'react'
+import { Link ,useNavigate} from 'react-router-dom'
 import './Register.css'
 import Icon from './../../../../assets/icon.png' 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser, faEnvelope, faLock, faKey } from '@fortawesome/free-solid-svg-icons';
 import ThreeDBackground from '../../../vantaJS/ThreeDBackground';
+import axios from 'axios';
 
 // alert toastify
 import { toast } from 'react-toastify';
@@ -11,7 +13,12 @@ import { toast } from 'react-toastify';
 
 const Register = () => {
   
-  
+  const [formError, setFormError] = useState([])
+  const navigate = useNavigate();
+  const baseURL = 'http://127.0.0.1:8000'
+
+
+  //  validating the input data 
   const  validate = (e)=>{
     let username = e.target.username.value;
    let email = e.target.email.value
@@ -28,6 +35,12 @@ const Register = () => {
     return false;
    }
 
+   const regex = /^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d]*[a-zA-Z][a-zA-Z\d]*$/;
+   if (!regex.test(username)){
+    toast.warning("Invalid Format")
+    return false;
+   }
+
    if (!email.includes('@') || !email.includes('.com') || email.includes(' ')){
     toast.warning('Invalid Email Format')
     return false;
@@ -37,7 +50,7 @@ const Register = () => {
     toast.warning('Password should not include blank space')
     return false;
    }
-   if (password.length <= 8 ){
+   if (password.length < 8 ){
     toast.warning('Password Should Contain Atleast 8 Characters')
     return false;
    }
@@ -49,19 +62,54 @@ const Register = () => {
 
    return true;
   }
-  const handleSubmit = (e)=>{
+
+  //  sending the data to the dackend 
+  const handleSubmit = async (e)=>{
     e.preventDefault();
    
     
-    // const formData = new FormData();
-    // formData.append('username', e.target.username.value);
-    // formData.append('email', e.target.email.value);
-    // formData.append('password', e.target.password.value);
-    // formData.append('confirmpassword', e.target.confirmpassword.value);
+    const formData = new FormData();
+    formData.append('username', e.target.username.value);
+    formData.append('email', e.target.email.value);
+    formData.append('password', e.target.password.value);
+    
 
       if (validate(e)){
 
-        toast.success('validation successful');
+        try{
+          const res = await axios.post(baseURL+'/user/register/',formData)
+          if (res.status === 201){
+            sessionStorage.setItem('registrationEmail', e.target.email.value);
+            navigate(
+              '/otp',
+              {
+                state:res.data.Message
+              }
+              )
+              return res
+          }
+        }catch (error){
+          if (error.response && error.response.data && error.response.data.message) {
+            // Show error messages using Toastify
+            error.response.data.message.forEach(errorMessage => {
+              toast.error(errorMessage);
+            });
+          } else {
+            // Show a generic error message if there are no specific error messages from the backend
+            toast.error('An error occurred. Please try again later.');
+          }
+         
+          if (error.response.status===406){
+            console.log("error")
+            console.log(error.response.data)
+            setFormError(error.response.data)
+            toast.error(error.response.data.message);
+
+          } else{
+            console.log(error)
+          }
+        }
+      
       }    
     
     
