@@ -1,5 +1,7 @@
 from rest_framework.serializers import ModelSerializer, ValidationError, Serializer ,EmailField, CharField
 from users.models import User
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from rest_framework_simplejwt.views import TokenObtainPairView
 
 
 class UserSerializer(ModelSerializer):
@@ -7,6 +9,17 @@ class UserSerializer(ModelSerializer):
         model = User
         exclude = ('password',)
 
+
+class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
+    @classmethod
+    def get_token(cls, user):
+        token = super().get_token(user)
+
+        # Add custom claims
+        token['username'] = user.username
+        # ...
+
+        return token
 
 class UserRegisterSerializer(ModelSerializer):
     
