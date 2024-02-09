@@ -4,7 +4,12 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEnvelope, faKey } from '@fortawesome/free-solid-svg-icons';
 import Icon from './../../../../assets/icon.png'
 import ThreeDBackground from '../../../vantaJS/ThreeDBackground';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import {useDispatch} from 'react-redux';
+import { set_authentication } from "../../../../Redux/Authentication/authenticationSlice"; 
 
+import { jwtDecode } from "jwt-decode";
 // alert
 import { toast } from 'react-toastify';
 
@@ -12,6 +17,11 @@ import { toast } from 'react-toastify';
 
 
 const Login = () => {
+
+  const baseURL = 'http://127.0.0.1:8000'
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
   const validate = (e) =>{
     let email = e.target.email.value;
     let password = e.target.password.value;
@@ -25,18 +35,58 @@ const Login = () => {
       toast.warning('Password should not include blank space')
       return false;
      }
-     if (password.length <= 8 ){
+     if (password.length < 8 ){
       toast.warning('Password Should Contain Atleast 8 Characters')
       return false;
      }
+     return true
 
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (validate(e)){
-      toast.success('login success')
+     const formData = new FormData();
+     formData.append('email', e.target.email.value);
+     formData.append('password', e.target.password.value);
+    
+      try{
+        const res = await axios.post(baseURL+'/user/login/', formData)
+        if (res.status === 200){
+          localStorage.setItem('access', res.data.access)
+          localStorage.setItem('refresh', res.data.refresh)
+          console.log(res.data)
+         
+          // add data to the redux store here 
+          dispatch(
+            set_authentication({
+              username:jwtDecode(res.data.access).username,
+              isAuthenticated:true,
+              isAdmin:res.data.is_admin
+            })
+          )
+          console.log("poorr")
+          navigate(
+            '/',
+            {state:res.data.Message}
+          )
+          toast.success("Login Success")
+        }
+
+      }catch(error){
+        console.log(error)
+
+        // if (error.response.status === 401){
+        //   console.log("error")
+        //   console.log(error.response.data)
+        //   toast.error(error.response.data.detail);
+        // }
+        // else{
+        //   console.log(error)
+        // }
+      }
+
     }
 
   }
@@ -45,7 +95,7 @@ const Login = () => {
     <>
     <ThreeDBackground>
 
-      <section className="vh-100 style={{ border: 'none' , backgroundColor: 'transparent', boxShadow: 'none' }}">
+      <section className="vh-100" style={{ border: 'none' , backgroundColor: 'transparent', boxShadow: 'none' }}>
       <div className="container h-100">
         <div className="row d-flex justify-content-center align-items-center h-100">
           <div className="col-lg-12 col-xl-11">

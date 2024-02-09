@@ -6,6 +6,9 @@ from .serializers import UserRegisterSerializer, VerifyEmailSerializer
 from rest_framework import status
 from users.emails import send_otp_via_email
 from users.models import User
+from rest_framework.exceptions import AuthenticationFailed,ParseError
+from django.contrib.auth import authenticate
+from rest_framework_simplejwt.tokens import RefreshToken 
 
 @api_view(['GET'])
 def getRoutes(request):
@@ -16,6 +19,8 @@ def getRoutes(request):
 
     return Response(routes)
 
+
+# ------------------ user registration ---------------------
 class RegisterView(APIView):
     def post(self, request):
         try:
@@ -46,6 +51,8 @@ class RegisterView(APIView):
             print(e)
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
+
+# ------------------- otp -------------------
 class VerifyOTP(APIView):
     def post(self, request):
         try:
@@ -70,3 +77,40 @@ class VerifyOTP(APIView):
                 return Response(content, status=status.HTTP_200_OK)
         except Exception as e:
             print(e)
+
+
+# ---------------- user Login ------------------
+
+class LoginView(APIView):
+    def post(self,request):
+        try:
+            email = request.data['email']
+            password = request.data['password']
+        except:
+            raise ParseError('All Fields Are Required')
+        
+        if not User.objects.filter(email=email).exists() :
+            raise AuthenticationFailed('Invalid Email Address')
+        
+        if not User.objects.filter(email=email, is_active=True).exists() :
+            raise AuthenticationFailed("Your are blocked by the Admin ! ")
+        
+        user = authenticate(email=email, password=password)
+        if user is None :
+            raise AuthenticationFailed("Invalid Password")
+        
+        refresh = RefreshToken.for_user(user) # generating new refresh token for the user
+        refresh["username"] = str(user.username) # custom cliam in the acess token
+
+        content = {
+            'refresh': str(refresh),
+            'access': str(refresh.access_token),
+            'is_admin': user.is_superuser,
+        }
+
+        return Response(content,status=status.HTTP_200_OK)
+    
+
+
+
+
