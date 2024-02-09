@@ -1,15 +1,16 @@
 import React from 'react'
-import Register from './components/user/auth/Register/Register'
-import {BrowserRouter, Routes, Route } from 'react-router-dom';
-import Login from './components/user/auth/Login/Login';
-import BaseHomePage from './pages/BaseHomePage';
 import './App.css'
-
+// React Router Dom
+import {BrowserRouter, Routes, Route } from 'react-router-dom';
+// redux
+import { Provider } from 'react-redux';
+import userStore from './Redux/userStore'
 
 // toastify ( for alerts )
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import EmailVerifiyOTP from './components/user/auth/otp/EmailVerifiyOTP';
+// user wrapper
+import UserWrapper from './components/user/userWrapper';
 
 function App() {
   
@@ -20,13 +21,15 @@ function App() {
 
 
       <BrowserRouter>
-       <Routes>
-         <Route path='/' element={<BaseHomePage/>} />
-         <Route path='/signUp' element={<Register/>} />
-         <Route path='/Login' element={ <Login/>} />
-         <Route path='/otp' element={<EmailVerifiyOTP/>} />
-       </Routes>
+          <Provider store={userStore}>
+
+              <Routes>
+
+                  <Route path="/*" element={<UserWrapper/>}/>
+
+              </Routes>
       
+          </Provider>
       </BrowserRouter>
 
       {/* for toastify alert */}

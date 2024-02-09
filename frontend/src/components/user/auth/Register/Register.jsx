@@ -13,7 +13,7 @@ import { toast } from 'react-toastify';
 
 const Register = () => {
   
-  const [formError, setFormError] = useState([])
+  
   const navigate = useNavigate();
   const baseURL = 'http://127.0.0.1:8000'
 
@@ -102,7 +102,7 @@ const Register = () => {
           if (error.response.status===406){
             console.log("error")
             console.log(error.response.data)
-            setFormError(error.response.data)
+           
             toast.error(error.response.data.message);
 
           } else{
