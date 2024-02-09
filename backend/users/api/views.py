@@ -96,8 +96,14 @@ class LoginView(APIView):
             raise AuthenticationFailed("Your are blocked by the Admin ! ")
         
         user = authenticate(email=email, password=password)
+
         if user is None :
             raise AuthenticationFailed("Invalid Password")
+        else:
+            user_obj = User.objects.get(email=email)
+            if not user_obj.is_varified:
+                raise AuthenticationFailed("Email is not varified")
+        
         
         refresh = RefreshToken.for_user(user) # generating new refresh token for the user
         refresh["username"] = str(user.username) # custom cliam in the acess token

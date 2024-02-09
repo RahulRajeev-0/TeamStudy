@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEnvelope, faKey } from '@fortawesome/free-solid-svg-icons';
 import Icon from './../../../../assets/icon.png'
 import ThreeDBackground from '../../../vantaJS/ThreeDBackground';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import {useDispatch} from 'react-redux';
 import { set_authentication } from "../../../../Redux/Authentication/authenticationSlice"; 
@@ -66,7 +66,7 @@ const Login = () => {
               isAdmin:res.data.is_admin
             })
           )
-          console.log("poorr")
+          
           navigate(
             '/',
             {state:res.data.Message}
@@ -77,14 +77,14 @@ const Login = () => {
       }catch(error){
         console.log(error)
 
-        // if (error.response.status === 401){
-        //   console.log("error")
-        //   console.log(error.response.data)
-        //   toast.error(error.response.data.detail);
-        // }
-        // else{
-        //   console.log(error)
-        // }
+        if (error.response.status && error.response.status === 401){
+          console.log("error")
+          console.log(error.response.data)
+          toast.error(error.response.data.detail);
+        }
+        else{
+          console.log(error)
+        }
       }
 
     }
@@ -128,10 +128,10 @@ const Login = () => {
                       </div>
 
                       <div className="form-check d-flex justify-content-center mb-5">
-                        <input className="form-check-input me-2" type="checkbox" value="" id="form2Example3c" />
-                        <label className="form-check-label" htmlFor="form2Example3">
-                          I agree all statements in <a href="#!">Terms of service</a>
-                        </label>
+                      <div>
+                <Link to='/signUp'>Don't have an account ?</Link>
+                  
+                </div>
                       </div>
 
                       <div className="d-flex justify-content-center mx-4 mb-3 mb-lg-4">
