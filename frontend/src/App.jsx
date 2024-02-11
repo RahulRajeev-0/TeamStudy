@@ -26,7 +26,7 @@ function App() {
               <Routes>
 
                   <Route path="/*" element={<UserWrapper/>}/>
-
+                  
               </Routes>
       
           </Provider>

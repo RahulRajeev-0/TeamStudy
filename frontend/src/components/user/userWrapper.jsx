@@ -14,12 +14,13 @@ import axios from "axios";
 
 
 // components 
-import Login from "./auth/Login/Login";
-import Register from './auth/Register/Register'
-import EmailVerifyOTP from './auth/otp/EmailVerifyOTP'
+import LoginPage from "../../pages/user/auth/LoginPage";
+import SignUpPage from "../../pages/user/auth/SignUpPage"
+import OtpPage from "../../pages/user/auth/OtpPage";
 import BaseHomePage from './../../pages/BaseHomePage'
 import PrivateRoutes from "../PrivateRoutes";
-
+import AdminLoginPage from "../../pages/admin/auth/AdminLoginPage";
+import ApplicationManagementHome from "../../pages/admin/home/ApplicationManagementHome";
 
 
 
@@ -51,9 +52,11 @@ function UserWrapper() {
 
    return (
     <Routes>
-        <Route  path="/login" element={<Login/>} />
-        <Route  path="/signUp" element={<Register/>} />
-        <Route  path="/otp" element={<EmailVerifyOTP/>} />
+        <Route  path="/login" element={<LoginPage/>} />
+        <Route  path="/signUp" element={<SignUpPage/>} />
+        <Route  path="/otp" element={<OtpPage/>} />
+        <Route path="/adminLogin" element={<AdminLoginPage/>} />
+        <Route path="/adminLoginHome" element={<ApplicationManagementHome/>} />
         <Route path="/" element={
             <PrivateRoutes>
                 <BaseHomePage/>

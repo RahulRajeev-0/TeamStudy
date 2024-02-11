@@ -184,7 +184,7 @@ const Register = () => {
 
                       <div className="d-flex justify-content-center mx-4 mb-3 mb-lg-4">
                             <button  type="submit" className="btn btn-primary btn-lg me-3">Register</button>
-                            <button type="button" className="btn btn-lg ms-3 btn-dark">Google</button>
+                            <button type="button" className="btn btn-lg ms-3 btn-dark"><i class="fab fa-google"></i></button>
                         </div>
 
                     </form>

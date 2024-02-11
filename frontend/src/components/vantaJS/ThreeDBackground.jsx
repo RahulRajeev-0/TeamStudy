@@ -15,14 +15,14 @@ const ThreeDBackground = ({children}) => {
           el: vantaRef.current,
           THREE: THREE,
           mouseControls: true,
-          touchControls: true,
-          gyroControls: false,
-          minHeight: 200.00,
-          minWidth: 200.00,
-          scale: 1.00,
-          scaleMobile: 1.00,
-          color: 0xededed,
-          backgroundColor: 0xd0ced9
+  touchControls: true,
+  gyroControls: false,
+  minHeight: 200.00,
+  minWidth: 200.00,
+  scale: 1.00,
+  scaleMobile: 1.00,
+  color: 0xf7f7f7,
+  backgroundColor: 0xffffff
         })
       );
     }

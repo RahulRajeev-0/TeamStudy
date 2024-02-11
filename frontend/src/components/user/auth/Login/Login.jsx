@@ -3,7 +3,7 @@ import './Login.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEnvelope, faKey } from '@fortawesome/free-solid-svg-icons';
 import Icon from './../../../../assets/icon.png'
-import ThreeDBackground from '../../../vantaJS/ThreeDBackground';
+
 import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import {useDispatch} from 'react-redux';
@@ -93,7 +93,7 @@ const Login = () => {
 
   return (
     <>
-    <ThreeDBackground>
+ 
 
       <section className="vh-100" style={{ border: 'none' , backgroundColor: 'transparent', boxShadow: 'none' }}>
       <div className="container h-100">
@@ -114,7 +114,7 @@ const Login = () => {
                         <FontAwesomeIcon icon={faEnvelope} className="fa-lg me-3 fa-fw" />
                         <div className="form-outline flex-fill mb-0">
                           <input type="email" id="form3Example3c" className="form-control" name='email' required/>
-                          <label className="form-label" htmlFor="form3Example3c">Email</label>
+                          <label className="form-label fw-bold" htmlFor="form3Example3c">Email</label>
                         </div>
                       </div>
 
@@ -123,7 +123,7 @@ const Login = () => {
                         <FontAwesomeIcon icon={faKey} className="fa-lg me-3 fa-fw" />
                         <div className="form-outline flex-fill mb-0">
                           <input type="password" id="form3Example4cd" className="form-control" name='password' required/>
-                          <label className="form-label" htmlFor="form3Example4cd">Password</label>
+                          <label className="form-label fw-bold" htmlFor="form3Example4cd">Password</label>
                         </div>
                       </div>
 
@@ -159,7 +159,7 @@ const Login = () => {
       
       
    
-  </ThreeDBackground>
+ 
 
     </>
   )
