@@ -86,6 +86,7 @@ const Register = () => {
                 state:res.data.Message
               }
               )
+              toast.success(res.data.Message)
               return res
           }
         }catch (error){

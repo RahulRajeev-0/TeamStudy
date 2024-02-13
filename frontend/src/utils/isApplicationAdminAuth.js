@@ -10,8 +10,7 @@ const baseURL = 'http://127.0.0.1:8000';
 const updateAdminToken = async () => {
 
     const refresh = localStorage.getItem('refresh')
-    console.log("this is refresh token",refresh);
-
+    
     try{
         const res = await axios.post(baseURL+"/user/token/refresh/",
         {
@@ -57,25 +56,18 @@ const fetchIsAdmin = async ()=>{
 const isApplicationAdminAuth = async () => {
 
     const accessToken = localStorage.getItem('access');
-    console.log(accessToken)
     
     if (!accessToken){
         return {'username':null, isAuthenticated:false, isAdmin:false}
     }
 
     const currentTime = Date.now();
-    console.log(currentTime);
+    
     let decoded = jwtDecode(accessToken);
-    console.log("ithu decoded =",decoded);
-    console.log(decoded.exp, decoded.exp < currentTime, currentTime);
+   
     // checking if the token is expired or not
     if (decoded.exp < currentTime){
         let checkAdmin = await fetchIsAdmin();
-        console.log({
-            "username": decoded.username,
-            "isAuthenticated": true,
-            "isAdmin":checkAdmin,
-        });
         return {
             "username": decoded.username,
             "isAuthenticated": true,
@@ -90,7 +82,7 @@ const isApplicationAdminAuth = async () => {
             let decoded = localStorage.getItem('access')
             
             let checkAdmin = await fetchIsAdmin();
-           console.log(checkAdmin);
+          
             
             return {
                 "username": decoded.username,
@@ -98,7 +90,7 @@ const isApplicationAdminAuth = async () => {
                 "isAdmin":checkAdmin,
             };
         }else{
-            console.log('yep before alst else');
+           
             return { 'name': null, isAuthenticated: false, isAdmin: false };
         }
     }

@@ -1,10 +1,11 @@
 import React, {useEffect, useState} from 'react'
 import { Navigate } from 'react-router-dom'
 import isApplicationAdminAuth from '../../utils/isApplicationAdminAuth'
+import Loader from '../loader/Loader'
 
 const ApplicationAdminPrivateRoute = ({children}) => {
     
-    const [isloading, setIsloading] = useState(true)
+    const [loading, setLoading] = useState(true)
     const [isAuthenticated, setIsAuthenticated] = useState({
         "is_authenticated":false,
         "is_admin":false
@@ -13,20 +14,20 @@ const ApplicationAdminPrivateRoute = ({children}) => {
     useEffect(()=>{
      const fatchData = async()=>{
       const authInfo = await isApplicationAdminAuth();
-
+        
       
-      console.log("ithinte mukalil onle workavanilla",authInfo.isAdmin);
+     
      setIsAuthenticated({
         "is_authenticated":authInfo.isAuthenticated,
         "is_admin":authInfo.isAdmin,
      });
-     setIsloading(false);
+     setTimeout(() => { setLoading(false); }, 2000);
      }
      fatchData();   
     },[]);
 
-    if (isloading){
-        return <div>Loading ...........</div>
+    if (loading){
+        return <div><Loader/></div>
     }
 
     if(!isAuthenticated.is_authenticated || !isAuthenticated.is_admin){

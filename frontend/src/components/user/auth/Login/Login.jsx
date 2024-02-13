@@ -104,8 +104,8 @@ const Login = () => {
                 <div className="row justify-content-center">
                   <div className="col-md-10 col-lg-6 col-xl-5 order-2 order-lg-1">
 
-                    <p className="text-center h1 fw-bold mb-5 mx-1 mx-md-4 mt-4" style={{color:'violet'}}>Log In</p>
-                    <p className='text-center '>We suggest using the email address that you use for work </p>
+                    <p className="text-center h1 fw-bold mb-5 mx-1 mx-md-4 mt-4 bg-white" style={{color:'violet'}}>Log In</p>
+                    <p className='text-center bg-white'>We suggest using the email address that you use for work </p>
                     
                     <form onSubmit={handleSubmit} className="mx-1 mx-md-4">
                       
@@ -114,7 +114,7 @@ const Login = () => {
                         <FontAwesomeIcon icon={faEnvelope} className="fa-lg me-3 fa-fw" />
                         <div className="form-outline flex-fill mb-0">
                           <input type="email" id="form3Example3c" className="form-control" name='email' required/>
-                          <label className="form-label fw-bold" htmlFor="form3Example3c">Email</label>
+                          <label className="form-label fw-bold bg-white" htmlFor="form3Example3c">Email</label>
                         </div>
                       </div>
 
@@ -123,7 +123,7 @@ const Login = () => {
                         <FontAwesomeIcon icon={faKey} className="fa-lg me-3 fa-fw" />
                         <div className="form-outline flex-fill mb-0">
                           <input type="password" id="form3Example4cd" className="form-control" name='password' required/>
-                          <label className="form-label fw-bold" htmlFor="form3Example4cd">Password</label>
+                          <label className="form-label fw-bold bg-white" htmlFor="form3Example4cd">Password</label>
                         </div>
                       </div>
 

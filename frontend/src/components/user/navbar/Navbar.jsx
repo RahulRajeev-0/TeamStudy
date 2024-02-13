@@ -41,7 +41,7 @@ const Navbar = () => {
   return (
     <>
     <nav  className='NavbarItems'>
-      <img  src={Icon} style={{paddingLeft:"8px"}} height={80} width={240} alt='Icon' ></img>
+      <img  src={Icon} style={{paddingLeft:"8px"}} height={60} width={220} alt='Icon' ></img>
 
 
       <div onClick={handleClick} className='menu-icons'>

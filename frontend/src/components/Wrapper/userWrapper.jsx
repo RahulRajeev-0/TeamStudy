@@ -22,7 +22,6 @@ import PrivateRoutes from "../private_routes/PrivateRoutes";
 
 
 
-
 function UserWrapper() {
     const dispatch = useDispatch();
     const authentication_user = useSelector(state=>state.authentication_user)
@@ -51,9 +50,11 @@ function UserWrapper() {
 
    return (
     <Routes>
+        
         <Route  path="/login" element={<LoginPage/>} />
         <Route  path="/signUp" element={<SignUpPage/>} />
         <Route  path="/otp" element={<OtpPage/>} />
+       
         <Route path="/" element={
             <PrivateRoutes>
                 <BaseHomePage/>

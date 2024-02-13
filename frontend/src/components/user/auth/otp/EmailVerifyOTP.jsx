@@ -31,6 +31,7 @@ const EmailVerifiyOTP = () => {
                       state:res.data.Message
                     }
                     )
+                    toast.success("User Email Varified, Now Login ")
                     return res
             }
         }

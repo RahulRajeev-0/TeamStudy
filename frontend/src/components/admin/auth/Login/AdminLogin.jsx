@@ -7,7 +7,7 @@ import {set_authentication} from "./../../../../Redux/Authentication/authenticat
 import { jwtDecode } from "jwt-decode";
 import { useDispatch } from 'react-redux';
 import axios from "axios"
-
+import { useSelector } from 'react-redux';
 
 
 const AdminLogin = () => {
@@ -45,21 +45,28 @@ const AdminLogin = () => {
             formData.append("password", e.target.password.value)
             try{
               const res = await axios.post(baseURL+"/user/login/", formData)
-              if (res.status === 200){
-                localStorage.setItem('access', res.data.access)
-                localStorage.setItem('refresh', res.data.refresh)
-                console.log(res.data)
+              if (res.status === 200 ){
 
-                // add data to the store 
-                dispatch(
-                  set_authentication({
-                    username:jwtDecode(res.data.access).username,
-                    isAuthenticated:true,
-                    isAdmin:res.data.is_admin
-                  })
-                )
-                
-                navigate("/applicationManagement")
+                if (res.data.is_admin){
+
+                  localStorage.setItem('access', res.data.access)
+                  localStorage.setItem('refresh', res.data.refresh)
+                  console.log(res.data)
+  
+                  // add data to the store 
+                  dispatch(
+                    set_authentication({
+                      username:jwtDecode(res.data.access).username,
+                      isAuthenticated:true,
+                      isAdmin:res.data.is_admin
+                    })
+                  )
+                  navigate("/applicationManagement")
+                 
+                    toast.success("Admin Login Success")
+                }else{
+                  toast.error("Your not super admin")
+                }
                
               }
             }catch(error){
