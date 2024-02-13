@@ -8,4 +8,4 @@ const ApplicationManagementHome = () => {
   )
 }
 
-export default ApplicationManagementHome
+export default ApplicationManagementHome;

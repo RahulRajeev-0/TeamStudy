@@ -17,10 +17,9 @@ import axios from "axios";
 import LoginPage from "../../pages/user/auth/LoginPage";
 import SignUpPage from "../../pages/user/auth/SignUpPage"
 import OtpPage from "../../pages/user/auth/OtpPage";
-import BaseHomePage from './../../pages/BaseHomePage'
-import PrivateRoutes from "../PrivateRoutes";
-import AdminLoginPage from "../../pages/admin/auth/AdminLoginPage";
-import ApplicationManagementHome from "../../pages/admin/home/ApplicationManagementHome";
+import BaseHomePage from '../../pages/BaseHomePage'
+import PrivateRoutes from "../private_routes/PrivateRoutes";
+
 
 
 
@@ -55,8 +54,6 @@ function UserWrapper() {
         <Route  path="/login" element={<LoginPage/>} />
         <Route  path="/signUp" element={<SignUpPage/>} />
         <Route  path="/otp" element={<OtpPage/>} />
-        <Route path="/adminLogin" element={<AdminLoginPage/>} />
-        <Route path="/adminLoginHome" element={<ApplicationManagementHome/>} />
         <Route path="/" element={
             <PrivateRoutes>
                 <BaseHomePage/>

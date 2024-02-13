@@ -1,14 +1,25 @@
+#  --------------------- Django imports --------------------
 from django.http import JsonResponse
+
+# ---------------------------- REST framework imports ------------------
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework.views import APIView
-from .serializers import UserRegisterSerializer, VerifyEmailSerializer
 from rest_framework import status
+from rest_framework.exceptions import AuthenticationFailed, ParseError
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework.permissions import IsAuthenticated
+
+# --------------------- --- Custom imports ---------------------------
+from .serializers import (
+    UserRegisterSerializer,
+    VerifyEmailSerializer,
+    UserSerializer
+)
 from users.emails import send_otp_via_email
 from users.models import User
-from rest_framework.exceptions import AuthenticationFailed,ParseError
 from django.contrib.auth import authenticate
-from rest_framework_simplejwt.tokens import RefreshToken 
+
 
 @api_view(['GET'])
 def getRoutes(request):
@@ -117,6 +128,14 @@ class LoginView(APIView):
         return Response(content,status=status.HTTP_200_OK)
     
 
+class UserDetails(APIView):
+    permission_classes = [IsAuthenticated]
 
+    def get (self, request):
+        user = User.objects.get(id=request.user.id)
 
+        data = UserSerializer(user).data
+
+        content = data 
+        return Response(content)
 

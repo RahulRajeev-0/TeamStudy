@@ -10,7 +10,8 @@ import userStore from './Redux/userStore'
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 // user wrapper
-import UserWrapper from './components/user/userWrapper';
+import UserWrapper from './components/Wrapper/userWrapper';
+import ApplicationAdminWrapper from './components/Wrapper/applicationAdminWrapper';
 
 function App() {
   
@@ -26,6 +27,7 @@ function App() {
               <Routes>
 
                   <Route path="/*" element={<UserWrapper/>}/>
+                  <Route path="/applicationManagement/*" element={<ApplicationAdminWrapper/>}> </Route>
                   
               </Routes>
       

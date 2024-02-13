@@ -59,8 +59,8 @@ const AdminLogin = () => {
                   })
                 )
                 
-                navigate("/adminLoginHome")
-                toast.success("login success")
+                navigate("/applicationManagement")
+               
               }
             }catch(error){
               

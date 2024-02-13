@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react'
-import isAuthUser from '../utils/isAuth';
+import isAuthUser from '../../utils/isAuth';
 import {Navigate} from 'react-router'
 
 const PrivateRoutes = ({children}) => {
