@@ -1,9 +1,22 @@
 import React from 'react'
+import "./ApplicationManagementHome.scss"
+import Sidebar from '../../../components/admin/sidebar/Sidebar';
+import Navbar from '../../../components/admin/navbar/Navbar';
+import Widget from '../../../components/admin/widget/Widget';
 
 const ApplicationManagementHome = () => {
   return (
-    <div>
-      <h1>This the Admin Home page for the application </h1>
+    <div className='home'>
+      <Sidebar/>
+      <div className='homeContainer'>
+        <Navbar/>
+        {/* <div className='widgets'>
+          <Widget/>
+          <Widget/>
+          <Widget/>
+          <Widget/>
+        </div> */}
+      </div>
     </div>
   )
 }
