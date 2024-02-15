@@ -1,3 +1,29 @@
 .datatable{
-   
+   .cellWithStatus{
+    padding: 5px;
+    border-radius: 5px;
+
+    &.active{
+        background-color: rgba(0, 128, 0, 0.05);
+        color: green;
+    }
+    &.passive{
+        background-color: rgba(128, 17, 0, 0.05);
+        color:crimson;
+    }
+   }
+
+   .cellAction{
+    display: flex;
+    align-items: center;
+
+    .blockButton{
+        padding: 2px 5px;
+        border-radius:5px;
+        color:darkblue;
+        border: 1px dotted rgba(238, 130, 238, 0.692);
+        cursor: pointer;
+
+    }
+   }
 }
