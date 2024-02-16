@@ -66,7 +66,7 @@ const isApplicationAdminAuth = async () => {
     let decoded = jwtDecode(accessToken);
    
     // checking if the token is expired or not
-    if (decoded.exp < currentTime){
+    if (decoded.exp > currentTime){
         let checkAdmin = await fetchIsAdmin();
         return {
             "username": decoded.username,
@@ -78,7 +78,7 @@ const isApplicationAdminAuth = async () => {
         const updateSuccess = await updateAdminToken();
         
         if (updateSuccess){
-            
+            console.log("success is working")
             let decoded = localStorage.getItem('access')
             
             let checkAdmin = await fetchIsAdmin();
@@ -90,7 +90,7 @@ const isApplicationAdminAuth = async () => {
                 "isAdmin":checkAdmin,
             };
         }else{
-           
+           console.log("success is not working");
             return { 'name': null, isAuthenticated: false, isAdmin: false };
         }
     }

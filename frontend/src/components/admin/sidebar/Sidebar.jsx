@@ -5,8 +5,30 @@ import SupervisedUserCircleIcon from '@mui/icons-material/SupervisedUserCircle';
 import WorkspacesIcon from '@mui/icons-material/Workspaces';
 import LogoutIcon from '@mui/icons-material/Logout';
 import Icon from './../../../assets/icon.png' 
+import { useDispatch,} from 'react-redux';
+import { useNavigate , Link} from 'react-router-dom';
+import { toast } from 'react-toastify';
+import { set_authentication } from '../../../Redux/Authentication/authenticationSlice';
 
 const Sidebar = () => {
+
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+
+    const logoutAdmin = ()=>{
+        localStorage.clear();
+    dispatch(
+      set_authentication({
+        username:null,
+        isAuthenticated:false,
+        isAdmin:false
+      })
+    );
+    toast.warning("Logged out successfully ")
+    navigate("/applicationManagement/login")
+    }
+
+
   return (
     <div className='sidebar'>
         <div className="top">
@@ -23,14 +45,17 @@ const Sidebar = () => {
                 <span>Dashboard</span>
             </li>
             <li>
+                <Link  style={{textDecoration: 'none'}} to="/applicationManagement/userlisting">
+
                 <SupervisedUserCircleIcon className='icon'/>
                 <span>Users</span>
+                </Link>
             </li>
             <li>
                 <WorkspacesIcon className='icon'/>
                 <span>Workspaces</span>
             </li>
-            <li>
+            <li onClick={logoutAdmin}>
                 <LogoutIcon className='icon'/>
                 <span>Logout</span>
             </li>

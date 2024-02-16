@@ -20,8 +20,7 @@ import OtpPage from "../../pages/user/auth/OtpPage";
 import BaseHomePage from '../../pages/BaseHomePage'
 import PrivateRoutes from "../private_routes/PrivateRoutes";
 
-// testing components
-import UserListing from "../../pages/admin/list/UserListing";
+
 
 
 function UserWrapper() {
@@ -56,7 +55,7 @@ function UserWrapper() {
         <Route  path="/login" element={<LoginPage/>} />
         <Route  path="/signUp" element={<SignUpPage/>} />
         <Route  path="/otp" element={<OtpPage/>} />
-        <Route path="userListing" element={<UserListing/>} />
+  
        
         <Route path="/" element={
             <PrivateRoutes>

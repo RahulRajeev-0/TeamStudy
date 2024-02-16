@@ -7,6 +7,8 @@ import { Routes, Route } from "react-router-dom";
 import { set_authentication } from '../../Redux/Authentication/authenticationSlice';
 import AdminLoginPage from '../../pages/admin/auth/AdminLoginPage';
 import ApplicationManagementHome from '../../pages/admin/home/ApplicationManagementHome';
+import UserListing from "./../../pages/admin/list/UserListing"
+
 
 const ApplicationAdminWrapper = () => {
     const dispatch = useDispatch();
@@ -42,10 +44,15 @@ const ApplicationAdminWrapper = () => {
               <>
               <Routes>
                       <Route path="/Login" element={<AdminLoginPage/>} />
-                      
+                     
                       <Route path="/" element={
                                         <ApplicationAdminPrivateRoute>
                                                 <ApplicationManagementHome/>
+                                        </ApplicationAdminPrivateRoute> 
+                                      } />
+                      <Route path="/userListing" element={
+                                        <ApplicationAdminPrivateRoute>
+                                                <UserListing/>
                                         </ApplicationAdminPrivateRoute> 
                                       } />
               </Routes>
