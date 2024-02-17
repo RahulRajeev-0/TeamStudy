@@ -50,7 +50,7 @@ const ApplicationAdminWrapper = () => {
                                                 <ApplicationManagementHome/>
                                         </ApplicationAdminPrivateRoute> 
                                       } />
-                      <Route path="/userListing" element={
+                      <Route path="/user-listing" element={
                                         <ApplicationAdminPrivateRoute>
                                                 <UserListing/>
                                         </ApplicationAdminPrivateRoute> 

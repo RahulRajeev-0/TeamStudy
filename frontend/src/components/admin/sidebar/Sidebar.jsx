@@ -45,7 +45,7 @@ const Sidebar = () => {
                 <span>Dashboard</span>
             </li>
             <li>
-                <Link  style={{textDecoration: 'none'}} to="/applicationManagement/userlisting">
+                <Link  style={{textDecoration: 'none'}} to="/applicationManagement/user-listing">
 
                 <SupervisedUserCircleIcon className='icon'/>
                 <span>Users</span>

@@ -14,7 +14,7 @@ const UserListing = () => {
         <Navbar/>
         <DataTables 
         columns={userColumns}
-        endpoint='http://127.0.0.1:8000/application_management/userListing/'
+        endpoint='http://127.0.0.1:8000/application_management/user-listing/'
         additionalColumns={actionColumn}
         
         className="datatable"/>

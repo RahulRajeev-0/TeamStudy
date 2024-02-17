@@ -7,25 +7,27 @@ import './DataTables.scss';
 const DataTables = ({ columns, endpoint, additionalColumns }) => {
   const [data, setData] = useState([]);
 
+const fetchData = async () => {
+    const token = localStorage.getItem('access');
+    try {
+      const response = await axios.get(endpoint, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+      });
+      setData(response.data);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
   useEffect(() => {
-    const fetchData = async () => {
-      const token = localStorage.getItem('access');
-      try {
-        const response = await axios.get(endpoint, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-          },
-        });
-        setData(response.data);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
 
     fetchData();
-  }, [endpoint]);
+  }, []);
+
+
 
   const allColumns = [...columns, ...additionalColumns];
   return (
