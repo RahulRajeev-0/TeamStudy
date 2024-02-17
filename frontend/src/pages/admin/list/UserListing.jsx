@@ -3,7 +3,7 @@ import Sidebar from '../../../components/admin/sidebar/Sidebar';
 import Navbar from '../../../components/admin/navbar/Navbar';
 import "./UserListing.scss"
 import DataTables from '../../../components/datatables/DataTables';
-import { userColumns, actionColumn } from '../../../data/fatchUsers';
+
 
 const UserListing = () => {
   return (
@@ -12,12 +12,7 @@ const UserListing = () => {
         <Sidebar/>
       <div className='listContainer'>
         <Navbar/>
-        <DataTables 
-        columns={userColumns}
-        endpoint='http://127.0.0.1:8000/application_management/user-listing/'
-        additionalColumns={actionColumn}
-        
-        className="datatable"/>
+        <DataTables className="datatable"/>
       </div>
     </div>
   )
