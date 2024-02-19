@@ -40,9 +40,11 @@ const Sidebar = () => {
         <div className="center">
         <ul>
            
-            <li>
+            <li >
+                <Link  style={{textDecoration: 'none'}} to="/applicationManagement">
                 <DashboardIcon className='icon'/>
                 <span>Dashboard</span>
+                </Link>
             </li>
             <li>
                 <Link  style={{textDecoration: 'none'}} to="/applicationManagement/user-listing">

@@ -6,14 +6,19 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser, faEnvelope, faLock, faKey } from '@fortawesome/free-solid-svg-icons';
 import ThreeDBackground from '../../../vantaJS/ThreeDBackground';
 import axios from 'axios';
+import { set_authentication } from '../../../../Redux/Authentication/authenticationSlice';
+import {useDispatch} from 'react-redux';
 
+import { jwtDecode } from "jwt-decode";
 // alert toastify
 import { toast } from 'react-toastify';
 
+// google auth
+import { GoogleLogin } from '@react-oauth/google';
 
 const Register = () => {
   
-  
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const baseURL = 'http://127.0.0.1:8000'
 
@@ -116,6 +121,39 @@ const Register = () => {
     
   }
 
+// user google sign in function 
+  const google_submit = async(user_details) => {
+    const formData = {
+      client_id: user_details,
+    } 
+
+    try{
+      const res = await axios.post(baseURL+'/user/user-google/register/',formData )
+      if (res.status === 200){
+        localStorage.setItem('access', res.data.access)
+        localStorage.setItem('refresh', res.data.refresh)
+        console.log(res.data)
+
+        // add data to the redux store here 
+        dispatch(
+          set_authentication({
+            username:jwtDecode(res.data.access).username,
+            isAuthenticated:true,
+            isAdmin:res.data.is_admin
+          })
+        )
+        navigate(
+          '/',
+          {state:res.data.Message}
+        )
+        toast.success("Login Success")
+      }
+      }catch(error){
+        console.log(error)
+      }
+    
+      
+    }
   return (
     
  <ThreeDBackground>
@@ -185,8 +223,18 @@ const Register = () => {
 
                       <div className="d-flex justify-content-center mx-4 mb-3 mb-lg-4">
                             <button  type="submit" className="btn btn-primary btn-lg me-3">Register</button>
-                            <button type="button" className="btn btn-lg ms-3 btn-dark"><i class="fab fa-google"></i></button>
+                           
                         </div>
+                        <GoogleLogin
+                                onSuccess={credentialResponse => {
+                                  var user_details = credentialResponse.credential
+                                  google_submit(user_details)
+                                 
+                                }}
+                                onError={() => {
+                                  console.log('Login Failed');
+                                }}
+                              />
 
                     </form>
                   </div>

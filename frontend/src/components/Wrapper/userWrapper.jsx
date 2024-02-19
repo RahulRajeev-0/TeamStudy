@@ -20,6 +20,8 @@ import OtpPage from "../../pages/user/auth/OtpPage";
 import BaseHomePage from '../../pages/BaseHomePage'
 import PrivateRoutes from "../private_routes/PrivateRoutes";
 
+// google Oauth 
+import { GoogleOAuthProvider } from '@react-oauth/google';
 
 
 
@@ -50,8 +52,8 @@ function UserWrapper() {
    [authentication_user])
 
    return (
+    <GoogleOAuthProvider clientId="542004528081-920qoaeaj25vg2eclgqlrr01qgoejs3o.apps.googleusercontent.com">
     <Routes>
-        
         <Route  path="/login" element={<LoginPage/>} />
         <Route  path="/signUp" element={<SignUpPage/>} />
         <Route  path="/otp" element={<OtpPage/>} />
@@ -63,6 +65,7 @@ function UserWrapper() {
             </PrivateRoutes>
         }/>
     </Routes>
+        </GoogleOAuthProvider>
    )
 }
 

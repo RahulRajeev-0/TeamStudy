@@ -10,6 +10,9 @@ from rest_framework.exceptions import AuthenticationFailed, ParseError
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.permissions import IsAuthenticated
 
+# google login
+from google.oauth2 import id_token
+from google.auth.transport import requests
 # --------------------- --- Custom imports ---------------------------
 from .serializers import (
     UserRegisterSerializer,
@@ -126,7 +129,42 @@ class LoginView(APIView):
         }
 
         return Response(content,status=status.HTTP_200_OK)
-    
+
+
+# user registration using google account 
+class GoogleRegisterView(APIView):
+    def post(self, request):
+        accountExist = True
+        try:
+            google_request = requests.Request()
+            id_info = id_token.verify_oauth2_token(
+                request.data['client_id'], google_request, "542004528081-920qoaeaj25vg2eclgqlrr01qgoejs3o.apps.googleusercontent.com"
+            )
+            email = id_info['email']
+        except KeyError:
+            raise ParseError("Check credential")
+        
+        if not User.objects.filter(email=email).exists():
+            accountExist = False
+            username = id_info['given_name'] + id_info['jti'][-4:]
+            user = User.objects.create(email=email, username=username, is_active=True, is_varified=True)
+            user.save()
+        
+        user = User.objects.get(email=email)
+        if  user.is_active == False :
+             raise AuthenticationFailed("Your are blocked by the Admin ! ")
+        refresh = RefreshToken.for_user(user)
+        refresh["username"] = str(user.username)
+        content = {
+            'refresh': str(refresh),
+            'access': str(refresh.access_token),
+            'is_admin': user.is_superuser,
+             'accountExist': accountExist,
+        }
+        return Response(content,status=status.HTTP_200_OK)
+
+
+
 
 class UserDetails(APIView):
     permission_classes = [IsAuthenticated]
