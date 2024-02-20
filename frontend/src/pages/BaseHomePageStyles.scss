@@ -1,0 +1,28 @@
+.Home {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100vh;
+    font-family: "Nunito", sans-serif;
+    text-align: center;
+    align-items: center;
+    background: rgb(2,0,36);
+    background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(198,109,244,1) 100%, rgba(0,212,255,1) 100%);
+  }
+  
+  .HomeContainer {
+    display: flex;
+    flex-direction: column;
+    padding-top: 150px;
+    color: white;
+  
+    .workspaceListing {
+      // Default styles
+      max-width: 100%; // Ensures the listing takes full width initially
+      
+      @media only screen and (min-width: 600px) {
+        min-width: 600px; // Sets the minimum width to 600px when screen width is larger
+      }
+    }
+  }
+  

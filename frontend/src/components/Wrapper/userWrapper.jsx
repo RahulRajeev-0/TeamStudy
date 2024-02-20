@@ -22,6 +22,7 @@ import PrivateRoutes from "../private_routes/PrivateRoutes";
 
 // google Oauth 
 import { GoogleOAuthProvider } from '@react-oauth/google';
+import WorkspaceHome from "../../pages/user/Workspace/WorkspaceHome";
 
 
 
@@ -57,6 +58,7 @@ function UserWrapper() {
         <Route  path="/login" element={<LoginPage/>} />
         <Route  path="/signUp" element={<SignUpPage/>} />
         <Route  path="/otp" element={<OtpPage/>} />
+        <Route path="/workspace" element={<WorkspaceHome/>} />
   
        
         <Route path="/" element={
