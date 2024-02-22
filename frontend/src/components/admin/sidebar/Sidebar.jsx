@@ -54,8 +54,10 @@ const Sidebar = () => {
                 </Link>
             </li>
             <li>
+              <Link style={{textDecoration:'none'}} to="/applicationManagement/workspace-listing">
                 <WorkspacesIcon className='icon'/>
                 <span>Workspaces</span>
+              </Link>
             </li>
             <li onClick={logoutAdmin}>
                 <LogoutIcon className='icon'/>

@@ -8,6 +8,7 @@ import { set_authentication } from '../../Redux/Authentication/authenticationSli
 import AdminLoginPage from '../../pages/admin/auth/AdminLoginPage';
 import ApplicationManagementHome from '../../pages/admin/home/ApplicationManagementHome';
 import UserListing from "./../../pages/admin/list/UserListing"
+import WorkspaceListing from "./../../pages/admin/list/WorkspaceListing"
 
 
 const ApplicationAdminWrapper = () => {
@@ -55,6 +56,11 @@ const ApplicationAdminWrapper = () => {
                                                 <UserListing/>
                                         </ApplicationAdminPrivateRoute> 
                                       } />
+                      <Route path="/workspace-listing" element={
+                                    <ApplicationAdminPrivateRoute>
+                                      <WorkspaceListing/>
+                                    </ApplicationAdminPrivateRoute>
+                      } />
               </Routes>
               </>
              

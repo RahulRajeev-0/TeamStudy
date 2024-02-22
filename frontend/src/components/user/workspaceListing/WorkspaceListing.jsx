@@ -12,8 +12,10 @@ const WorkspaceList = ({ workspaces }) => {
           <li key={workspace.id} className='workspace-item'>
             {/* <img src={workspace.logo} alt={`Logo for ${workspace.name}`} /> */}
             <div className='workspace-details'>
-              <h3>{workspace.name}</h3>
-              <p>{workspace.description}</p>
+            <h3 style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', width: '170px' }}>{workspace.workspace_name}</h3>
+
+
+              <p style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', width: '150px' }}>{workspace.description}</p>
             </div>
             <button className='btn btn-outline-info '>Launch</button>
           </li>

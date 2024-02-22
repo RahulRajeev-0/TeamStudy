@@ -8,7 +8,11 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from 'react-router-dom';
 
-
+// boostrap react 
+import Button from 'react-bootstrap/Button';
+import Form from 'react-bootstrap/Form';
+import Modal from 'react-bootstrap/Modal';
+import axios from 'axios';
 
 
 
@@ -16,16 +20,45 @@ const Navbar = () => {
   const [clicked, setClicked] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  //  for creating the workspace
+  const [show, setShow] = useState(false);
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+
+
+  // api function for creating the workspace 
+  const createWorkspace = async (e) => {
+    e.preventDefault();
+    const token = localStorage.getItem("access");
+    
+    const formData = new FormData();
+    formData.append("workspace_name", e.target.workspacename.value); // Access value property
+    formData.append("description", e.target.description.value); // Access value property
+    
+    const headers = {
+      'Authorization': `Bearer ${token}`, // Add space after 'Bearer'
+      'Content-Type': 'multipart/form-data', // Set content type to multipart/form-data for FormData
+    };
+    
+    try {
+      const res = await axios.post('http://127.0.0.1:8000/workspace/create-workspace/', formData, { headers });
+      
+      if (res.status === 201) {
+        toast.success("Workspace Created Successfully");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  
+
   // function to handle cliceked
   const handleClick = ()=>{
     setClicked(!clicked);
   }
 
-  const notify = ()=>{
-    toast.success('Create workspace')
-      
-  }
-
+  
   const logout = ()=>{
     localStorage.clear();
     dispatch(
@@ -52,7 +85,7 @@ const Navbar = () => {
       <ul className={clicked ? "nav-menu active":"nav-menu"}>
        
         <li>
-          <button onClick={notify} className='btn btn-light navButton btn-lg' href=''>Create Workspace </button>
+          <button onClick={handleShow} className='btn btn-light navButton btn-lg' href=''>Create Workspace </button>
         </li>
         <li>
           <button onClick={logout} className='btn btn-light navButton btn-lg' href="">Logout</button>
@@ -61,6 +94,44 @@ const Navbar = () => {
 
     </nav>
     
+    <Modal show={show} onHide={handleClose}>
+  <Modal.Header closeButton>
+    <Modal.Title>Create New Workspace</Modal.Title>
+  </Modal.Header>
+  <Modal.Body>
+    <Form onSubmit={createWorkspace}>
+      <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+        <Form.Label>Workspace</Form.Label>
+        <Form.Control
+          type="text"
+          placeholder="Workspace Name Here"
+          autoFocus
+          maxLength={50}
+          name="workspacename"
+          required
+        />
+      </Form.Group>
+      <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
+        <Form.Label>Workspace Description</Form.Label>
+        <Form.Control
+          as="textarea"
+          rows={3}
+          maxLength={250}
+          name="description"
+          required
+        />
+      </Form.Group>
+      <Modal.Footer>
+        <Button variant="secondary" onClick={handleClose}>
+          Close
+        </Button>
+        <Button variant="primary" type="submit"> {/* Add type="submit" */}
+          Create Workspace
+        </Button>
+      </Modal.Footer>
+    </Form>
+  </Modal.Body>
+</Modal>
 
     </>
    

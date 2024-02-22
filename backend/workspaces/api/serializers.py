@@ -7,6 +7,9 @@ class WorkspaceSerializer(serializers.ModelSerializer):
         model = Workspaces
         exclude = ['password', 'created_by']
 
-
+class WorkspaceMemberSerializer(serializers.ModelSerializer):
+    class Meta :
+        model = WorkspaceMembers
+        
 
 
