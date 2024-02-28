@@ -31,7 +31,7 @@ const BaseHomePage = () => {
 
   useEffect(()=>{
     fetchWorkspaces()
-  }, [])
+  },[])
  
 
   
@@ -39,7 +39,7 @@ const BaseHomePage = () => {
     <>
     <div className='Home'>
 
-    <Navbar />
+    <Navbar onCreateWorkspaceSuccess={fetchWorkspaces}/>
     <div className='HomeContainer'> 
    <h2>👋 Welcome Back </h2>
    

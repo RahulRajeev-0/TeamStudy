@@ -4,9 +4,9 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
-
+from rest_framework import status
 # serializers
-from workspaces.api.serializers import WorkspaceSerializer
+from workspaces.api.serializers import WorkspaceSerializer, WorkspaceDetailsSerializer
 
 # models
 from workspaces.models import Workspaces, WorkspaceMembers
@@ -28,6 +28,8 @@ class CreateWorkspaceView(generics.CreateAPIView):
                                 )
         
 
+
+
 # view for getting all the workspace that a user joined or created 
 class UserWorkspacesListingView(generics.ListAPIView):
     serializer_class = WorkspaceSerializer
@@ -39,6 +41,17 @@ class UserWorkspacesListingView(generics.ListAPIView):
         user_joined_workspaces = [membership.workspace for membership in user_workspace_memberships]
         return user_joined_workspaces
 
+
+
+class WorkspaceDetailView(APIView):
+    permission_classes = [IsAuthenticated]
+    def get(self, request, workspace_id):
+        try: 
+            workspace = Workspaces.objects.get(id=workspace_id)
+        except:
+            return Response({"error": "Workspace does not exist"}, status=status.HTTP_404_NOT_FOUND)
+        serializer = WorkspaceDetailsSerializer(workspace)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
         

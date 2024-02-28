@@ -16,7 +16,7 @@ import axios from 'axios';
 
 
 
-const Navbar = () => {
+const Navbar = ({onCreateWorkspaceSuccess}) => {
   const [clicked, setClicked] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -46,6 +46,8 @@ const Navbar = () => {
       
       if (res.status === 201) {
         toast.success("Workspace Created Successfully");
+        onCreateWorkspaceSuccess();
+       setShow(false)
       }
     } catch (error) {
       console.log(error);
@@ -76,7 +78,7 @@ const Navbar = () => {
     <nav  className='NavbarItems'>
       <img  src={Icon} style={{paddingLeft:"8px"}} height={60} width={220} alt='Icon' ></img>
 
-
+     
       <div onClick={handleClick} className='menu-icons'>
         <i className={clicked ? "fas fa-times" : "fas fa-bars"}></i>
       </div>

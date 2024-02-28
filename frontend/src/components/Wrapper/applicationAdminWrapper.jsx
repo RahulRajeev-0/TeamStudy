@@ -37,7 +37,7 @@ const ApplicationAdminWrapper = () => {
         }
         useEffect(
             ()=>{
-                if (!authentication_user.user){
+                if (!authentication_user){
                     checkAuthAndFetchUserData();
                 }
             },[])

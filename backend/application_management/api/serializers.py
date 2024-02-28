@@ -7,6 +7,8 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ['id', 'username', 'email', 'is_active']
 
+
+# for workspace listing in admin side 
 class WorkspaceAdminLintingSerializer(serializers.ModelSerializer):
     created_by = UserSerializer()
     class Meta :

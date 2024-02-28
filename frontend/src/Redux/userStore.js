@@ -1,8 +1,10 @@
-import {configureStore} from '@reduxjs/toolkit';
+import { configureStore } from '@reduxjs/toolkit';
 import authenticationSliceReducer from './authentication/authenticationSlice';
+import workspaceBaseDetailsSliceReducer from './workspaceBaseDetails/workspaceBaseDetailsSlice'; // Corrected naming
 
 export default configureStore({
     reducer: {
-        authentication_user:authenticationSliceReducer,
+        authenticationUser: authenticationSliceReducer, // Corrected naming
+        user_workspace_select: workspaceBaseDetailsSliceReducer, // Corrected naming
     }
-})
+});

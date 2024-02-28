@@ -1,22 +1,122 @@
-import React from 'react'
+import React, {useState} from 'react'
 import styled from 'styled-components';
+
 import EditIcon from '@mui/icons-material/Edit';
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
+import SidebarOptions from './SidebarOptions';
+import DeleteIcon from '@mui/icons-material/Delete';
+import PersonAddIcon from '@mui/icons-material/PersonAdd';
+import ExpandLessIcon from '@mui/icons-material/ExpandLess';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import NavDropdown from 'react-bootstrap/NavDropdown';
 
-const WorkSpaceSideBar = () => {
+import Button from 'react-bootstrap/Button';
+import Form from 'react-bootstrap/Form';
+import Modal from 'react-bootstrap/Modal';
+import { toast } from 'react-toastify';
+
+
+//  redux
+import { useSelector } from 'react-redux'
+import { set_selected_workspace } from '../../../Redux/WorkspaceBaseDetails/workspaceBaseDetailsSlice';
+
+import { jwtDecode } from "jwt-decode";
+
+const WorkSpaceSideBar = ({workspaceDetails}) => {
+
+  //  for adding members to modal the workspace
+  const [show, setShow] = useState(false);
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+
+  const workspacename = workspaceDetails.workspace_name
+  const username =  jwtDecode(localStorage.getItem("access")).username
+ 
+
+  const addMember = (e) => {
+    e.preventDefault();
+    toast.success("User added")
+  }
+
+
   return (
     <SidebarContainer>
         <SidebarHeader>
           <SidebarInfo>
-                <h2>Workspace Name</h2>
+                <h2>{workspacename} </h2>
                   <h3>
                     <FiberManualRecordIcon/>
-                      User name 
+                      {username}
+                      
                 </h3> 
-
+                
           </SidebarInfo>
+                
                       <EditIcon/>
         </SidebarHeader>
+                  
+       
+       
+        <NavDropdown
+                        id="nav-dropdown-dark-example"
+                        title="Workspace options"
+                        menuVariant="dark"
+                        style={{paddingLeft:"15px", paddingTop:"5px"}}
+                      >
+                        <NavDropdown.Item href="#action/3.1"> <DeleteIcon/>Delete Workspace</NavDropdown.Item>
+                        <NavDropdown.Item onClick={handleShow}>
+                          <PersonAddIcon/>Add participend
+                        </NavDropdown.Item>
+                        <NavDropdown.Item href="#action/3.3"></NavDropdown.Item>
+                        <NavDropdown.Divider />
+                        <NavDropdown.Item href="#action/3.4">
+                          Separated link
+                        </NavDropdown.Item>
+                      </NavDropdown>
+        
+    <hr/>
+
+    <Modal show={show} onHide={handleClose}>
+  <Modal.Header closeButton>
+    <Modal.Title>Add member to workspace </Modal.Title>
+  </Modal.Header>
+  <Modal.Body>
+    <Form onSubmit={addMember}>
+      <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+        <Form.Label>Email Of New Member</Form.Label>
+        <Form.Control
+          type="text"
+          placeholder="Please enter the email of the user"
+          autoFocus
+          maxLength={50}
+          name="workspacename"
+          required
+        />
+      {/* </Form.Group>
+      <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
+        <Form.Label>Workspace Description</Form.Label>
+        <Form.Control
+          as="textarea"
+          rows={3}
+          maxLength={250}
+          name="description"
+          required
+        /> */}
+      </Form.Group>
+      <Modal.Footer>
+        <Button variant="secondary" onClick={handleClose}>
+          Close
+        </Button>
+        <Button variant="primary" type="submit"> {/* Add type="submit" */}
+          Send Invitation
+        </Button>
+      </Modal.Footer>
+    </Form>
+  </Modal.Body>
+</Modal>
+    channels
+        
+
     </SidebarContainer>
   )
 }
@@ -31,6 +131,14 @@ const SidebarContainer = styled.div`
     border-top:1px solid #49274b;
     max-width:260px;
     margin-top:45px;
+    
+   
+    
+    > NavDropdown{
+      padding-left: 5px;
+    }
+
+    
 `;
 
 const SidebarHeader = styled.div`
@@ -51,12 +159,16 @@ const SidebarInfo = styled.div`
   flex:1;
 
   >h2{
-    font-size:15px;
+    font-size:20px;
+    padding-top:5px;
+    padding-left:15px;
     font-weight:900;
     margin-bottom: 5px;
   }
   >h3{
     display:flex;
+    padding-top:5px;
+    padding-left:15px;
     font-size:13px;
     font-weight:400;
     align-items:center;
