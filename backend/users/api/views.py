@@ -138,8 +138,8 @@ class GoogleRegisterView(APIView):
         try:
             google_request = requests.Request()
             id_info = id_token.verify_oauth2_token(
-                request.data['client_id'], google_request, "542004528081-920qoaeaj25vg2eclgqlrr01qgoejs3o.apps.googleusercontent.com"
-            )
+                request.data['client_id'], google_request,"542004528081-920qoaeaj25vg2eclgqlrr01qgoejs3o.apps.googleusercontent.com",clock_skew_in_seconds=10,)
+                # "542004528081-920qoaeaj25vg2eclgqlrr01qgoejs3o.apps.googleusercontent.com"
             email = id_info['email']
         except KeyError:
             raise ParseError("Check credential")

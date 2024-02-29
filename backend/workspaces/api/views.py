@@ -10,6 +10,7 @@ from workspaces.api.serializers import WorkspaceSerializer, WorkspaceDetailsSeri
 
 # models
 from workspaces.models import Workspaces, WorkspaceMembers
+from users.models import User
 
 
 # view for creating a workspace 
@@ -55,4 +56,12 @@ class WorkspaceDetailView(APIView):
 
 
         
-
+class SendInvitationView(APIView):
+    def post(self, request):
+        try:
+            print("++++++++++++++++")
+            print(request.data.get("email"))
+            user_obj = User.objects.get(email=request.data.email)
+        except:
+            print("user not found")
+        return Response("user send invitation")

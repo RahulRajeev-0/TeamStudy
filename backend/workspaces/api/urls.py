@@ -7,4 +7,5 @@ urlpatterns = [
     path('user-workspace-list/', views.UserWorkspacesListingView.as_view(), name="User-workspace-listing"),
 
     path('user-workspace-details/<int:workspace_id>/', views.WorkspaceDetailView.as_view(), name="User-workspace-details"),
+    path('invite-user/', views.SendInvitationView.as_view(), name="User-workspace-inviate"),
 ]
