@@ -60,7 +60,7 @@ function UserWrapper() {
         <Route  path="/signUp" element={<SignUpPage/>} />
         <Route  path="/otp" element={<OtpPage/>} />
         <Route path="/workspace" element={<WorkspaceHome/>} />
-        {/* <Route path="/workspace-invitation/:userId/:workspaceId" element={<WorkspaceInvitationPage/>} /> */}
+        <Route path="/workspace-invitation/:userId/:workspaceId" element={<WorkspaceInvitationPage/>} />
   
        
         <Route path="/" element={
