@@ -15,12 +15,16 @@ import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
 import { toast } from 'react-toastify';
 
+import axios from "axios"
 
 //  redux
 import { useSelector } from 'react-redux'
 import { set_selected_workspace } from '../../../Redux/WorkspaceBaseDetails/workspaceBaseDetailsSlice';
 
 import { jwtDecode } from "jwt-decode";
+
+
+
 
 const WorkSpaceSideBar = ({workspaceDetails}) => {
 
@@ -29,13 +33,36 @@ const WorkSpaceSideBar = ({workspaceDetails}) => {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
-  const workspacename = workspaceDetails.workspace_name
-  const username =  jwtDecode(localStorage.getItem("access")).username
- 
+  const baseURL = 'http://127.0.0.1:8000'
 
-  const addMember = (e) => {
+  const workspacename = workspaceDetails.workspace_name
+  const username =  jwtDecode(localStorage.getItem('access')).username
+  
+  
+  // user add to workspace request function 
+  const addMember = async (e) => {
     e.preventDefault();
-    toast.success("User added")
+
+
+    const token = localStorage.getItem('access')
+    const formData = new FormData();
+    formData.append('workspaceId',workspaceDetails.id)
+    formData.append('newMember',e.target.Memmber.value)
+    const headers = {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}` // Include the token in the 'Authorization' header
+    };
+    try{
+
+      const response = await axios.post(baseURL+'/workspace/invite-user/',formData,{headers});
+      if (response.status === 200){
+        toast.success("request send to the backend success")
+      }
+    }
+    catch(error){
+      console.log(error);
+    }
+    
   }
 
 
@@ -89,7 +116,7 @@ const WorkSpaceSideBar = ({workspaceDetails}) => {
           placeholder="Please enter the email of the user"
           autoFocus
           maxLength={50}
-          name="workspacename"
+          name="Memmber"
           required
         />
       {/* </Form.Group>

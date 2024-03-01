@@ -19,6 +19,7 @@ import SignUpPage from "../../pages/user/auth/SignUpPage"
 import OtpPage from "../../pages/user/auth/OtpPage";
 import BaseHomePage from '../../pages/BaseHomePage'
 import PrivateRoutes from "../private_routes/PrivateRoutes";
+import WorkspaceInvitationPage from "../../pages/user/Workspace/WorkspaceInvitationPage";
 
 // google Oauth 
 import { GoogleOAuthProvider } from '@react-oauth/google';
@@ -59,6 +60,7 @@ function UserWrapper() {
         <Route  path="/signUp" element={<SignUpPage/>} />
         <Route  path="/otp" element={<OtpPage/>} />
         <Route path="/workspace" element={<WorkspaceHome/>} />
+        {/* <Route path="/workspace-invitation/:userId/:workspaceId" element={<WorkspaceInvitationPage/>} /> */}
   
        
         <Route path="/" element={

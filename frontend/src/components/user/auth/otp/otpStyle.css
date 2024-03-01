@@ -11,10 +11,10 @@
   border: none;
   box-shadow: none;
 }
-.row {
+/* .row {
   display: flex;
   align-items: center;
-}
+} */
 .form {
     display: flex;
     align-items: center;

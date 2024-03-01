@@ -1,4 +1,5 @@
-from rest_framework import serializers
+from rest_framework import serializers 
+from rest_framework.serializers import CharField, Serializer
 from users.models import User
 from workspaces.models import WorkspaceMembers, Workspaces
 
@@ -28,4 +29,5 @@ class WorkspaceMemberSerializer(serializers.ModelSerializer):
 
 
 
-
+class GetWorkspaceIdSerializer(Serializer):
+    workspaceId = CharField()
