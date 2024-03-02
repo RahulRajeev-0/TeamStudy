@@ -56,11 +56,17 @@ const WorkSpaceSideBar = ({workspaceDetails}) => {
 
       const response = await axios.post(baseURL+'/workspace/invite-user/',formData,{headers});
       if (response.status === 200){
-        toast.success("request send to the backend success")
+        toast.success("request send successfully")
+        setShow(false)
       }
+      
     }
     catch(error){
-      console.log(error);
+      if (error.response && (error.response.status === 404 || error.response.status === 403) ){
+        toast.error(error.response.data.message);
+      } else {
+        console.error(error);
+      }
     }
     
   }
