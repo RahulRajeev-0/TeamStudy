@@ -1,4 +1,4 @@
-.card {
+.JoinCard {
     width: 240px;
     height: 254px;
     padding: 0 15px;
@@ -12,29 +12,29 @@
     border-radius: 20px;
   }
   
-  .card > * {
+  .JoinCard > * {
     margin: 0;
   }
   
-  .card__title {
+  .JoinCard__title {
     font-size: 23px;
     font-weight: 900;
     color: #333;
   }
   
-  .card__content {
+  .JoinCard__content {
     font-size: 13px;
     line-height: 18px;
     color: #333;
   }
   
-  .card__form {
+  .JoinCard__form {
     display: flex;
     flex-direction: column;
     gap: 10px;
   }
   
-  .card__form input {
+  .JoinCard__form input {
     margin-top: 10px;
     outline: 0;
     background: rgb(255, 255, 255);
@@ -45,7 +45,7 @@
     color: black;
   }
   
-  .card__form button {
+  .JoinCard__form button {
     border: 0;
     background: #111;
     color: #fff;
@@ -54,7 +54,11 @@
     font-weight: bold;
   }
   
-  .sign-up:hover {
+  .Join:hover {
+    opacity: 0.8;
+    
+  } 
+  .Reject:hover {
     opacity: 0.8;
     
   } 
