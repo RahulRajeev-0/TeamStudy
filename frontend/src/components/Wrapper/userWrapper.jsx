@@ -21,9 +21,12 @@ import BaseHomePage from '../../pages/BaseHomePage'
 import PrivateRoutes from "../private_routes/PrivateRoutes";
 import WorkspaceInvitationPage from "../../pages/user/Workspace/WorkspaceInvitationPage";
 
+
 // google Oauth 
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import WorkspaceHome from "../../pages/user/Workspace/WorkspaceHome";
+import WorkspaceAdminSettingsPage from "../../pages/user/workspaceAdmin/workspaceAdminSettingsPage";
+import WorkspaceAdminMemberManagementPage from "../../pages/user/workspaceAdmin/workspaceAdminMemberManagement/workspaceAdminMemberManagementPage";
 
 
 
@@ -61,7 +64,8 @@ function UserWrapper() {
         <Route  path="/otp" element={<OtpPage/>} />
         <Route path="/workspace" element={<WorkspaceHome/>} />
         <Route path="/workspace-invitation/:userId/:workspaceId" element={<WorkspaceInvitationPage/>} />
-  
+        <Route path='/workspace-settings' element={<WorkspaceAdminSettingsPage/>} />
+        <Route path='/workspace-settings-members' element={<WorkspaceAdminMemberManagementPage/>} />
        
         <Route path="/" element={
             <PrivateRoutes>

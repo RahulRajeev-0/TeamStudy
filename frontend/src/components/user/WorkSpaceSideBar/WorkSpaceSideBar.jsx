@@ -7,13 +7,22 @@ import SidebarOptions from './SidebarOptions';
 import DeleteIcon from '@mui/icons-material/Delete';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
+import ExitToAppIcon from '@mui/icons-material/ExitToApp';
+import LogoutIcon from '@mui/icons-material/Logout';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import Dropdown from 'react-bootstrap/Dropdown';
+import DropdownButton from 'react-bootstrap/DropdownButton';
+
 import NavDropdown from 'react-bootstrap/NavDropdown';
+
 
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
 import { toast } from 'react-toastify';
+
+// react router dom 
+import { useNavigate } from 'react-router-dom';
 
 import axios from "axios"
 
@@ -22,6 +31,7 @@ import { useSelector } from 'react-redux'
 import { set_selected_workspace } from '../../../Redux/WorkspaceBaseDetails/workspaceBaseDetailsSlice';
 
 import { jwtDecode } from "jwt-decode";
+import Logout from '@mui/icons-material/Logout';
 
 
 
@@ -32,7 +42,7 @@ const WorkSpaceSideBar = ({workspaceDetails}) => {
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
-
+  const navigate = useNavigate();
   const baseURL = 'http://127.0.0.1:8000'
 
   const workspacename = workspaceDetails.workspace_name
@@ -100,13 +110,21 @@ const WorkSpaceSideBar = ({workspaceDetails}) => {
                         <NavDropdown.Item onClick={handleShow}>
                           <PersonAddIcon/>Add participend
                         </NavDropdown.Item>
+                       
+                        <NavDropdown.Item >
+                          <ExitToAppIcon style={{color:"red"}}/>Leave Workspace
+                        </NavDropdown.Item>
                         <NavDropdown.Item href="#action/3.3"></NavDropdown.Item>
                         <NavDropdown.Divider />
-                        <NavDropdown.Item href="#action/3.4">
-                          Separated link
+                        <NavDropdown.Item  onClick={()=>{navigate('/workspace-settings')}}>
+                              settings and Administration
                         </NavDropdown.Item>
                       </NavDropdown>
         
+    <hr/>
+    <span style={{cursor:'pointer'}}>
+      <LogoutIcon/>Log out from Workspace
+      </span>
     <hr/>
 
     <Modal show={show} onHide={handleClose}>
@@ -147,8 +165,9 @@ const WorkSpaceSideBar = ({workspaceDetails}) => {
     </Form>
   </Modal.Body>
 </Modal>
+    
     channels
-        
+      
 
     </SidebarContainer>
   )
