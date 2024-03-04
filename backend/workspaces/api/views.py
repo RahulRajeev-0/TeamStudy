@@ -49,7 +49,8 @@ class WorkspaceDetailView(APIView):
     def get(self, request, workspace_id):
         try: 
             workspace = Workspaces.objects.get(id=workspace_id)
-            member = WorkspaceMembers.objects.get(workspace=workspace, user=request.user)
+            member = WorkspaceMembers.objects.get(workspace=workspace,
+                                                   user=request.user)
         except:
             return Response({"error": "Workspace does not exist or You not a member"},
                              status=status.HTTP_404_NOT_FOUND)
@@ -65,7 +66,8 @@ class WorkspaceMemberView(APIView):
     def get(self, request):
         try:
             workspace_id = request.query_params.get('workspaceId')
-            user_obj = WorkspaceMembers.objects.filter(user=request.user, workspace=workspace_id).first()
+            user_obj = WorkspaceMembers.objects.filter(user=request.user,
+                                                        workspace=workspace_id).first()
             
             if user_obj.is_admin:
                 workspace_members = WorkspaceMembers.objects.filter(workspace=workspace_id)
@@ -73,12 +75,70 @@ class WorkspaceMemberView(APIView):
                 return Response(data=serilizer.data, status=status.HTTP_200_OK)
 
             else:
-                return Response({'message':"not an admin"}, status=status.HTTP_403_FORBIDDEN)
+                return Response({'message':"not an admin"}, 
+                                status=status.HTTP_403_FORBIDDEN)
                 
             
         except Exception as e:
             print(e)
-            return Response({"message":"something went wrong"},status=status.HTTP_400_BAD_REQUEST)
+            return Response({"message":"something went wrong"},
+                            status=status.HTTP_400_BAD_REQUEST)
+
+
+        '''alter the workspace member model and owner field there 
+        so when checking removing the position we can check if the member is the owner'''
+        #for updating the position of members like admin / not admin  
+    def put(self, request):
+        try:
+           request_from = WorkspaceMembers.objects.filter(
+               user=request.user, 
+               workspace=request.data.get("workspaceId")).first()
+           if request_from.is_admin:
+               workspace_member = WorkspaceMembers.objects.get(id=request.data.get('memberId'))
+               if workspace_member.user == request.user:
+                   return Response({"message":"You cannot change your own position"},
+                                    status=status.HTTP_403_FORBIDDEN)
+               workspace_member.is_admin = not workspace_member.is_admin
+               workspace_member.save()
+               return Response({"message":"Updation Successful"}, 
+                               status=status.HTTP_200_OK)
+           else:
+               return Response({"message":"Not an admin"}, 
+                               status=status.HTTP_403_FORBIDDEN)
+           
+        
+        except Exception as e:
+            print(e)
+            return Response({'message':"something went wrong "},
+                             status=status.HTTP_400_BAD_REQUEST)
+
+
+    def delete(self, request):
+        try:
+            print("+++++++++++++")
+            request_from = WorkspaceMembers.objects.filter(
+                user=request.user,
+                workspace=request.data.get("workspaceId")).first()
+            if request_from.is_admin:
+                workspace_member = WorkspaceMembers.objects.get(id=request.data.get('memberId'))
+                if workspace_member.workspace.created_by == workspace_member.user:
+                    return Response ({"message":"Owner cannot leave workspace"},
+                                      status=status.HTTP_403_FORBIDDEN)
+                if workspace_member.user == request.user:
+                    return Response({'message':"Cannot kick your self out"},
+                                     status=status.HTTP_403_FORBIDDEN)
+                workspace_member.delete()
+                return Response({"message":"Member kicked out from the workspace"},
+                                 status=status.HTTP_200_OK)
+            else:
+                return Response({"message":"Your not an admin "},
+                                 status=status.HTTP_403_FORBIDDEN)
+        except Exception as e:
+            print(e)
+            return Response({"message":"Something went wrong"},
+                             status=status.HTTP_400_BAD_REQUEST)
+
+
 
 
 # view for sending the invitation to add a user to a workspace 
@@ -100,14 +160,19 @@ class SendInvitationView(APIView):
             
             if WorkspaceMembers.objects.filter(workspace=workspace_id,
                                                 user=new_member).exists():
-                return Response ({"message":"User is already a member"}, status=status.HTTP_403_FORBIDDEN)
+                return Response ({"message":"User is already a member"},
+                                  status=status.HTTP_403_FORBIDDEN)
             
             # checking the if the add new member request is from admin
             if workspace_obj.is_admin:
                 # WorkspaceMembers.objects.create(user=new_member,workspace=workspace_obj.workspace)
                 admin = request.user.username
                 workspace = workspace_obj.workspace.workspace_name
-                send_workspace_invitation(member_email, new_member.id, workspace_id, admin, workspace )
+                send_workspace_invitation(member_email,
+                                            new_member.id,
+                                            workspace_id,
+                                            admin, 
+                                            workspace )
             else:
                 return Response ({"message":"Your not an admin"},
                                   status=status.HTTP_403_FORBIDDEN)
@@ -126,8 +191,10 @@ class AddMemberToWorkspaceView(APIView):
             user_obj = User.objects.filter(id=user_id).first()
             workspace_obj = Workspaces.objects.filter(id=workspace_id).first()
             if user_obj and workspace_obj :
-                if not WorkspaceMembers.objects.filter(user=user_obj,workspace=workspace_obj).exists():
-                    WorkspaceMembers.objects.create(user=user_obj, workspace=workspace_obj)
+                if not WorkspaceMembers.objects.filter(user=user_obj,
+                                                       workspace=workspace_obj).exists():
+                    WorkspaceMembers.objects.create(user=user_obj,
+                                                     workspace=workspace_obj)
                     return Response({"message":"Joind to the workspace"},
                                      status=status.HTTP_200_OK)
                 else:

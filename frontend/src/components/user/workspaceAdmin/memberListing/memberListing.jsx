@@ -4,20 +4,21 @@ import { DataGrid } from '@mui/x-data-grid';
 
 import Button from '@mui/material/Button'; 
 
-
+import { toast } from 'react-toastify'
 
 
 const MemberListing = () => {
   const [rows, setRows] = useState([])
 
+  const workspaceId = sessionStorage.getItem('workspaceId');
+  const token = localStorage.getItem('access');
+  const baseURL = 'http://127.0.0.1:8000/workspace/member-list/'
   // function to fetch list of members 
   const fetchData = async () => {
-    const token = localStorage.getItem('access');
-    const workspaceId = sessionStorage.getItem('workspaceId');
     
   
     try {
-      const response = await axios.get('http://127.0.0.1:8000/workspace/member-list/', {
+      const response = await axios.get(baseURL, {
         headers: {
           Authorization: `Bearer ${token}`,
           Accept: 'application/json',
@@ -34,11 +35,70 @@ const MemberListing = () => {
     }
   };
 
+  // for making member admin 
+  const handleMakeAdmin = async (id)=>{
+    const data={
+      memberId:id,
+      workspaceId:workspaceId
+    }
+    try{
+      const response = await axios.put(baseURL,
+      data,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+      })
+      if (response.status === 200){
+        toast.success(response.data.message)
+      }
+      
+      
+      ;
+      fetchData()
+
+    }catch(error){
+      if (error.response && error.response.status === 403){
+        toast(error.response.data.message)
+      }
+      console.log(error)
+    }
+  }
+
+  const handleKickOut = async (id) => {
+    const data = {
+        memberId: id,
+        workspaceId: workspaceId
+    };
+
+    try {
+        const response = await axios.delete(baseURL, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            },
+            data: data // sending data in the request body
+        });
+
+        if (response.status === 200) {
+            toast.success(response.data.message);
+        }
+
+        fetchData();
+    } catch (error) {
+        if (error.response && error.response.status === 403) {
+            toast(error.response.data.message);
+        }
+        console.log(error);
+    }
+};
 
 
   useEffect(()=>{
     fetchData()
   },[])  
+
 
   const columns = [
     { field: 'id', headerName: 'ID', width: 70 },
@@ -53,7 +113,7 @@ const MemberListing = () => {
         <Button
           variant="outline"
           color={params.row.is_admin ? "primary" : "success"} // Use secondary color if user is admin
-          onClick={() => handleMakeAdmin(params.row.id, !params.row.is_admin)} // Toggle admin status
+          onClick={() => handleMakeAdmin(params.row.id)} // Toggle admin status
         >
           {params.row.is_admin ? "Remove Admin" : "Make Admin"}
         </Button>
