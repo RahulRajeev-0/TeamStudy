@@ -62,16 +62,15 @@ function UserWrapper() {
         <Route  path="/login" element={<LoginPage/>} />
         <Route  path="/signUp" element={<SignUpPage/>} />
         <Route  path="/otp" element={<OtpPage/>} />
-        <Route path="/workspace" element={<WorkspaceHome/>} />
         <Route path="/workspace-invitation/:userId/:workspaceId" element={<WorkspaceInvitationPage/>} />
-        <Route path='/workspace-settings' element={<WorkspaceAdminSettingsPage/>} />
-        <Route path='/workspace-settings-members' element={<WorkspaceAdminMemberManagementPage/>} />
-       
-        <Route path="/" element={
-            <PrivateRoutes>
-                <BaseHomePage/>
-            </PrivateRoutes>
-        }/>
+        
+       {/* private routes here  */}
+        <Route path="/" element={<PrivateRoutes>  <BaseHomePage/>  </PrivateRoutes>}/>
+        <Route path="/workspace" element={<PrivateRoutes>  <WorkspaceHome/>  </PrivateRoutes>} />
+        <Route path="/workspace-settings" element={<PrivateRoutes>  <WorkspaceAdminSettingsPage/>  </PrivateRoutes>} />
+        <Route path="/workspace-settings-members" element={<PrivateRoutes>  <WorkspaceAdminMemberManagementPage/>  </PrivateRoutes>} />
+
+
     </Routes>
         </GoogleOAuthProvider>
    )

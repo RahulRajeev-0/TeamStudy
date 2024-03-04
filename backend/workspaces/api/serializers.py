@@ -9,10 +9,12 @@ class WorkspaceSerializer(serializers.ModelSerializer):
         model = Workspaces
         exclude = ['password', 'created_by']
 
+
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['id', 'username', 'email', 'is_active']
+
 
 # serializer for getting a workspace details 
 class WorkspaceDetailsSerializer(serializers.ModelSerializer):
@@ -21,11 +23,16 @@ class WorkspaceDetailsSerializer(serializers.ModelSerializer):
         model = Workspaces
         exclude = ['password']
 
-
+class UserNameSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['username', 'email']
 
 class WorkspaceMemberSerializer(serializers.ModelSerializer):
+    user = UserNameSerializer()
     class Meta :
         model = WorkspaceMembers
+        exclude = ['profile_pic']
 
 
 

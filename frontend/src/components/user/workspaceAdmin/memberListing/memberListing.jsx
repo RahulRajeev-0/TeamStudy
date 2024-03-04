@@ -1,39 +1,144 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import { DataGrid } from '@mui/x-data-grid';
 
+import Button from '@mui/material/Button'; 
+
+import { toast } from 'react-toastify'
+
+
 const MemberListing = () => {
-    const columns = [
-        { field: 'id', headerName: 'ID', width: 70 },
-        { field: 'firstName', headerName: 'First name', width: 130 },
-        { field: 'lastName', headerName: 'Last name', width: 130 },
-        {
-          field: 'age',
-          headerName: 'Age',
-          type: 'number',
-          width: 90,
+  const [rows, setRows] = useState([])
+
+  const workspaceId = sessionStorage.getItem('workspaceId');
+  const token = localStorage.getItem('access');
+  const baseURL = 'http://127.0.0.1:8000/workspace/member-list/'
+  // function to fetch list of members 
+  const fetchData = async () => {
+    
+  
+    try {
+      const response = await axios.get(baseURL, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
         },
-        {
-          field: 'fullName',
-          headerName: 'Full name',
-          description: 'This column has a value getter and is not sortable.',
-          sortable: false,
-          width: 160,
-          valueGetter: (params) =>
-            `${params.row.firstName || ''} ${params.row.lastName || ''}`,
+        params: {
+          workspaceId: workspaceId,
+        }
+      });
+      setRows(response.data)
+      console.log(response.data);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+
+  // for making member admin 
+  const handleMakeAdmin = async (id)=>{
+    const data={
+      memberId:id,
+      workspaceId:workspaceId
+    }
+    try{
+      const response = await axios.put(baseURL,
+      data,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "application/json",
+          "Content-Type": "application/json",
         },
-      ];
+      })
+      if (response.status === 200){
+        toast.success(response.data.message)
+      }
       
-      const rows = [
-        { id: 1, lastName: 'Snow', firstName: 'Jon', age: 35 },
-        { id: 2, lastName: 'Lannister', firstName: 'Cersei', age: 42 },
-        { id: 3, lastName: 'Lannister', firstName: 'Jaime', age: 45 },
-        { id: 4, lastName: 'Stark', firstName: 'Arya', age: 16 },
-        { id: 5, lastName: 'Targaryen', firstName: 'Daenerys', age: null },
-        { id: 6, lastName: 'Melisandre', firstName: null, age: 150 },
-        { id: 7, lastName: 'Clifford', firstName: 'Ferrara', age: 44 },
-        { id: 8, lastName: 'Frances', firstName: 'Rossini', age: 36 },
-        { id: 9, lastName: 'Roxie', firstName: 'Harvey', age: 65 },
-      ];
+      
+      ;
+      fetchData()
+
+    }catch(error){
+      if (error.response && error.response.status === 403){
+        toast(error.response.data.message)
+      }
+      console.log(error)
+    }
+  }
+
+  const handleKickOut = async (id) => {
+    const data = {
+        memberId: id,
+        workspaceId: workspaceId
+    };
+
+    try {
+        const response = await axios.delete(baseURL, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            },
+            data: data // sending data in the request body
+        });
+
+        if (response.status === 200) {
+            toast.success(response.data.message);
+        }
+
+        fetchData();
+    } catch (error) {
+        if (error.response && error.response.status === 403) {
+            toast(error.response.data.message);
+        }
+        console.log(error);
+    }
+};
+
+
+  useEffect(()=>{
+    fetchData()
+  },[])  
+
+
+  const columns = [
+    { field: 'id', headerName: 'ID', width: 70 },
+    { field: 'display_name', headerName: 'Display name', width: 130 },
+    { field: 'is_admin', headerName: 'Is admin', width: 130 },
+    { field: 'user', headerName: 'Email', width: 330, renderCell: (params) => params.value.email },
+    {
+      field: 'makeAdmin',
+      headerName: 'Make Admin',
+      width: 250,
+      renderCell: (params) => (
+        <Button
+          variant="outline"
+          color={params.row.is_admin ? "primary" : "success"} // Use secondary color if user is admin
+          onClick={() => handleMakeAdmin(params.row.id)} // Toggle admin status
+        >
+          {params.row.is_admin ? "Remove Admin" : "Make Admin"}
+        </Button>
+      ),
+    },
+    {
+      field: 'kickOut',
+      headerName: 'Kick Out',
+      width: 250,
+      renderCell: (params) => (
+        <Button
+          variant="contained"
+          color="error"
+          onClick={() => handleKickOut(params.row.id)}
+        >
+          Kick Out
+        </Button>
+      ),
+    },
+  ];
+  
+
+
+
+      
       
 
   return (
