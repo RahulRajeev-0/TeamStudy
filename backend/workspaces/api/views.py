@@ -49,8 +49,9 @@ class WorkspaceDetailView(APIView):
     def get(self, request, workspace_id):
         try: 
             workspace = Workspaces.objects.get(id=workspace_id)
+            member = WorkspaceMembers.objects.get(workspace=workspace, user=request.user)
         except:
-            return Response({"error": "Workspace does not exist"},
+            return Response({"error": "Workspace does not exist or You not a member"},
                              status=status.HTTP_404_NOT_FOUND)
         serializer = WorkspaceDetailsSerializer(workspace)
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -63,23 +64,20 @@ class WorkspaceMemberView(APIView):
     # member listing
     def get(self, request):
         try:
-            workspace_id = request.data.get('workspaceId')
-            print(workspace_id)
+            workspace_id = request.query_params.get('workspaceId')
             user_obj = WorkspaceMembers.objects.filter(user=request.user, workspace=workspace_id).first()
             
             if user_obj.is_admin:
                 workspace_members = WorkspaceMembers.objects.filter(workspace=workspace_id)
-                print(workspace_members)
                 serilizer = WorkspaceMemberSerializer(workspace_members, many=True)
-                print(serilizer.data)
-                print("user is an admin ")
                 return Response(data=serilizer.data, status=status.HTTP_200_OK)
 
             else:
                 return Response({'message':"not an admin"}, status=status.HTTP_403_FORBIDDEN)
                 
             
-        except:
+        except Exception as e:
+            print(e)
             return Response({"message":"something went wrong"},status=status.HTTP_400_BAD_REQUEST)
 
 

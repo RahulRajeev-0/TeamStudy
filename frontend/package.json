@@ -28,6 +28,7 @@
     "react-redux": "^9.1.0",
     "react-router-dom": "^6.21.3",
     "react-toastify": "^10.0.4",
+    "redux-persist": "^6.0.0",
     "sass": "^1.70.0",
     "styled-components": "^6.1.8",
     "three": "^0.121.0",

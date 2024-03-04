@@ -1,10 +1,13 @@
-import React from 'react'
+import React, {useEffect, useState} from 'react'
 import "./workspaceAdminNav.scss"
 
 // react router dom
-import { useNavigate , Link} from 'react-router-dom';
-
+import { useNavigate , Link, resolvePath} from 'react-router-dom';
+// material ui icons
 import HomeIcon from '@mui/icons-material/Home';
+
+// axios 
+import axios from 'axios';
 
 // bootstrap
 import Button from 'react-bootstrap/Button';
@@ -19,6 +22,35 @@ import Offcanvas from 'react-bootstrap/Offcanvas';
 
 const WorkspaceAdminNav = () => {
   const navigate = useNavigate()
+  const workspaceId = sessionStorage.getItem('workspaceId')
+  const [workspace, setWorkspace] = useState({"workspace_name":'workspaceName'})
+
+  const token = localStorage.getItem('access')
+  const baseURL = 'http://127.0.0.1:8000'
+
+  const fetchWorkspaceDetails = async()=>{
+    
+    const response = await axios.get(baseURL+`/workspace/user-workspace-details/${workspaceId}/`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+    })
+    
+    if (response.status === 200){
+      console.log(response.data);
+      setWorkspace(response.data)
+      
+    }else{
+      console.log(response)
+      return {}
+    }
+  }
+
+  useEffect(()=>{fetchWorkspaceDetails()},[])
+
   return (
     <>
     {['xxl'].map((expand) => (
@@ -26,7 +58,7 @@ const WorkspaceAdminNav = () => {
         <Container fluid>
           
           <Navbar.Brand >
-       <HomeIcon/>           Workspace Name
+       <HomeIcon/>           {workspace.workspace_name}
             </Navbar.Brand>
           
           <Navbar.Toggle aria-controls={`offcanvasNavbar-expand-${expand}`} />
@@ -37,7 +69,7 @@ const WorkspaceAdminNav = () => {
           >
             <Offcanvas.Header closeButton>
               <Offcanvas.Title id={`offcanvasNavbarLabel-expand-${expand}`}>
-                workspace Name
+              {workspace.workspace_name}
               </Offcanvas.Title>
             </Offcanvas.Header>
             <Offcanvas.Body>
