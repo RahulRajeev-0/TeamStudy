@@ -6,7 +6,7 @@ from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
 # serializers
-from workspaces.api.serializers import WorkspaceSerializer, WorkspaceDetailsSerializer, GetWorkspaceIdSerializer
+from workspaces.api.serializers import WorkspaceSerializer, WorkspaceDetailsSerializer, GetWorkspaceIdSerializer, WorkspaceMemberSerializer
 from ..emails import send_workspace_invitation
 # models
 from workspaces.models import Workspaces, WorkspaceMembers
@@ -43,18 +43,44 @@ class UserWorkspacesListingView(generics.ListAPIView):
         return user_joined_workspaces
 
 
-
+# view for getting basic workspace details
 class WorkspaceDetailView(APIView):
     permission_classes = [IsAuthenticated]
     def get(self, request, workspace_id):
         try: 
             workspace = Workspaces.objects.get(id=workspace_id)
         except:
-            return Response({"error": "Workspace does not exist"}, status=status.HTTP_404_NOT_FOUND)
+            return Response({"error": "Workspace does not exist"},
+                             status=status.HTTP_404_NOT_FOUND)
         serializer = WorkspaceDetailsSerializer(workspace)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
+# view for member manage in workspace
+class WorkspaceMemberView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    # member listing
+    def get(self, request):
+        try:
+            workspace_id = request.data.get('workspaceId')
+            print(workspace_id)
+            user_obj = WorkspaceMembers.objects.filter(user=request.user, workspace=workspace_id).first()
+            
+            if user_obj.is_admin:
+                workspace_members = WorkspaceMembers.objects.filter(workspace=workspace_id)
+                print(workspace_members)
+                serilizer = WorkspaceMemberSerializer(workspace_members, many=True)
+                print(serilizer.data)
+                print("user is an admin ")
+                return Response(data=serilizer.data, status=status.HTTP_200_OK)
+
+            else:
+                return Response({'message':"not an admin"}, status=status.HTTP_403_FORBIDDEN)
+                
+            
+        except:
+            return Response({"message":"something went wrong"},status=status.HTTP_400_BAD_REQUEST)
 
 
 # view for sending the invitation to add a user to a workspace 
@@ -67,10 +93,15 @@ class SendInvitationView(APIView):
             member_email = request.data.get("newMember")
             new_member = User.objects.filter(email=member_email).first()
             if not new_member:
-                return Response ({"message":"User with this email doesn't exist"}, status=status.HTTP_404_NOT_FOUND)
+                return Response ({"message":"User with this email doesn't exist"},
+                                  status=status.HTTP_404_NOT_FOUND)
                 
-            workspace_obj = WorkspaceMembers.objects.get(workspace=workspace_id, user=request.user)
-            if WorkspaceMembers.objects.filter(workspace=workspace_id, user=new_member).exists():
+            workspace_obj = WorkspaceMembers.objects.get(
+                workspace=workspace_id,
+                  user=request.user)
+            
+            if WorkspaceMembers.objects.filter(workspace=workspace_id,
+                                                user=new_member).exists():
                 return Response ({"message":"User is already a member"}, status=status.HTTP_403_FORBIDDEN)
             
             # checking the if the add new member request is from admin
@@ -80,7 +111,8 @@ class SendInvitationView(APIView):
                 workspace = workspace_obj.workspace.workspace_name
                 send_workspace_invitation(member_email, new_member.id, workspace_id, admin, workspace )
             else:
-                return Response ({"message":"Your not an admin"}, status=status.HTTP_403_FORBIDDEN)
+                return Response ({"message":"Your not an admin"},
+                                  status=status.HTTP_403_FORBIDDEN)
         except Exception as e:
             print("user not found")
             print(e)
@@ -98,12 +130,15 @@ class AddMemberToWorkspaceView(APIView):
             if user_obj and workspace_obj :
                 if not WorkspaceMembers.objects.filter(user=user_obj,workspace=workspace_obj).exists():
                     WorkspaceMembers.objects.create(user=user_obj, workspace=workspace_obj)
-                    return Response({"message":"Joind to the workspace"}, status=status.HTTP_200_OK)
+                    return Response({"message":"Joind to the workspace"},
+                                     status=status.HTTP_200_OK)
                 else:
-                    return Response({"message":"You are already a member of the workspace ."}, status=status.HTTP_400_BAD_REQUEST)
+                    return Response({"message":"You are already a member of the workspace ."},
+                                     status=status.HTTP_400_BAD_REQUEST)
 
             else:
-                return Response({"message":"Something wend wrong . Unable to Join to workspace"}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({"message":"Something wend wrong . Unable to Join to workspace"},
+                                 status=status.HTTP_400_BAD_REQUEST)
 
         except Exception as e:
             print(e)
