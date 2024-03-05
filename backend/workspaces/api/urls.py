@@ -11,6 +11,11 @@ urlpatterns = [
     path('join-user/', views.AddMemberToWorkspaceView.as_view(), name="User-join-workspace"),
     path('member-list/', views.WorkspaceMemberView.as_view(), name='workspace-members'),
 
+    path('change-workspace-name/', views.ChangeWorkspaceNameView.as_view(), name='change-workspace-name'),
+    path('change-workspace-description/', views.ChangeWorkspaceDescriptionView.as_view(), name='change-workspace-description'),
+
+    path('member-leave-workspace/', views.MemberLeaveWorkspaceView.as_view(), name='member-leave-workspace'),
+    path('delete-workspace/', views.DeleteWorkspaceView.as_view(), name='delete-workspace'),
 
 
 ]
