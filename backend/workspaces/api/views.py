@@ -213,4 +213,41 @@ class ChangeWorkspaceNameView(APIView):
     permission_classes = [IsAuthenticated]
 
     def put(self, request):
-        return Response({"message":"function is working properly"},status=status.HTTP_200_OK)
+        try:
+            new_name = request.data.get("newName")
+            workspace = Workspaces.objects.get(id=request.data.get("workspaceId"))
+            if workspace.created_by == request.user:
+                workspace.workspace_name = new_name
+                workspace.save()
+                return Response({"message":"Name Updated Successfully"},
+                                status=status.HTTP_200_OK)
+            else:
+                return Response({"message":"Only Owner can update workspace name"},
+                                status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            print(e)
+            return Response({"message":"Something went wrong"},
+                                status=status.HTTP_400_BAD_REQUEST)
+
+
+
+class ChangeWorkspaceDescriptionView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def put(self, request):
+        try:
+            new_description = request.data.get("newDescription")
+            workspace = Workspaces.objects.get(id=request.data.get("workspaceId"))
+            if workspace.created_by == request.user:
+                workspace.description = new_description
+                workspace.save()
+                return Response({"message":"Description Updated Successfully"},
+                                status=status.HTTP_200_OK)
+            else:
+                return Response({"message":"Only Owner can update workspace Description "},
+                                status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            print(e)
+            return Response({"message":"Something went wrong"},
+                                status=status.HTTP_400_BAD_REQUEST)
+        
