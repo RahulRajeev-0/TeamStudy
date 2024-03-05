@@ -115,7 +115,7 @@ class WorkspaceMemberView(APIView):
 
     def delete(self, request):
         try:
-            print("+++++++++++++")
+           
             request_from = WorkspaceMembers.objects.filter(
                 user=request.user,
                 workspace=request.data.get("workspaceId")).first()
@@ -209,3 +209,8 @@ class AddMemberToWorkspaceView(APIView):
             print(e)
 
     
+class ChangeWorkspaceNameView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def put(self, request):
+        return Response({"message":"function is working properly"},status=status.HTTP_200_OK)

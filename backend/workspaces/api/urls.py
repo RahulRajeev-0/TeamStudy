@@ -10,6 +10,7 @@ urlpatterns = [
     path('invite-user/', views.SendInvitationView.as_view(), name="User-workspace-inviate"),
     path('join-user/', views.AddMemberToWorkspaceView.as_view(), name="User-join-workspace"),
     path('member-list/', views.WorkspaceMemberView.as_view(), name='workspace-members'),
+    path('change-workspace-name/', views.ChangeWorkspaceNameView.as_view(), name='change-workspace-name'),
 
 
 
