@@ -18,12 +18,19 @@ import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 import Offcanvas from 'react-bootstrap/Offcanvas';
 
+import Modal from 'react-bootstrap/Modal';
 
 
 const WorkspaceAdminNav = () => {
   const navigate = useNavigate()
   const workspaceId = sessionStorage.getItem('workspaceId')
   const [workspace, setWorkspace] = useState({"workspace_name":'workspaceName'})
+  
+  // modal
+  const [show, setShow] = useState(false);
+
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
 
   const token = localStorage.getItem('access')
   const baseURL = 'http://127.0.0.1:8000'
@@ -76,6 +83,7 @@ const WorkspaceAdminNav = () => {
               <Nav className="justify-content-end flex-grow-1 pe-3">
                 <Nav.Link onClick={()=>navigate('/workspace-settings')}>Home</Nav.Link>
                 <Nav.Link onClick={()=>navigate('/workspace-settings-members')}>Manage Memebers</Nav.Link>
+                <Nav.Link onClick={handleShow} style={{color:'red'}}>Delete Workspace</Nav.Link>
                 <NavDropdown
                   title="Dropdown"
                   id={`offcanvasNavbarDropdown-expand-${expand}`}
@@ -102,8 +110,26 @@ const WorkspaceAdminNav = () => {
             </Offcanvas.Body>
           </Navbar.Offcanvas>
         </Container>
+
+        
       </Navbar>
+
+      
     ))}
+     <Modal show={show} onHide={handleClose}>
+        <Modal.Header closeButton>
+          <Modal.Title>Delete {workspace.workspace_name} Woorkspace ?</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>Are sure you want to delete {workspace.workspace_name}  </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleClose}>
+            Close
+          </Button>
+          <Button variant="primary" onClick={handleClose}>
+            Save Changes
+          </Button>
+        </Modal.Footer>
+      </Modal>
   </>
   )
 }

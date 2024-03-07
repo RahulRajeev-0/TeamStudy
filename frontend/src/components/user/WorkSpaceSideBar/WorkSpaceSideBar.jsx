@@ -106,7 +106,7 @@ const WorkSpaceSideBar = ({workspaceDetails}) => {
                         menuVariant="dark"
                         style={{paddingLeft:"15px", paddingTop:"5px"}}
                       >
-                        <NavDropdown.Item href="#action/3.1"> <DeleteIcon/>Delete Workspace</NavDropdown.Item>
+                        
                         <NavDropdown.Item onClick={handleShow}>
                           <PersonAddIcon/>Add participend
                         </NavDropdown.Item>

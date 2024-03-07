@@ -115,7 +115,7 @@ class WorkspaceMemberView(APIView):
 
     def delete(self, request):
         try:
-            print("+++++++++++++")
+           
             request_from = WorkspaceMembers.objects.filter(
                 user=request.user,
                 workspace=request.data.get("workspaceId")).first()
@@ -209,3 +209,86 @@ class AddMemberToWorkspaceView(APIView):
             print(e)
 
     
+class ChangeWorkspaceNameView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def put(self, request):
+        try:
+            new_name = request.data.get("newName")
+            workspace = Workspaces.objects.get(id=request.data.get("workspaceId"))
+            if workspace.created_by == request.user:
+                workspace.workspace_name = new_name
+                workspace.save()
+                return Response({"message":"Name Updated Successfully"},
+                                status=status.HTTP_200_OK)
+            else:
+                return Response({"message":"Only Owner can update workspace name"},
+                                status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            print(e)
+            return Response({"message":"Something went wrong"},
+                                status=status.HTTP_400_BAD_REQUEST)
+
+
+
+class ChangeWorkspaceDescriptionView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def put(self, request):
+        try:
+            new_description = request.data.get("newDescription")
+            workspace = Workspaces.objects.get(id=request.data.get("workspaceId"))
+            if workspace.created_by == request.user:
+                workspace.description = new_description
+                workspace.save()
+                return Response({"message":"Description Updated Successfully"},
+                                status=status.HTTP_200_OK)
+            else:
+                return Response({"message":"Only Owner can update workspace Description "},
+                                status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            print(e)
+            return Response({"message":"Something went wrong"},
+                                status=status.HTTP_400_BAD_REQUEST)
+
+
+class MemberLeaveWorkspaceView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def delete(self, request):
+        try:
+            member = WorkspaceMembers.objects.get(
+                workspace=request.data.get("workspaceId"),
+                user = request.user)
+            if member.workspace.created_by != request.user:
+                member.delete()
+                return Response({"message":"Exited from the workspace"},
+                                 status=status.HTTP_200_OK)
+            else:
+                return Response({"message":"You are the Owner You cannot leave"},
+                                status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            print(e)
+            return Response({"message":"Something went wronge , Unable to exit from workspace"},
+                             status=status.HTTP_400_BAD_REQUEST)
+        
+
+
+# view for deleting the workpace
+class DeleteWorkspaceView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def delete(self, request):
+        try:
+            workspace = Workspaces.objects.get(id=request.data.get("workspaceId"))
+            if request.user == workspace.created_by:
+                workspace.delete()
+                return Response({"message":"Workspace Deleted Successfully"},
+                                 status=status.HTTP_200_OK)
+            else:
+                return Response ({"message":"Only owner can delete workpace"},
+                                 status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            print(e)
+            return Response ({"message":"Something went wrong "},
+                                 status=status.HTTP_400_BAD_REQUEST)
