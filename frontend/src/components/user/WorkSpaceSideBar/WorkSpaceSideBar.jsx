@@ -107,9 +107,7 @@ const WorkSpaceSideBar = ({workspaceDetails}) => {
                         style={{paddingLeft:"15px", paddingTop:"5px"}}
                       >
                         
-                        <NavDropdown.Item onClick={handleShow}>
-                          <PersonAddIcon/>Add participend
-                        </NavDropdown.Item>
+                        
                        
                         <NavDropdown.Item >
                           <ExitToAppIcon style={{color:"red"}}/>Leave Workspace

@@ -3,10 +3,8 @@
 import React from 'react';
 import './WorkspaceListing.css';
 
-// redux 
-import { useDispatch } from 'react-redux';
-import { set_selected_workspace } from '../../../Redux/WorkspaceBaseDetails/workspaceBaseDetailsSlice';
-import { useSelector } from 'react-redux';
+
+
 //  router 
 import { useNavigate } from 'react-router-dom';
 
