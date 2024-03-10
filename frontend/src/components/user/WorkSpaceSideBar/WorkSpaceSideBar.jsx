@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 import EditIcon from '@mui/icons-material/Edit';
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
-import SidebarOptions from './SidebarOptions';
+
 import DeleteIcon from '@mui/icons-material/Delete';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
@@ -13,6 +13,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import Dropdown from 'react-bootstrap/Dropdown';
 import DropdownButton from 'react-bootstrap/DropdownButton';
 
+import SettingsIcon from '@mui/icons-material/Settings';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 
 
@@ -82,6 +83,11 @@ const WorkSpaceSideBar = ({workspaceDetails}) => {
   }
 
 
+  const workspaceLogout = () => {
+    navigate('/')
+    sessionStorage.setItem("workspaceId", null)
+    toast.success("Logged out of Workspace")
+  }
   return (
     <SidebarContainer>
         <SidebarHeader>
@@ -95,7 +101,7 @@ const WorkSpaceSideBar = ({workspaceDetails}) => {
                 
           </SidebarInfo>
                 
-                      <EditIcon/>
+                      
         </SidebarHeader>
                   
        
@@ -109,60 +115,23 @@ const WorkSpaceSideBar = ({workspaceDetails}) => {
                         
                         
                        
-                        <NavDropdown.Item >
-                          <ExitToAppIcon style={{color:"red"}}/>Leave Workspace
+                        <NavDropdown.Item  onClick={workspaceLogout}>
+                        <LogoutIcon/> Log out from Workspace
                         </NavDropdown.Item>
                         <NavDropdown.Item href="#action/3.3"></NavDropdown.Item>
                         <NavDropdown.Divider />
                         <NavDropdown.Item  onClick={()=>{navigate('/workspace-settings')}}>
-                              settings and Administration
+                           <SettingsIcon/> settings and Administration
+                        </NavDropdown.Item>
+                        <NavDropdown.Item >
+                          <ExitToAppIcon style={{color:"red"}}/> Leave Workspace
                         </NavDropdown.Item>
                       </NavDropdown>
         
     <hr/>
-    <span style={{cursor:'pointer'}}>
-      <LogoutIcon/>Log out from Workspace
-      </span>
-    <hr/>
+   
 
-    <Modal show={show} onHide={handleClose}>
-  <Modal.Header closeButton>
-    <Modal.Title>Add member to workspace </Modal.Title>
-  </Modal.Header>
-  <Modal.Body>
-    <Form onSubmit={addMember}>
-      <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-        <Form.Label>Email Of New Member</Form.Label>
-        <Form.Control
-          type="text"
-          placeholder="Please enter the email of the user"
-          autoFocus
-          maxLength={50}
-          name="Memmber"
-          required
-        />
-      {/* </Form.Group>
-      <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
-        <Form.Label>Workspace Description</Form.Label>
-        <Form.Control
-          as="textarea"
-          rows={3}
-          maxLength={250}
-          name="description"
-          required
-        /> */}
-      </Form.Group>
-      <Modal.Footer>
-        <Button variant="secondary" onClick={handleClose}>
-          Close
-        </Button>
-        <Button variant="primary" type="submit"> {/* Add type="submit" */}
-          Send Invitation
-        </Button>
-      </Modal.Footer>
-    </Form>
-  </Modal.Body>
-</Modal>
+   
     
     channels
       

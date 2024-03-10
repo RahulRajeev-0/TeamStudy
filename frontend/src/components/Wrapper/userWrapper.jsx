@@ -7,7 +7,7 @@ import isAuthUser from "../../utils/isAuth";
 // Redux
 import { useDispatch, useSelector } from "react-redux";
 import { set_authentication } from "../../Redux/authentication/authenticationSlice";
-
+import { set_selected_workspace } from "../../Redux/WorkspaceBaseDetails/workspaceBaseDetailsSlice";
 
 // axios
 import axios from "axios";
@@ -31,11 +31,50 @@ import WorkspaceAdminMemberManagementPage from "../../pages/user/workspaceAdmin/
 
 
 function UserWrapper() {
+
+    const baseURL = "http://127.0.0.1:8000"
+    const token = localStorage.getItem('access');
     const dispatch = useDispatch();
     const authentication_user = useSelector(state=>state.authentication_user)
+    const workspaceId = sessionStorage.getItem('workspaceId')
+    
+    // fetching the details of the workspace and store it in redux
+    const fetchWorkspaces = async () => {
+        
+        try{
+            const response = await axios.get(baseURL+`/workspace/user-workspace-details/${workspaceId}/`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+                Accept: "application/json",
+                "Content-Type": "application/json",
+              },
+            })
+        
+            if (response.status === 200){
+              const workspaceDetails = {
+                workspaceId:response.data.id,
+                workspaceName:response.data.workspace_name,
+                workspaceDescription:response.data.description,
+                isPremium:response.data.is_premium,
+                created_by:response.data.created_by,
+                create_on:response.data.create_on
+                
+              }
 
+              dispatch(set_selected_workspace(workspaceDetails))
+             
+              
+            }else{
+              return {}
+            }
+            
+        }catch(error) {
+            console.error("Error Fetching data:". error);
+        }
+    };
+    
     //  checking if the user is authenticated and authorized 
-
     const checkAuth = async ()=>{
         const isAuthenticated = await isAuthUser();
         dispatch(
@@ -46,13 +85,18 @@ function UserWrapper() {
         );
     };
 
-    const baseURL = "http://127.0.0.1:8000"
-    const token = localStorage.getItem('access');
+    
     
    useEffect(()=>{
     if (!authentication_user){
         checkAuth();
     }
+    if (workspaceId){
+        
+        fetchWorkspaces();
+    }
+
+    
    },
    [authentication_user])
 
