@@ -25,14 +25,19 @@ import Offcanvas from 'react-bootstrap/Offcanvas';
 
 import Modal from 'react-bootstrap/Modal';
 
+//  redux and redux store 
+import { useSelector } from 'react-redux'
+
 // toastify
 import { toast } from 'react-toastify';
+
+
 
 const WorkspaceAdminNav = () => {
   const navigate = useNavigate()
   const workspaceId = sessionStorage.getItem('workspaceId')
-  const [workspace, setWorkspace] = useState({"workspace_name":'workspaceName'})
   
+  const workspaceDetails = useSelector(state => state.user_workspace_select);
   // modal
   const [show, setShow] = useState(false);
   const [addShow, setAddShow] = useState(false);
@@ -45,27 +50,9 @@ const WorkspaceAdminNav = () => {
   const token = localStorage.getItem('access')
   const baseURL = 'http://127.0.0.1:8000'
 
-  const fetchWorkspaceDetails = async()=>{
-    
-    const response = await axios.get(baseURL+`/workspace/user-workspace-details/${workspaceId}/`,
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-    })
-    
-    if (response.status === 200){
-      console.log(response.data);
-      setWorkspace(response.data)
-      
-    }else{
-      console.log(response)
-      return {}
-    }
-  }
-  // add new new member to workspace
+
+  
+  // for adding new members to workspace
   const addMember = async (e) => {
     e.preventDefault();
 
@@ -126,7 +113,7 @@ const WorkspaceAdminNav = () => {
     
   }
 
-  useEffect(()=>{fetchWorkspaceDetails()},[])
+  
 
   return (
     <>
@@ -135,7 +122,7 @@ const WorkspaceAdminNav = () => {
         <Container fluid>
           
           <Navbar.Brand >
-       <HomeIcon/>           {workspace.workspace_name}
+       <HomeIcon/>           {workspaceDetails.workspaceName}
             </Navbar.Brand>
           
           <Navbar.Toggle aria-controls={`offcanvasNavbar-expand-${expand}`} />
@@ -146,7 +133,7 @@ const WorkspaceAdminNav = () => {
           >
             <Offcanvas.Header closeButton>
               <Offcanvas.Title id={`offcanvasNavbarLabel-expand-${expand}`}>
-              {workspace.workspace_name}
+              {workspaceDetails.workspaceName}
               </Offcanvas.Title>
             </Offcanvas.Header>
             <Offcanvas.Body>
@@ -187,11 +174,12 @@ const WorkspaceAdminNav = () => {
 
       
     ))}
+    {/* modal for confirming deleting a workspace */}
      <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
-          <Modal.Title>Delete {workspace.workspace_name} Woorkspace ?</Modal.Title>
+          <Modal.Title>Delete {workspaceDetails.workspaceName} Woorkspace ?</Modal.Title>
         </Modal.Header>
-        <Modal.Body>Are sure you want to delete {workspace.workspace_name}  </Modal.Body>
+        <Modal.Body>Are sure you want to delete {workspaceDetails.workspaceName}  </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClose}>
             Close
@@ -220,16 +208,7 @@ const WorkspaceAdminNav = () => {
           name="Memmber"
           required
         />
-      {/* </Form.Group>
-      <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
-        <Form.Label>Workspace Description</Form.Label>
-        <Form.Control
-          as="textarea"
-          rows={3}
-          maxLength={250}
-          name="description"
-          required
-        /> */}
+      
       </Form.Group>
       <Modal.Footer>
         <Button variant="secondary" onClick={addHandleClose}>
