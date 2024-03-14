@@ -9,6 +9,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { set_authentication } from "../../Redux/authentication/authenticationSlice";
 import { set_selected_workspace } from "../../Redux/WorkspaceBaseDetails/workspaceBaseDetailsSlice";
 
+import { set_display_name } from "../../Redux/WorkspaceUserProfile/WorkspaceUserProfileSlice";
+import { set_phone_no } from "../../Redux/WorkspaceUserProfile/WorkspaceUserProfileSlice";
+import { set_is_admin } from "../../Redux/WorkspaceUserProfile/WorkspaceUserProfileSlice";
+import { set_about_me } from "../../Redux/WorkspaceUserProfile/WorkspaceUserProfileSlice";
+import { set_profile_pic } from "../../Redux/WorkspaceUserProfile/WorkspaceUserProfileSlice";
+
 // axios
 import axios from "axios";
 
@@ -73,6 +79,33 @@ function UserWrapper() {
             console.error("Error Fetching data:". error);
         }
     };
+
+    // getting the user profile inside the workspace
+    const fatchUserProfile = async () => {
+      try{
+        const response = await axios.get(baseURL+`/workspace/user-profile-details/${workspaceId}/`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+        })
+
+        if (response.status === 200){
+          dispatch(set_is_admin(response.data.is_admin))
+          dispatch(set_display_name(response.data.display_name))
+          dispatch(set_about_me(response.data.about_me))
+          dispatch(set_phone_no(response.data.phone_no))
+          dispatch(set_profile_pic(response.data.profile_pic))
+          
+        }
+
+      }catch(error){
+        console.log(error);
+      }
+    }
+    
     
     //  checking if the user is authenticated and authorized 
     const checkAuth = async ()=>{
@@ -94,6 +127,7 @@ function UserWrapper() {
     if (workspaceId){
         
         fetchWorkspaces();
+        fatchUserProfile();
     }
 
     

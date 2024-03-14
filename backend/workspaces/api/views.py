@@ -304,6 +304,7 @@ class UserWorkspaceProfileView(APIView):
                 workspace=workspace_id, 
                 user=request.user
                 )
+            
         except Exception as e:
             print(e)
             return Response({"message":"member not found"}, status=status.HTTP_400_BAD_REQUEST)

@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import styled from 'styled-components';
 
 
@@ -39,10 +39,13 @@ const WorkSpaceSideBar = () => {
  
 
   const workspaceDetails = useSelector(state => state.user_workspace_select);
+  const userProfileDetails = useSelector(state => state.workspaceUserProfile);
   const username =  jwtDecode(localStorage.getItem('access')).username
   
   
- 
+ useEffect(()=>{
+  console.log(userProfileDetails.isAdmin)
+ },[])
 
   const workspaceLogout = () => {
     navigate('/')
@@ -81,9 +84,13 @@ const WorkSpaceSideBar = () => {
                         </NavDropdown.Item>
                         <NavDropdown.Item href="#action/3.3"></NavDropdown.Item>
                         <NavDropdown.Divider />
-                        <NavDropdown.Item  onClick={()=>{navigate('/workspace-settings')}}>
-                           <SettingsIcon/> settings and Administration
+                        {userProfileDetails.isAdmin === true && (
+                        <NavDropdown.Item onClick={() => {navigate('/workspace-settings')}}>
+                          <SettingsIcon/> Settings and Administration
                         </NavDropdown.Item>
+                      )}
+
+                        
                         <NavDropdown.Item >
                           <ExitToAppIcon style={{color:"red"}}/> Leave Workspace
                         </NavDropdown.Item>
