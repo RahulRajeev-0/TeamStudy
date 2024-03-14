@@ -23,10 +23,12 @@ class WorkspaceDetailsSerializer(serializers.ModelSerializer):
         model = Workspaces
         exclude = ['password']
 
+
 class UserNameSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['username', 'email']
+
 
 class WorkspaceMemberSerializer(serializers.ModelSerializer):
     user = UserNameSerializer()
@@ -38,3 +40,10 @@ class WorkspaceMemberSerializer(serializers.ModelSerializer):
 
 class GetWorkspaceIdSerializer(Serializer):
     workspaceId = CharField()
+
+
+# serializer for user profile inside the workspace
+class UserWorkspaceProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = WorkspaceMembers
+        fields = ['display_name', 'phone_no', 'is_admin', 'about_me', 'profile_pic']

@@ -6,12 +6,12 @@ from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
 # serializers
-from workspaces.api.serializers import WorkspaceSerializer, WorkspaceDetailsSerializer, GetWorkspaceIdSerializer, WorkspaceMemberSerializer
-from ..emails import send_workspace_invitation
+from workspaces.api.serializers import WorkspaceSerializer, WorkspaceDetailsSerializer, GetWorkspaceIdSerializer, WorkspaceMemberSerializer, UserWorkspaceProfileSerializer 
 # models
 from workspaces.models import Workspaces, WorkspaceMembers
 from users.models import User
 
+from workspaces.emails import send_workspace_invitation
 
 # view for creating a workspace 
 class CreateWorkspaceView(generics.CreateAPIView):
@@ -292,3 +292,21 @@ class DeleteWorkspaceView(APIView):
             print(e)
             return Response ({"message":"Something went wrong "},
                                  status=status.HTTP_400_BAD_REQUEST)
+        
+
+# user profile details in workspace
+class UserWorkspaceProfileView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, workspace_id):
+        try:
+            member = WorkspaceMembers.objects.get(
+                workspace=workspace_id, 
+                user=request.user
+                )
+        except Exception as e:
+            print(e)
+            return Response({"message":"member not found"}, status=status.HTTP_400_BAD_REQUEST)
+        serializer = UserWorkspaceProfileSerializer(member)
+        return Response(data=serializer.data, status=status.HTTP_200_OK)
+        

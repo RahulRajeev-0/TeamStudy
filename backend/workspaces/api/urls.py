@@ -17,5 +17,6 @@ urlpatterns = [
     path('member-leave-workspace/', views.MemberLeaveWorkspaceView.as_view(), name='member-leave-workspace'),
     path('delete-workspace/', views.DeleteWorkspaceView.as_view(), name='delete-workspace'),
 
+    path('user-profile-details/<int:workspace_id>/',views.UserWorkspaceProfileView.as_view(), name='user-workspace-profile' ),
 
 ]
