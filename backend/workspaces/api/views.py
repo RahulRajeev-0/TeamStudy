@@ -298,6 +298,7 @@ class DeleteWorkspaceView(APIView):
 class UserWorkspaceProfileView(APIView):
     permission_classes = [IsAuthenticated]
 
+    # for getting the user profile deatails inside the workspace 
     def get(self, request, workspace_id):
         try:
             member = WorkspaceMembers.objects.get(
@@ -310,4 +311,23 @@ class UserWorkspaceProfileView(APIView):
             return Response({"message":"member not found"}, status=status.HTTP_400_BAD_REQUEST)
         serializer = UserWorkspaceProfileSerializer(member)
         return Response(data=serializer.data, status=status.HTTP_200_OK)
+    
+
+    # for updating user profile inside the workspace 
+    def put(self, request, workspace_id):
+        try:
+            member = WorkspaceMembers.objects.get(
+                workspace=workspace_id, 
+                user=request.user
+                )
+            
+        except Exception as e:
+            print(e)
+            return Response({"message":"member not found"}, status=status.HTTP_400_BAD_REQUEST)
+        member.display_name = request.data.get('displayName')
+        member.about_me = request.data.get('about')
+        member.phone_no = request.data.get('phone')
+        member.save()
+        return Response({"message":"Profile Updated successfully "}, status=status.HTTP_200_OK)
+            
         

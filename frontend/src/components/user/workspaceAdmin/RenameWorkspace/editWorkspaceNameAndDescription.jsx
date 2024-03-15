@@ -18,6 +18,8 @@ function EditWorkspaceNameAndDescription() {
   const workspaceId = sessionStorage.getItem('workspaceId')
   const token = localStorage.getItem('access')
 
+
+
   const handleEditNameClick = () => {
     setIsEditingName(true);
   };
@@ -79,7 +81,7 @@ function EditWorkspaceNameAndDescription() {
     setIsEditingDescription(false);
   };
 
-
+// need to remove this function and use useselector for dispalying the name 
   const fetchWorkspaceDetails = async()=>{
     const response = await axios.get(baseURL+`/workspace/user-workspace-details/${workspaceId}/`,
     {

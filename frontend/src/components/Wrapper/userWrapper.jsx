@@ -99,6 +99,7 @@ function UserWrapper() {
           dispatch(set_phone_no(response.data.phone_no))
           dispatch(set_profile_pic(response.data.profile_pic))
           
+          console.log(response.data);
         }
 
       }catch(error){

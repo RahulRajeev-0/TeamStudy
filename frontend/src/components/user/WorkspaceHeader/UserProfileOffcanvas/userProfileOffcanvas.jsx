@@ -1,19 +1,62 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import EditIcon from '@mui/icons-material/Edit';
+import SaveIcon from '@mui/icons-material/Save';
 import Offcanvas from 'react-bootstrap/Offcanvas';
 import profilePic from '../../../../assets/profilePic.jpeg'
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import InputGroup from 'react-bootstrap/InputGroup';
-
+import {useSelector} from 'react-redux'
+import axios from 'axios';
+import { toast } from 'react-toastify';
 
 const UserProfileOffcanvas = ({ handleClose, show }) => {
+  
+  const token = localStorage.getItem('access')
+
+  const userProfileDetails = useSelector(state => state.workspaceUserProfile);
+  const [displayName, setDisplayName] = useState(userProfileDetails.displayName);
+  const [phone, setPhone] = useState(userProfileDetails.phoneNo);
+  const [about, setAbout] = useState(userProfileDetails.aboutMe);
+  
+  const handleSaveAll = async ()=> {
+
+    const workspaceId = sessionStorage.getItem('workspaceId')
+    const data = {
+      displayName: displayName,
+      phone: phone,
+      about: about
+    };
+    
+    try{
+
+      const response = await axios.put(`http://127.0.0.1:8000/workspace/user-profile-details/${workspaceId}/`,
+    data,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    }
+    );
+
+    if (response.status === 200){
+      toast.success(response.data.message)
+    }
+    }
+    catch(error){
+      console.log(error)
+    }
+    
+
+    
+  }
+
   
 
   return (
     <div>
-      <Offcanvas show={show} onHide={handleClose} placement='end' style={{backgroundColor:"#1D1B1B", color:'white'}}>
+      <Offcanvas show={show} onHide={handleClose} placement='end' style={{backgroundColor:"#131114", color:'white'}}>
         <Offcanvas.Header closeButton>
           <Offcanvas.Title>
             <h2>Profile</h2>
@@ -21,45 +64,61 @@ const UserProfileOffcanvas = ({ handleClose, show }) => {
         </Offcanvas.Header>
         <Offcanvas.Body>
           <CenteredContainer>
-            <ProfileImage src={profilePic} alt="Profile Picture" />
-            <EditButton >
-              <EditIcon />
-            </EditButton>
+            <ProfileImage src={userProfileDetails.profilePic ? "http://localhost:8000/" + userProfileDetails.profilePic : profilePic} alt="Profile Picture" />
+            <button className='btn btn-secondary'>Upload Image</button>
               
           </CenteredContainer>
           <UserInfoContainer>
-            <p>display name</p>
+           
             <UserInfoItems>
 
-            <Form.Control  style={{ border: "none", background:"transparent" , color:'white' }}  type="text" placeholder="Display Name"  />
+            <Form.Control  
+            style={{ border: "none", background:"black" , color:'white' }}  
+            type="text" 
+            placeholder="display Name"  
+            value={displayName}
+            onChange={(e) => setDisplayName(e.target.value)}/>
+           
                 
             </UserInfoItems>
-            <p>email</p>
+          
             <UserInfoItems>
 
-            <Form.Control style={{ border: "none", background:"transparent" , color:'white' }} type="text" placeholder="Email" readOnly />
+            <Form.Control 
+            style={{ border: "none", background:"black" , color:'white' }} 
+            type="number" 
+            placeholder="Phone"
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
+            />
+
             </UserInfoItems>
-            <p>phone</p>
+           
             <UserInfoItems>
-
-            <Form.Control style={{ border: "none", background:"transparent" , color:'white' }} type="text" placeholder="Phone" readOnly />
-            </UserInfoItems>
-            <p>about</p>
-            <UserInfoItems>
-
-            <Form.Group style={{ border: "none", background:"transparent" , color:'white' }} className="mb-3" controlId="exampleForm.ControlTextarea1">
-        <Form.Label>Workspace Description</Form.Label>
+            
+            <Form.Group 
+            style={{ border: "none", background:"black" , color:'white' }} 
+            className="mb-3"
+             controlId="exampleForm.ControlTextarea1">
+       
         <Form.Control
           as="textarea"
           rows={3}
           maxLength={250}
           name="description"
           required
-          readOnly
-
+          placeholder='about'
+          
+          value={about}
+          onChange={(e) => setAbout(e.target.value)}
           style={{ border: "none", background:"transparent" , color:'white' }}
-        /> </Form.Group>
+        
+        />
+        
+        </Form.Group>
+        
             </UserInfoItems>
+            <Button onClick={handleSaveAll}>Save all</Button> 
           </UserInfoContainer>
         </Offcanvas.Body>
       </Offcanvas>
@@ -104,6 +163,7 @@ const UserInfoContainer = styled.div`
 
 const UserInfoItems = styled.div`
     display:flex;
+    padding-top:10px;
 `;
 
 
