@@ -141,7 +141,7 @@ function UserWrapper() {
         <Route  path="/login" element={<LoginPage/>} />
         <Route  path="/signUp" element={<SignUpPage/>} />
         <Route  path="/otp" element={<OtpPage/>} />
-        <Route path="/workspace-invitation/:userId/:workspaceId" element={<WorkspaceInvitationPage/>} />
+        <Route path="/workspace-invitation/:token/" element={<WorkspaceInvitationPage/>} />
         
        {/* private routes here  */}
         <Route path="/" element={<PrivateRoutes>  <BaseHomePage/>  </PrivateRoutes>}/>

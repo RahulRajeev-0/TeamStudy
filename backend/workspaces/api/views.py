@@ -8,7 +8,7 @@ from rest_framework import status
 # serializers
 from workspaces.api.serializers import WorkspaceSerializer, WorkspaceDetailsSerializer, GetWorkspaceIdSerializer, WorkspaceMemberSerializer, UserWorkspaceProfileSerializer 
 # models
-from workspaces.models import Workspaces, WorkspaceMembers
+from workspaces.models import Workspaces, WorkspaceMembers, InvitationToken
 from users.models import User
 
 from workspaces.emails import send_workspace_invitation
@@ -56,6 +56,8 @@ class WorkspaceDetailView(APIView):
                              status=status.HTTP_404_NOT_FOUND)
         serializer = WorkspaceDetailsSerializer(workspace)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
 
 
 # view for member manage in workspace
@@ -153,11 +155,12 @@ class SendInvitationView(APIView):
             if not new_member:
                 return Response ({"message":"User with this email doesn't exist"},
                                   status=status.HTTP_404_NOT_FOUND)
-                
+            # getting the workspace member  
             workspace_obj = WorkspaceMembers.objects.get(
                 workspace=workspace_id,
                   user=request.user)
             
+            # checking if the member is already a member
             if WorkspaceMembers.objects.filter(workspace=workspace_id,
                                                 user=new_member).exists():
                 return Response ({"message":"User is already a member"},
@@ -165,11 +168,10 @@ class SendInvitationView(APIView):
             
             # checking the if the add new member request is from admin
             if workspace_obj.is_admin:
-                # WorkspaceMembers.objects.create(user=new_member,workspace=workspace_obj.workspace)
-                admin = request.user.username
-                workspace = workspace_obj.workspace.workspace_name
+                admin = request.user.username # for the mail (showing who invited user to join)
+                workspace = workspace_obj.workspace.workspace_name  # for the showing the workspace name in the email
                 send_workspace_invitation(member_email,
-                                            new_member.id,
+                                            new_member,
                                             workspace_id,
                                             admin, 
                                             workspace )
@@ -182,19 +184,21 @@ class SendInvitationView(APIView):
         return Response("user send invitation")
 
 
+
 # view for adding the user to the workspace
 class AddMemberToWorkspaceView(APIView):
     def post(self, request):
         try: 
-            workspace_id = request.data.get('workspaceId')
-            user_id = request.data.get('userId')
-            user_obj = User.objects.filter(id=user_id).first()
-            workspace_obj = Workspaces.objects.filter(id=workspace_id).first()
-            if user_obj and workspace_obj :
-                if not WorkspaceMembers.objects.filter(user=user_obj,
-                                                       workspace=workspace_obj).exists():
-                    WorkspaceMembers.objects.create(user=user_obj,
-                                                     workspace=workspace_obj)
+            token = request.data.get('token')
+            invitation_obj = InvitationToken.objects.filter(token=token).first()
+            if invitation_obj :
+                if not WorkspaceMembers.objects.filter(
+                    user=invitation_obj.user,
+                    workspace=invitation_obj.workspace_id
+                    ).exists():
+                    workspace = Workspaces.objects.get(id=invitation_obj.workspace_id)
+                    WorkspaceMembers.objects.create(user=invitation_obj.user,
+                                                     workspace=workspace)
                     return Response({"message":"Joind to the workspace"},
                                      status=status.HTTP_200_OK)
                 else:
@@ -208,7 +212,8 @@ class AddMemberToWorkspaceView(APIView):
         except Exception as e:
             print(e)
 
-    
+
+  # change the name of the workspace 
 class ChangeWorkspaceNameView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -230,7 +235,7 @@ class ChangeWorkspaceNameView(APIView):
                                 status=status.HTTP_400_BAD_REQUEST)
 
 
-
+# change the description of a workspace
 class ChangeWorkspaceDescriptionView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -252,6 +257,7 @@ class ChangeWorkspaceDescriptionView(APIView):
                                 status=status.HTTP_400_BAD_REQUEST)
 
 
+# a user leaving from workspace 
 class MemberLeaveWorkspaceView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -293,6 +299,8 @@ class DeleteWorkspaceView(APIView):
             return Response ({"message":"Something went wrong "},
                                  status=status.HTTP_400_BAD_REQUEST)
         
+
+
 
 # user profile details in workspace
 class UserWorkspaceProfileView(APIView):

@@ -5,13 +5,12 @@ import axios from "axios"
 import { toast } from 'react-toastify';
 
 const WorkspaceJoinRequest =  () => {
-  const { userId, workspaceId } = useParams();
+  const { token } = useParams();
   const navigate = useNavigate();
 
   const JoinSubmit = async ()=>{
     const formData = new FormData();
-    formData.append('userId', userId)
-    formData.append('workspaceId', workspaceId)
+    formData.append('token', token)
 
   //  try block to send request 
 try{

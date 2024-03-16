@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import styled from 'styled-components';
 import EditIcon from '@mui/icons-material/Edit';
 import SaveIcon from '@mui/icons-material/Save';
@@ -20,6 +20,17 @@ const UserProfileOffcanvas = ({ handleClose, show }) => {
   const [phone, setPhone] = useState(userProfileDetails.phoneNo);
   const [about, setAbout] = useState(userProfileDetails.aboutMe);
   
+  // profile pic
+  const inputRef = useRef(null)
+  const handleUploadImage = ()=>{
+    if (inputRef.current){
+        inputRef.current.click()
+    }
+  } 
+  
+
+
+
   const handleSaveAll = async ()=> {
 
     const workspaceId = sessionStorage.getItem('workspaceId')
@@ -65,7 +76,8 @@ const UserProfileOffcanvas = ({ handleClose, show }) => {
         <Offcanvas.Body>
           <CenteredContainer>
             <ProfileImage src={userProfileDetails.profilePic ? "http://localhost:8000/" + userProfileDetails.profilePic : profilePic} alt="Profile Picture" />
-            <button className='btn btn-secondary'>Upload Image</button>
+           <input type="file" ref={inputRef} style={{display:"none"}}/>
+            <button className='btn btn-secondary'  onClick={handleUploadImage}>Upload Image</button>
               
           </CenteredContainer>
           <UserInfoContainer>
@@ -166,4 +178,7 @@ const UserInfoItems = styled.div`
     padding-top:10px;
 `;
 
+const FileInput = styled.input`
+  display: none;
+`;
 
