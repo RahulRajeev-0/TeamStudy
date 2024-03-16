@@ -5,6 +5,8 @@ from rest_framework.views import APIView
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
+
+from rest_framework.parsers import MultiPartParser, FormParser
 # serializers
 from workspaces.api.serializers import WorkspaceSerializer, WorkspaceDetailsSerializer, GetWorkspaceIdSerializer, WorkspaceMemberSerializer, UserWorkspaceProfileSerializer 
 # models
@@ -87,8 +89,7 @@ class WorkspaceMemberView(APIView):
                             status=status.HTTP_400_BAD_REQUEST)
 
 
-        '''alter the workspace member model and owner field there 
-        so when checking removing the position we can check if the member is the owner'''
+       
         #for updating the position of members like admin / not admin  
     def put(self, request):
         try:
@@ -336,6 +337,38 @@ class UserWorkspaceProfileView(APIView):
         member.about_me = request.data.get('about')
         member.phone_no = request.data.get('phone')
         member.save()
-        return Response({"message":"Profile Updated successfully "}, status=status.HTTP_200_OK)
-            
+        serializer = UserWorkspaceProfileSerializer(member)
+        return Response(
+            {
+                "message":"Profile Updated successfully ", 
+                "data": serializer.data
+            }, 
+            status=status.HTTP_200_OK
+            )
+    
+
+    def patch(self, request, workspace_id):
+        try:
+            member = WorkspaceMembers.objects.get(
+                workspace=workspace_id, 
+                user=request.user
+                )
+        except Exception as e:
+            print(e)
+            return Response({"message":"member not found"},
+                             status=status.HTTP_400_BAD_REQUEST)
+        member.profile_pic = request.data.get('profilePic')
+        member.save()
+        serializer = UserWorkspaceProfileSerializer(member)
         
+        return Response(
+            {
+                "message":"Profile Updated successfully ", 
+                "data":serializer.data
+                }, 
+                status=status.HTTP_200_OK
+                )
+
+
+
+            

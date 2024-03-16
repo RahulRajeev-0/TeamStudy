@@ -7,14 +7,20 @@ import profilePic from '../../../../assets/profilePic.jpeg'
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import InputGroup from 'react-bootstrap/InputGroup';
-import {useSelector} from 'react-redux'
+import {useSelector, useDispatch} from 'react-redux'
 import axios from 'axios';
 import { toast } from 'react-toastify';
 
+
+// redux store slice 
+import { set_profile_pic } from '../../../../Redux/WorkspaceUserProfile/WorkspaceUserProfileSlice';
+
+
 const UserProfileOffcanvas = ({ handleClose, show }) => {
   
+  const dispatch = useDispatch();
   const token = localStorage.getItem('access')
-
+  const workspaceId = sessionStorage.getItem('workspaceId')
   const userProfileDetails = useSelector(state => state.workspaceUserProfile);
   const [displayName, setDisplayName] = useState(userProfileDetails.displayName);
   const [phone, setPhone] = useState(userProfileDetails.phoneNo);
@@ -28,12 +34,39 @@ const UserProfileOffcanvas = ({ handleClose, show }) => {
     }
   } 
   
+  const handleImageChange = async (e) =>{
+    const file = e.target.files[0];
+    let formData = new FormData();
+    formData.append("profilePic", file,file.name);
 
+    try{
+
+      const response = await axios.patch(`http://127.0.0.1:8000/workspace/user-profile-details/${workspaceId}/`,
+      formData,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }
+      );
+      if (response.status === 200){
+        dispatch(set_profile_pic(response.data.profile_pic))
+        toast.success("done")
+      }
+     
+    }catch(error){
+      console.log(error);
+    }
+
+
+
+
+  }
 
 
   const handleSaveAll = async ()=> {
 
-    const workspaceId = sessionStorage.getItem('workspaceId')
+   
     const data = {
       displayName: displayName,
       phone: phone,
@@ -76,7 +109,7 @@ const UserProfileOffcanvas = ({ handleClose, show }) => {
         <Offcanvas.Body>
           <CenteredContainer>
             <ProfileImage src={userProfileDetails.profilePic ? "http://localhost:8000/" + userProfileDetails.profilePic : profilePic} alt="Profile Picture" />
-           <input type="file" ref={inputRef} style={{display:"none"}}/>
+           <input type="file" ref={inputRef} onChange={handleImageChange} style={{display:"none"}}/>
             <button className='btn btn-secondary'  onClick={handleUploadImage}>Upload Image</button>
               
           </CenteredContainer>
