@@ -14,6 +14,9 @@ import { toast } from 'react-toastify';
 
 // redux store slice 
 import { set_profile_pic } from '../../../../Redux/WorkspaceUserProfile/WorkspaceUserProfileSlice';
+import { set_display_name } from '../../../../Redux/WorkspaceUserProfile/WorkspaceUserProfileSlice';
+import { set_about_me } from '../../../../Redux/WorkspaceUserProfile/WorkspaceUserProfileSlice';
+import { set_phone_no } from '../../../../Redux/WorkspaceUserProfile/WorkspaceUserProfileSlice';
 
 
 const UserProfileOffcanvas = ({ handleClose, show }) => {
@@ -50,8 +53,9 @@ const UserProfileOffcanvas = ({ handleClose, show }) => {
       }
       );
       if (response.status === 200){
-        dispatch(set_profile_pic(response.data.profile_pic))
-        toast.success("done")
+        dispatch(set_profile_pic(response.data.data.profile_pic))
+        
+        toast.success("Profile Picture Updated Successfully ")
       }
      
     }catch(error){
@@ -86,6 +90,10 @@ const UserProfileOffcanvas = ({ handleClose, show }) => {
 
     if (response.status === 200){
       toast.success(response.data.message)
+          dispatch(set_display_name(response.data.data.display_name))
+          dispatch(set_about_me(response.data.data.about_me))
+          dispatch(set_phone_no(response.data.data.phone_no))
+        console.log(response.data.data);
     }
     }
     catch(error){

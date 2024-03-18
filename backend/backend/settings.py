@@ -42,6 +42,8 @@ INSTALLED_APPS = [
     'users',
     'application_management',
     'workspaces',
+    'group_chats',
+    
 
     "corsheaders",
 
