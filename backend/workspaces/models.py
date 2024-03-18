@@ -4,6 +4,7 @@ from users.models import User
 
 # Create your models here.
 
+# workspace and details
 class Workspaces(models.Model) :
     workspace_name = models.CharField(max_length=50, unique = False)
     created_by = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -15,7 +16,7 @@ class Workspaces(models.Model) :
     def __str__(self):
         return self.workspace_name
     
-
+#  details of the member of a workspace
 class WorkspaceMembers(models.Model):
     workspace = models.ForeignKey(Workspaces, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -29,3 +30,14 @@ class WorkspaceMembers(models.Model):
     def __str__(self):
         return self.user.username
     
+
+# for user joining to workspace 
+class InvitationToken(models.Model):
+    workspace_id = models.IntegerField()
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    token = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.user.username
+    
+

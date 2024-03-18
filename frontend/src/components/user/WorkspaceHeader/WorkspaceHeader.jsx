@@ -1,4 +1,5 @@
 import React from 'react'
+import { useState } from 'react';
 import styled from "styled-components";
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import AccessTimeFilledIcon from '@mui/icons-material/AccessTimeFilled';
@@ -6,35 +7,53 @@ import SearchIcon from '@mui/icons-material/Search';
 import HelpIcon from '@mui/icons-material/Help';
 
 
+import Offcanvas from 'react-bootstrap/Offcanvas';
+
+// components
+import UserProfileOffcanvas from './UserProfileOffcanvas/userProfileOffcanvas';
+
 const WorkspaceHeader = () => {
+
+
+    const [profileShowOffcanvas, setProfileShowOffcanvas] = useState(false);
+    const handleClose = () => setProfileShowOffcanvas(false);
+    const handleShow = () => setProfileShowOffcanvas(true);
   return (
-    <div>
-      <HeaderContainer>
-       
+    <>
+        <div>
+        <HeaderContainer>
+        
 
-        {/* header left  */}
-        <HeaderLeft>
-            
-            <HeaderAvatar
-            // TODO : onclick
-            />
-            <AccessTimeFilledIcon/>
+            {/* header left  */}
+            <HeaderLeft>
+                
+                <HeaderAvatar
+                onClick={handleShow}
+                
+                />
+                <AccessTimeFilledIcon/>
 
-        </HeaderLeft>
-        {/* header search  */}
+            </HeaderLeft>
+            {/* header search  */}
 
-        <HeaderSearch>
-            <SearchIcon/>
-            <input placeholder='Search.......'/>
-        </HeaderSearch>
+            <HeaderSearch>
+                <SearchIcon/>
+                <input placeholder='Search.......'/>
+            </HeaderSearch>
 
-        {/* header right */}
-        <HeaderRight>
+            {/* header right */}
+            <HeaderRight>
 
-            <HelpIcon/>
-        </HeaderRight>
-      </HeaderContainer>
-    </div>
+                <HelpIcon/>
+            </HeaderRight>
+        </HeaderContainer>
+        </div>
+
+
+        <UserProfileOffcanvas show={profileShowOffcanvas} handleClose={handleClose}/>
+
+
+    </>
   )
 }
 
