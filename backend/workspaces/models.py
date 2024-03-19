@@ -12,6 +12,7 @@ class Workspaces(models.Model) :
     is_premium = models.BooleanField(default=False)
     create_on = models.DateTimeField(auto_now_add=True)
     password = models.CharField(max_length=50, null=True, blank=True)
+    is_active = models.BooleanField(default=True, blank=True, null= True)
 
     def __str__(self):
         return self.workspace_name
