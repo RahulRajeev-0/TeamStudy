@@ -14,7 +14,7 @@ import { set_phone_no } from "../../Redux/WorkspaceUserProfile/WorkspaceUserProf
 import { set_is_admin } from "../../Redux/WorkspaceUserProfile/WorkspaceUserProfileSlice";
 import { set_about_me } from "../../Redux/WorkspaceUserProfile/WorkspaceUserProfileSlice";
 import { set_profile_pic } from "../../Redux/WorkspaceUserProfile/WorkspaceUserProfileSlice";
-
+import { set_id } from "../../Redux/WorkspaceUserProfile/WorkspaceUserProfileSlice";
 // axios
 import axios from "axios";
 
@@ -64,7 +64,8 @@ function UserWrapper() {
                 workspaceDescription:response.data.description,
                 isPremium:response.data.is_premium,
                 created_by:response.data.created_by,
-                create_on:response.data.create_on
+                create_on:response.data.create_on,
+               
                 
               }
 
@@ -98,6 +99,7 @@ function UserWrapper() {
           dispatch(set_about_me(response.data.about_me))
           dispatch(set_phone_no(response.data.phone_no))
           dispatch(set_profile_pic(response.data.profile_pic))
+          dispatch(set_id(response.data.id))
           
           console.log(response.data);
         }

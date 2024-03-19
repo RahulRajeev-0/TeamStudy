@@ -15,6 +15,9 @@ from users.models import User
 
 from workspaces.emails import send_workspace_invitation
 
+
+
+
 # view for creating a workspace 
 class CreateWorkspaceView(generics.CreateAPIView):
     queryset = Workspaces.objects.all()

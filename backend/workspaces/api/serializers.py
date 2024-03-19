@@ -46,4 +46,4 @@ class GetWorkspaceIdSerializer(Serializer):
 class UserWorkspaceProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = WorkspaceMembers
-        fields = ['display_name', 'phone_no', 'is_admin', 'about_me', 'profile_pic']
+        fields = ['id','display_name', 'phone_no', 'is_admin', 'about_me', 'profile_pic']
