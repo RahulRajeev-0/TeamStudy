@@ -1,18 +1,21 @@
 import React, {useEffect, useState} from 'react'
 import styled from 'styled-components';
-
+// import Accordion from 'react-bootstrap/Accordion';
 
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 
 
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import LogoutIcon from '@mui/icons-material/Logout';
+import GroupIcon from '@mui/icons-material/Group';
+import MessageIcon from '@mui/icons-material/Message';
 
 
 import SettingsIcon from '@mui/icons-material/Settings';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 
-
+import ChannelAccordion from './Accordion/ChannelAccordion';
+import DMAccordion from './Accordion/DMAccordion'
 
 import { toast } from 'react-toastify';
 
@@ -33,7 +36,11 @@ import { jwtDecode } from "jwt-decode";
 
 const WorkSpaceSideBar = () => {
 
- 
+  const [activeIndex, setActiveIndex] = useState(null);
+
+  const toggleAccordion = (index) => {
+    setActiveIndex((prevIndex) => (prevIndex === index ? null : index));
+  };
  
   const navigate = useNavigate();
  
@@ -96,13 +103,14 @@ const WorkSpaceSideBar = () => {
                         </NavDropdown.Item>
                       </NavDropdown>
         
-    <hr/>
-   
-
-   
     
-    channels
-      
+ 
+
+<hr/>
+<ChannelAccordion/>
+<hr/>
+<DMAccordion/>
+<hr/>
 
     </SidebarContainer>
   )
@@ -110,23 +118,31 @@ const WorkSpaceSideBar = () => {
 
 export default WorkSpaceSideBar;
 
+
+
+
 const SidebarContainer = styled.div`
     color:white;
-    background: rgb(2,0,36);
-    background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(198,109,244,1) 100%, rgba(0,212,255,1) 100%);    
+    background: #1D1D1D;
+    // background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(198,109,244,1) 100%, rgba(0,212,255,1) 100%);    
     flex:0.3;
     border-top:1px solid #49274b;
     max-width:260px;
     margin-top:45px;
-    
-   
-    
+    overflow-y: auto; /* Add this line to enable vertical scrolling */
+
     > NavDropdown{
       padding-left: 5px;
     }
+    >span{
+      cursor:pointer;
+    }
 
-    
+    .accordion-body {
+      background-color: transparent;
+    }
 `;
+
 
 const SidebarHeader = styled.div`
   display:flex;
