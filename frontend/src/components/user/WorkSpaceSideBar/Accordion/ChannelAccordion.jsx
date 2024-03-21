@@ -1,5 +1,5 @@
 import * as React  from 'react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { styled, ThemeProvider, createTheme } from '@mui/material/styles';
 import ArrowForwardIosSharpIcon from '@mui/icons-material/ArrowForwardIosSharp';
 import MuiAccordion from '@mui/material/Accordion';
@@ -34,7 +34,10 @@ import { toast } from 'react-toastify';
 import { useSelector } from 'react-redux'
 
 
-// Create a dark theme
+
+// ============================ Accordion settings ===========================
+
+// Create a dark theme  
 const darkTheme = createTheme({
   palette: {
     mode: 'dark',
@@ -75,7 +78,7 @@ const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
 }));
 
 
-
+// ==================================================================================
 
 
 
@@ -85,6 +88,9 @@ export default function CustomizedAccordions() {
   const baseURL = "http://127.0.0.1:8000/"
   const userProfileDetails = useSelector(state => state.workspaceUserProfile);
   const [show, setShow] = useState(false);
+
+  const [workspaceGroups, setWorkspaceGroups] = useState([])
+
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
   const [expanded, setExpanded] = React.useState('panel1');
@@ -105,7 +111,7 @@ export default function CustomizedAccordions() {
   };
 
   const handleSubmit = async () => {
-    if (channelData.channelName.trim() === '' || channelData.description.trim() === '' || channelData.topic.trim() === '') {
+    if (channelData.name.trim() === '' || channelData.description.trim() === '' || channelData.topic.trim() === '') {
       toast.warning("Please Fill all the required fields");
       return;}
       const token = localStorage.getItem('access')
@@ -145,6 +151,29 @@ export default function CustomizedAccordions() {
     setExpanded(newExpanded ? panel : false);
   };
 
+
+  // const function for fetching channels 
+  const fetchChannels = async () => {
+    try{
+      const token = localStorage.getItem('access')
+      const headers = {
+        'Authorization': `Bearer ${token}`, // Add space after 'Bearer'
+      };
+      const workspace_id = sessionStorage.getItem("workspaceId")
+      const member_id = userProfileDetails.id
+      const response = await axios.get(baseURL+`group/workspace-group-list/${workspace_id}/${member_id}/`, {headers})
+      setWorkspaceGroups(response.data)
+
+    }catch(error){
+      console.log(error);
+    }
+  }
+
+  useEffect(()=>{
+    fetchChannels();
+  },[handleSubmit])
+
+ 
   
 
   return (
@@ -158,8 +187,16 @@ export default function CustomizedAccordions() {
           <AccordionDetails>
             <Typography>
            
-            <Button onClick={handleShow} size="small" ><AddIcon/> Create Channel</Button>
+            <Button color="secondary" variant="outlined" onClick={handleShow}  ><AddIcon/> Create Channel</Button>
+            <div style={{ display: 'flex', flexDirection: 'column', marginTop: '8px',  }}>
+            {workspaceGroups.map(group => (
+              <Button  key={group.id} onClick={() => handleGroupSelect(group.name)} size="small"  style={{ marginBottom: '8px', color:'grey', fontWeight:'bold' }}>
+               # {group.name}
+     
+              </Button>
              
+            ))}
+          </div>
           
             </Typography>
           </AccordionDetails>

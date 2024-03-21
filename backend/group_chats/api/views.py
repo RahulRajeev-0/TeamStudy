@@ -5,13 +5,15 @@ from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework import generics
 from rest_framework.exceptions import NotFound
+from django.db.models import Q
+
 
 # models
 from group_chats.models import  WorkspaceGroupMember, WorkspaceGroup
 from workspaces.models import WorkspaceMembers, Workspaces
 
 # serializers 
-from group_chats.api.serializers import WorkspaceGroupSerializer
+from group_chats.api.serializers import WorkspaceGroupSerializer, WorkspaceGroupListSerializer
 
 
 # =================================== views =================================
@@ -69,6 +71,22 @@ class CreateWorkspaceGroupView(APIView):
 
 
 
+
+
+class WorkspaceGroupListAPIView(generics.ListAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = WorkspaceGroupListSerializer
+
+    def get_queryset(self):
+        workspace_id = self.kwargs['workspace_id']
+        workspace_member_id = self.kwargs['workspace_member_id']
+        
+        queryset = WorkspaceGroup.objects.filter(workspace_id=workspace_id, is_private=False)
+        queryset = queryset.exclude(
+            Q(is_private=True) & ~Q(workspacegroupmember__member_id=workspace_member_id)
+        )
+        
+        return queryset
 
 
 

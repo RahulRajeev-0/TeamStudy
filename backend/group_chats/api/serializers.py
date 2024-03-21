@@ -7,3 +7,8 @@ class WorkspaceGroupSerializer(serializers.ModelSerializer):
         model = WorkspaceGroup
         exclude = ['created_by', 'workspace']
 
+
+class WorkspaceGroupListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = WorkspaceGroup
+        fields = ['id', 'name', 'is_private',]
