@@ -8,7 +8,7 @@ from rest_framework import status
 
 from rest_framework.parsers import MultiPartParser, FormParser
 # serializers
-from workspaces.api.serializers import WorkspaceSerializer, WorkspaceDetailsSerializer, GetWorkspaceIdSerializer, WorkspaceMemberSerializer, UserWorkspaceProfileSerializer 
+from workspaces.api.serializers import WorkspaceSerializer, WorkspaceDetailsSerializer, GetWorkspaceIdSerializer, WorkspaceMemberSerializer, UserWorkspaceProfileSerializer , WorkspaceMemberListing
 # models
 from workspaces.models import Workspaces, WorkspaceMembers, InvitationToken
 from users.models import User
@@ -378,4 +378,27 @@ class UserWorkspaceProfileView(APIView):
 
 
 
-            
+
+class WorkspaceMemberList(APIView):
+    permission_classes = [IsAuthenticated]
+    def get(self, request, workspace_id):
+        try:
+
+                user_obj = WorkspaceMembers.objects.filter(user=request.user,
+                                                            workspace=workspace_id).first()
+                
+                if user_obj:
+                    workspace_members = WorkspaceMembers.objects.filter(workspace=workspace_id)
+                    serilizer = WorkspaceMemberListing(workspace_members, many=True)
+                    return Response(data=serilizer.data, status=status.HTTP_200_OK)
+
+                else:
+                    return Response({'message':"not a member"}, 
+                                    status=status.HTTP_403_FORBIDDEN)
+                    
+                
+        except Exception as e:
+                print(e)
+                return Response({"message":"something went wrong"},
+                                status=status.HTTP_400_BAD_REQUEST)
+ 

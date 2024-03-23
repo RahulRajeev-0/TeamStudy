@@ -33,6 +33,7 @@ import { GoogleOAuthProvider } from '@react-oauth/google';
 import WorkspaceHome from "../../pages/user/Workspace/WorkspaceHome";
 import WorkspaceAdminSettingsPage from "../../pages/user/workspaceAdmin/workspaceAdminSettingsPage";
 import WorkspaceAdminMemberManagementPage from "../../pages/user/workspaceAdmin/workspaceAdminMemberManagement/workspaceAdminMemberManagementPage";
+import ChannelPage from "../../pages/user/WorkspaceChating/ChannelPage";
 
 
 
@@ -150,6 +151,7 @@ function UserWrapper() {
         <Route path="/workspace" element={<PrivateRoutes>  <WorkspaceHome/>  </PrivateRoutes>} />
         <Route path="/workspace-settings" element={<PrivateRoutes>  <WorkspaceAdminSettingsPage/>  </PrivateRoutes>} />
         <Route path="/workspace-settings-members" element={<PrivateRoutes>  <WorkspaceAdminMemberManagementPage/>  </PrivateRoutes>} />
+        <Route path="/workspace-chating" element={<PrivateRoutes><ChannelPage/></PrivateRoutes>} />
 
 
     </Routes>

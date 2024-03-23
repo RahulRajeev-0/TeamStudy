@@ -19,4 +19,5 @@ urlpatterns = [
 
     path('user-profile-details/<int:workspace_id>/',views.UserWorkspaceProfileView.as_view(), name='user-workspace-profile' ),
 
+    path('workspace-member-list/<int:workspace_id>/', views.WorkspaceMemberList.as_view(), name="workspace-member-listing"),
 ]

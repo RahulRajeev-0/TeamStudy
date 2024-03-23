@@ -20,9 +20,8 @@ import Button from '@mui/material/Button';
 
 // icon
 import GroupIcon from '@mui/icons-material/Group';
-import MessageIcon from '@mui/icons-material/Message';
 import AddIcon from '@mui/icons-material/Add';
-
+import TagOutlinedIcon from '@mui/icons-material/TagOutlined';
 
 
 import Form from 'react-bootstrap/Form';
@@ -171,7 +170,7 @@ export default function CustomizedAccordions() {
 
   useEffect(()=>{
     fetchChannels();
-  },[handleSubmit])
+  },[channelData])
 
  
   
@@ -191,7 +190,7 @@ export default function CustomizedAccordions() {
             <div style={{ display: 'flex', flexDirection: 'column', marginTop: '8px',  }}>
             {workspaceGroups.map(group => (
               <Button  key={group.id} onClick={() => handleGroupSelect(group.name)} size="small"  style={{ marginBottom: '8px', color:'grey', fontWeight:'bold' }}>
-               # {group.name}
+               <TagOutlinedIcon/> {group.name}
      
               </Button>
              

@@ -59,16 +59,6 @@ class CreateWorkspaceGroupView(APIView):
                             status=status.HTTP_400_BAD_REQUEST)
 
 
-# for group listing 
-    def get (self, request, workspace_id, member_id):
-        try:
-            
-            groups = WorkspaceGroup.objects.filter(workspace=workspace_id)
-            print(groups)
-            return Response(status=status.HTTP_200_OK)
-        except Exception as e:
-            print(e)
-
 
 
 
@@ -148,7 +138,36 @@ class WorkspaceGroupView(APIView):
                             status=status.HTTP_403_FORBIDDEN)  
 
 
+
+class WorkspaceGroupMemberView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, group_id, member_id, request_id):
+        try:
+            group = WorkspaceGroup.objects.get(id=group_id)
+        except Exception as e:
+            print (e)
+            return Response({'message':'Unable find the group'},
+                             status=status.HTTP_400_BAD_REQUEST)
+
+        try:        
+            request_from = WorkspaceMembers.objects.get(id=request_id)
+            if request_from.is_admin:
+                new_member = WorkspaceMembers.objects.get(id=member_id)
+                WorkspaceGroupMember.objects.create(
+                    group=group, 
+                    member=new_member
+                    )
+                return Response({'message':"Added to group"}, 
+                                status=status.HTTP_201_CREATED)
+        except Exception as e:
+            print(e)
+            return Response({'message':"Something went wrong"}, 
+                            status=status.HTTP_400_BAD_REQUEST)
         
+        
+
+
 
 
 

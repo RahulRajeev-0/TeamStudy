@@ -47,3 +47,10 @@ class UserWorkspaceProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = WorkspaceMembers
         fields = ['id','display_name', 'phone_no', 'is_admin', 'about_me', 'profile_pic']
+
+
+class WorkspaceMemberListing(serializers.ModelSerializer):
+    user = UserNameSerializer()
+    class Meta :
+        model = WorkspaceMembers
+        fields = ['id', 'display_name', 'user']
