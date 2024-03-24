@@ -1,4 +1,8 @@
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
+
+// react redux 
+import { useSelector, useDispatch } from 'react-redux'
+import { set_selected_group } from '../../../Redux/WorkspaceGroup/GroupSlice';
 
 // components
 import ChatInput from './chatInput';
@@ -11,26 +15,57 @@ import styled from 'styled-components'
 import StarBorderIcon from '@mui/icons-material/StarBorder';
 import InfoIcon from '@mui/icons-material/Info';
 
+// modals 
 import EditChannelModal from '../ChannelComponents/EditChannelDetailModal';
 
+import {  useParams } from 'react-router-dom';
+import axios from 'axios';
 
 const Chat = () => {
+    const [groupInfo, setGroupInfo] = useState({id:null, name:null, topic:null, description:null})
+    const baseURL = "http://127.0.0.1:8000"
+    const token = localStorage.getItem('access');
+    const dispatch = useDispatch();
+    const {groupId} = useParams();
+   
+    const profile = useSelector(state => state.workspaceUserProfile);
+    const groupDetails = useSelector(state =>state.user_select_group);
+    // api for fetching the group info (name, description, topic)
+    const fetchGroupInfo = async () => {
+        try{
+            const response = await axios.get(baseURL + `/group/workspace-group/${groupId}/${profile.id}/`,
+            {
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                  Accept: "application/json",
+                  "Content-Type": "application/json",
+                },
+              })
+           
+            setGroupInfo(response.data)
+            dispatch(set_selected_group(response.data))
+        }catch(error){
+            console.log(error);
+        }
+    }
 
-    
+    useEffect(()=>{
+        fetchGroupInfo();
+    },[])
 
   return (
     <ChatContainer>
         <>
         <Header>
             <HeaderLeft>
-                <h4><strong># Group Name</strong></h4><StarBorderIcon/>
-               <p>[Description]</p>
+                <h4><strong># {groupDetails.name}</strong></h4><StarBorderIcon/>
+               <p>[{groupDetails.topic}]</p>
             </HeaderLeft>
             <HeaderRight>
                 <p>
                     
                     
-                    <EditChannelModal/>
+                    <EditChannelModal groupDetails={groupDetails}/>
                     
                     <MemberManagementModal/>
                 </p>

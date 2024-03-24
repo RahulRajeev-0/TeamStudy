@@ -1,5 +1,6 @@
 import * as React from 'react';
-import {useState} from 'react';
+import { useState, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
@@ -11,144 +12,158 @@ import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
-
+import axios from 'axios';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
+import { toast } from 'react-toastify';
 
-const style = {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    width: 600,
-    maxHeight: 400,
-    // overflowY: 'auto', // Enable vertical scroll
-    bgcolor: '#17141a',
-    border: '2px solid #000',
-    boxShadow: 24,
-    p: 4,
-    color: 'white',
-  };
+import {  useParams } from 'react-router-dom';
 
+import { set_selected_group } from '../../../Redux/WorkspaceGroup/GroupSlice';
 
+export default function BasicModal() {
+  const [open, setOpen] = React.useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
 
-  export default function BasicModal() {
-    const [open, setOpen] = React.useState(false);
-    const handleOpen = () => setOpen(true);
-    const handleClose = () => setOpen(false);
+  const baseURL = "http://127.0.0.1:8000";
+  const token = localStorage.getItem('access');
+  const dispatch = useDispatch();
+  const {groupId} = useParams();
   
-  
-  //  ========================== member listing table ============================
+  const profile = useSelector(state => state.workspaceUserProfile);
 
-  const style = {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    width: 600,
-    maxHeight: 400,
-    bgcolor: 'black', // Change background color to black
-    border: '2px solid #000',
-    boxShadow: 24,
-    p: 4,
-    color: 'white',
-  };
+  const [channelData, setChannelData] = useState({
+    name: "",
+    description: "" ,
+      topic: "" ,
+      is_private: false,
+  });
 
-    const [channelData, setChannelData] = useState({
-        name: '',
-        description: '',
-        topic: '',
-        is_private: false
-      });
-    
-      const handleInputChange = (event) => {
-        const { name, value, checked } = event.target;
-        setChannelData(prevState => ({
-          ...prevState,
-          [name]: name === 'isPrivate' ? checked : value
-        }));
-      };
-  //  =========================================================================== 
-    return (
-     <>
-        <Button onClick={handleOpen}><EditOutlinedIcon/> </Button>
-        
-           
-            
-            <Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm" >
-      <DialogTitle sx={{ display: 'flex', alignItems: 'center' , bgcolor: '#17141a', color:'white' }}   >
-        <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-          Edit Channel Info
-        </Typography>
-        <Button autoFocus onClick={handleClose} color="inherit" size="small">
-          x
-        </Button>
-      </DialogTitle >
-      <DialogContent sx={{ bgcolor: '#17141a', color: 'white' }}>
-  <TextField
-    autoFocus
-    margin="dense"
-    id="name"
-    label="Channel Name"
-    type="text"
-    fullWidth
-    variant="standard"
-    required
-    maxLength={50}
-    name="name"
-    value={channelData.name}
-    onChange={handleInputChange}
-    InputLabelProps={{ style: { color: 'white' } }} // Set label color to white
-    InputProps={{ style: { color: 'white' } }} // Set input color to white
-  />
-  <TextField
-    id="description"
-    label="Channel Description"
-    multiline
-    rows={3}
-    fullWidth
-    variant="standard"
-    required
-    maxLength={250}
-    name="description"
-    value={channelData.description}
-    onChange={handleInputChange}
-    InputLabelProps={{ style: { color: 'white' } }} // Set label color to white
-    InputProps={{ style: { color: 'white' } }} // Set input color to white
-  />
-  <TextField
-    id="topic"
-    label="Topic"
-    multiline
-    rows={3}
-    fullWidth
-    variant="standard"
-    required
-    maxLength={250}
-    name="topic"
-    value={channelData.topic}
-    onChange={handleInputChange}
-    InputLabelProps={{ style: { color: 'white' } }} // Set label color to white
-    InputProps={{ style: { color: 'white' } }} // Set input color to white
-  />
-  <FormControlLabel
-    control={<Checkbox checked={channelData.isPrivate} onChange={handleInputChange} name="isPrivate" />}
-    label="Private Channel ?"
-    style={{ color: 'white' }} // Set checkbox color to white
-  />
-</DialogContent>
-
-      <DialogActions sx={{bgcolor:"#17141a"}}>
-        <Button onClick={handleClose} variant="contained" color="secondary">
-          Close
-        </Button>
-        <Button  variant="contained" color="primary">
-          Save
-        </Button>
-      </DialogActions>
-    </Dialog>
-            
-          </>
+  const fetchGroupInfo = async () => {
+    try{
+        const response = await axios.get(baseURL + `/group/workspace-group/${groupId}/${profile.id}/`,
+        {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              Accept: "application/json",
+              "Content-Type": "application/json",
+            },
+          })
        
-      
-    );
-  }
+        setChannelData(response.data)
+        dispatch(set_selected_group(response.data))
+    }catch(error){
+        console.log(error);
+    }
+}
+
+useEffect(()=>{
+  fetchGroupInfo();
+},[])
+
+  const handleInputChange = (event) => {
+    const { name, value, checked } = event.target;
+    setChannelData(prevState => ({
+      ...prevState,
+      [name]: name === 'isPrivate' ? checked : value
+    }));
+  };
+
+  const updateGroupInfo = async () => {
+    try {
+      const response = await axios.put(
+        `${baseURL}/group/workspace-group/${groupId}/${profile.id}/`,
+        channelData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      toast.success("Updated Successfully");
+      dispatch(set_selected_group(response.data.data));
+      handleClose();  
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  return (
+    <>
+      <Button onClick={handleOpen}><EditOutlinedIcon /> </Button>
+      <Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm">
+        <DialogTitle sx={{ display: 'flex', alignItems: 'center', bgcolor: '#17141a', color: 'white' }}>
+          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+            Edit Channel Info
+          </Typography>
+          <Button autoFocus onClick={handleClose} color="inherit" size="small">
+            x
+          </Button>
+        </DialogTitle>
+        <DialogContent sx={{ bgcolor: '#17141a', color: 'white' }}>
+          <TextField
+            autoFocus
+            margin="dense"
+            id="name"
+            label="Channel Name"
+            type="text"
+            fullWidth
+            variant="standard"
+            required
+            maxLength={50}
+            name="name"
+            value={channelData.name}
+            onChange={handleInputChange}
+            InputLabelProps={{ style: { color: 'white' } }}
+            InputProps={{ style: { color: 'white' } }}
+          />
+          <TextField
+            id="description"
+            label="Channel Description"
+            multiline
+            rows={3}
+            fullWidth
+            variant="standard"
+            required
+            maxLength={250}
+            name="description"
+            value={channelData.description}
+            onChange={handleInputChange}
+            InputLabelProps={{ style: { color: 'white' } }}
+            InputProps={{ style: { color: 'white' } }}
+          />
+          <TextField
+            id="topic"
+            label="Topic"
+            multiline
+            rows={3}
+            fullWidth
+            variant="standard"
+            required
+            maxLength={250}
+            name="topic"
+            value={channelData.topic}
+            onChange={handleInputChange}
+            InputLabelProps={{ style: { color: 'white' } }}
+            InputProps={{ style: { color: 'white' } }}
+          />
+          <FormControlLabel
+            control={<Checkbox checked={channelData.isPrivate} onChange={handleInputChange} name="isPrivate" />}
+            label="Private Channel ?"
+            style={{ color: 'white' }}
+          />
+        </DialogContent>
+        <DialogActions sx={{ bgcolor: "#17141a" }}>
+          <Button onClick={handleClose} variant="contained" color="secondary">
+            Close
+          </Button>
+          <Button onClick={updateGroupInfo} variant="contained" color="primary">
+            Save
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </>
+  );
+}

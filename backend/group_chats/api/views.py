@@ -18,7 +18,7 @@ from group_chats.api.serializers import WorkspaceGroupSerializer, WorkspaceGroup
 
 # =================================== views =================================
 
-
+# for creating a workspace
 class CreateWorkspaceGroupView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -85,6 +85,24 @@ class WorkspaceGroupListAPIView(generics.ListAPIView):
 class WorkspaceGroupView(APIView):
     permission_classes = [IsAuthenticated]
 
+    def get(self, request, group_id, member_id):
+        try:
+            group = WorkspaceGroup.objects.get(id=group_id)
+            member = WorkspaceMembers.objects.get(id=member_id)
+        except Exception as e:
+            print(e)
+            return Response({"message":"Unable to get Channel Info"})
+        
+        if WorkspaceGroupMember.objects.filter(member=member, group=group).exists():
+            serializer = WorkspaceGroupSerializer(group)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            return Response({'message':'Your not a member of the workspace'}, status=status.HTTP_403_FORBIDDEN)
+        
+
+
+
+    # for deleting a workspace group
     def delete(self, request, group_id, member_id):
         try:
             # Retrieve member and workspace or raise 404 if not found
@@ -111,16 +129,18 @@ class WorkspaceGroupView(APIView):
             name = request.data.get('name')
             description = request.data.get('description')
             topic = request.data.get('topic')
+            is_private = request.data.get('is_private')
+            
 
             group = WorkspaceGroup.objects.get(id=group_id) # getting the group
-            member = WorkspaceMembers.objects.get(member_id) # getting the member who made the request
+            member = WorkspaceMembers.objects.get(id=member_id) # getting the member who made the request
         except Exception as e:
             print(e)
             return Response({"message":"something went wrong"}, 
                             status=status.HTTP_400_BAD_REQUEST)
         
         # checking if name of is already been used in another group 
-        if name:
+        if name and name != group.name:
             if WorkspaceGroup.objects.filter(workspace=member.workspace, name=name).exists():
                 return Response({"message":"This name is already taken"}, 
                                 status=status.HTTP_406_NOT_ACCEPTABLE)
@@ -130,8 +150,10 @@ class WorkspaceGroupView(APIView):
             group.name = name
             group.description = description
             group.topic = topic
+            group.is_private = is_private
             group.save()
-            return Response({"messages":"Updated Successfully"}, 
+            serializer = WorkspaceGroupSerializer(group)
+            return Response({"messages":"Updated Successfully", 'data':serializer.data}, 
                             status=status.HTTP_200_OK)
         else:
             return Response({"message":"Your not an admin, only admins can edit groups info"}, 

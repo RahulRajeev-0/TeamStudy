@@ -1,5 +1,7 @@
 import * as React  from 'react';
 import { useState, useEffect } from 'react';
+import {useNavigate} from 'react-router-dom'
+
 import { styled, ThemeProvider, createTheme } from '@mui/material/styles';
 import ArrowForwardIosSharpIcon from '@mui/icons-material/ArrowForwardIosSharp';
 import MuiAccordion from '@mui/material/Accordion';
@@ -88,8 +90,13 @@ export default function CustomizedAccordions() {
   const userProfileDetails = useSelector(state => state.workspaceUserProfile);
   const [show, setShow] = useState(false);
 
+  const navigate = useNavigate()
+
+  // state for storing the listing of group in workspace
   const [workspaceGroups, setWorkspaceGroups] = useState([])
 
+
+  // for create new group modal 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
   const [expanded, setExpanded] = React.useState('panel1');
@@ -189,7 +196,7 @@ export default function CustomizedAccordions() {
             <Button color="secondary" variant="outlined" onClick={handleShow}  ><AddIcon/> Create Channel</Button>
             <div style={{ display: 'flex', flexDirection: 'column', marginTop: '8px',  }}>
             {workspaceGroups.map(group => (
-              <Button  key={group.id} onClick={() => handleGroupSelect(group.name)} size="small"  style={{ marginBottom: '8px', color:'grey', fontWeight:'bold' }}>
+              <Button  key={group.id} onClick={() =>  navigate(`/workspace-channel/${group.id}`)} size="small"  style={{ marginBottom: '8px', color:'grey', fontWeight:'bold' }}>
                <TagOutlinedIcon/> {group.name}
      
               </Button>

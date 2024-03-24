@@ -151,7 +151,7 @@ function UserWrapper() {
         <Route path="/workspace" element={<PrivateRoutes>  <WorkspaceHome/>  </PrivateRoutes>} />
         <Route path="/workspace-settings" element={<PrivateRoutes>  <WorkspaceAdminSettingsPage/>  </PrivateRoutes>} />
         <Route path="/workspace-settings-members" element={<PrivateRoutes>  <WorkspaceAdminMemberManagementPage/>  </PrivateRoutes>} />
-        <Route path="/workspace-chating" element={<PrivateRoutes><ChannelPage/></PrivateRoutes>} />
+        <Route path="/workspace-channel/:groupId/" element={<PrivateRoutes><ChannelPage/></PrivateRoutes>} />
 
 
     </Routes>
