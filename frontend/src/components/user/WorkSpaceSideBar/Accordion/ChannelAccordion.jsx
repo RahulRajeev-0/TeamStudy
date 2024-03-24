@@ -105,7 +105,7 @@ export default function CustomizedAccordions() {
     const { name, value, checked } = event.target;
     setChannelData(prevState => ({
       ...prevState,
-      [name]: name === 'isPrivate' ? checked : value
+      [name]: name === 'is_private' ? checked : value
     }));
   };
 
@@ -206,7 +206,7 @@ export default function CustomizedAccordions() {
     </ThemeProvider>
 
     <Dialog open={show} onClose={handleClose} fullWidth maxWidth="sm">
-      <DialogTitle sx={{ display: 'flex', alignItems: 'center' }}>
+      <DialogTitle sx={{ display: 'flex', alignItems: 'center',color:'white', bgcolor: '#17141a'}}>
         <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
           Create New Channel
         </Typography>
@@ -214,7 +214,7 @@ export default function CustomizedAccordions() {
           x
         </Button>
       </DialogTitle>
-      <DialogContent>
+      <DialogContent sx={{ bgcolor: '#17141a', color: 'white' }}>
       <TextField
           autoFocus
           margin="dense"
@@ -228,6 +228,8 @@ export default function CustomizedAccordions() {
           name="name"
           value={channelData.name}
           onChange={handleInputChange}
+          InputLabelProps={{ style: { color: 'white' } }} // Set label color to white
+          InputProps={{ style: { color: 'white' } }} // Set input color to white
         />
         <TextField
           id="description"
@@ -241,6 +243,8 @@ export default function CustomizedAccordions() {
           name="description"
           value={channelData.description}
           onChange={handleInputChange}
+          InputLabelProps={{ style: { color: 'white' } }} // Set label color to white
+          InputProps={{ style: { color: 'white' } }} // Set input color to white
         />
         <TextField
           id="topic"
@@ -254,18 +258,20 @@ export default function CustomizedAccordions() {
           name="topic"
           value={channelData.topic}
           onChange={handleInputChange}
+          InputLabelProps={{ style: { color: 'white' } }} // Set label color to white
+          InputProps={{ style: { color: 'white' } }} // Set input color to white
         />
         <FormControlLabel
-          control={<Checkbox checked={channelData.isPrivate} onChange={handleInputChange} name="isPrivate" />}
+          control={<Checkbox checked={channelData.is_private} onChange={handleInputChange} name="is_private" />}
           label="Private Channel ?"
         />
       </DialogContent>
-      <DialogActions>
+      <DialogActions sx={{bgcolor:"#17141a"}}>
         <Button onClick={handleClose} variant="contained" color="secondary">
           Close
         </Button>
         <Button onClick={handleSubmit} variant="contained" color="primary">
-          Create Workspace
+          Create Group
         </Button>
       </DialogActions>
     </Dialog>

@@ -10,18 +10,13 @@ import styled from 'styled-components'
 // material ui icons
 import StarBorderIcon from '@mui/icons-material/StarBorder';
 import InfoIcon from '@mui/icons-material/Info';
-import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
+
+import EditChannelModal from '../ChannelComponents/EditChannelDetailModal';
 
 
 const Chat = () => {
 
-    const [open, setOpen] = useState(false);
-    const handleOpen = () => {
-      setOpen(true);
-    };
-    const handleClose = () => {
-      setOpen(false);
-    };
+    
 
   return (
     <ChatContainer>
@@ -34,7 +29,8 @@ const Chat = () => {
             <HeaderRight>
                 <p>
                     
-                    <EditOutlinedIcon/> 
+                    
+                    <EditChannelModal/>
                     
                     <MemberManagementModal/>
                 </p>
