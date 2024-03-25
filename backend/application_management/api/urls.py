@@ -8,4 +8,5 @@ urlpatterns = [
 
     # ------------------ urls for workspace management  -----------------------
     path('workspace-listing/', views.WorkspacesListView.as_view(), name="Workspace-listing-view"),
+    path('workspace-block/<int:pk>/', views.WorkspaceBlockView.as_view(), name="Workspace-block-unblock"),
 ]

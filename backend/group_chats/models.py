@@ -2,10 +2,12 @@ from django.db import models
 from workspaces.models import WorkspaceMembers, Workspaces
 # Create your models here.
 
+
 class WorkspaceGroup(models.Model):
     name = models.CharField(max_length=80)
     description = models.CharField(max_length=178)
     topic = models.CharField(max_length=178)
+    is_private = models.BooleanField(default=False, blank=True)
     created_by = models.ForeignKey(WorkspaceMembers, on_delete=models.SET_NULL, null=True)
     workspace = models.ForeignKey(Workspaces, on_delete=models.CASCADE)
     create_on = models.DateTimeField(auto_now_add=True)

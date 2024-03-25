@@ -64,7 +64,7 @@ const HeaderSearch = styled.div`
     opacity:1;
     border-radius:6px;
     text-align:center;
-    background-color:#421f44;
+    background-color:#272727;
     display:flex;
     padding:0 50px;
     color:grey;
@@ -87,8 +87,8 @@ const HeaderContainer = styled.div`
     align-items: center;
     justify-content:space-between;
     padding:10px 0;
-    background: rgb(2,0,36);
-    background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(198,109,244,1) 100%, rgba(0,212,255,1) 100%);    
+    background: #080808;
+  
     color:white;
 `;
 

@@ -14,7 +14,7 @@ import { set_phone_no } from "../../Redux/WorkspaceUserProfile/WorkspaceUserProf
 import { set_is_admin } from "../../Redux/WorkspaceUserProfile/WorkspaceUserProfileSlice";
 import { set_about_me } from "../../Redux/WorkspaceUserProfile/WorkspaceUserProfileSlice";
 import { set_profile_pic } from "../../Redux/WorkspaceUserProfile/WorkspaceUserProfileSlice";
-
+import { set_id } from "../../Redux/WorkspaceUserProfile/WorkspaceUserProfileSlice";
 // axios
 import axios from "axios";
 
@@ -33,6 +33,7 @@ import { GoogleOAuthProvider } from '@react-oauth/google';
 import WorkspaceHome from "../../pages/user/Workspace/WorkspaceHome";
 import WorkspaceAdminSettingsPage from "../../pages/user/workspaceAdmin/workspaceAdminSettingsPage";
 import WorkspaceAdminMemberManagementPage from "../../pages/user/workspaceAdmin/workspaceAdminMemberManagement/workspaceAdminMemberManagementPage";
+import ChannelPage from "../../pages/user/WorkspaceChating/ChannelPage";
 
 
 
@@ -64,7 +65,8 @@ function UserWrapper() {
                 workspaceDescription:response.data.description,
                 isPremium:response.data.is_premium,
                 created_by:response.data.created_by,
-                create_on:response.data.create_on
+                create_on:response.data.create_on,
+               
                 
               }
 
@@ -98,6 +100,7 @@ function UserWrapper() {
           dispatch(set_about_me(response.data.about_me))
           dispatch(set_phone_no(response.data.phone_no))
           dispatch(set_profile_pic(response.data.profile_pic))
+          dispatch(set_id(response.data.id))
           
           console.log(response.data);
         }
@@ -148,6 +151,7 @@ function UserWrapper() {
         <Route path="/workspace" element={<PrivateRoutes>  <WorkspaceHome/>  </PrivateRoutes>} />
         <Route path="/workspace-settings" element={<PrivateRoutes>  <WorkspaceAdminSettingsPage/>  </PrivateRoutes>} />
         <Route path="/workspace-settings-members" element={<PrivateRoutes>  <WorkspaceAdminMemberManagementPage/>  </PrivateRoutes>} />
+        <Route path="/workspace-channel/:groupId/" element={<PrivateRoutes><ChannelPage/></PrivateRoutes>} />
 
 
     </Routes>

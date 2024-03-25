@@ -13,6 +13,19 @@ const DataTables = () => {
     { field: 'workspace_name', headerName: 'Name', width: 160 },
     { field: 'created_by', headerName: 'Owner', width: 230, renderCell: (params) => params.value.username },
     { field: "is_premium", headerName: "Premium", width: 230 },
+    // {field: "is_active", headerName: "Is active", width: 200}
+    {
+      field: "is_active",
+      headerName: "Is Active",
+      width: 160,
+      renderCell: (params) => {
+        return (
+          <div className={`cellWithStatus ${params.value ? 'active' : 'inactive'}`}>
+            {params.value ? 'Active' : 'Inactive'}
+          </div>
+        );
+      }
+    }
     
       
 
@@ -39,13 +52,13 @@ const actionColumn = [
   {
     field: "action",
     headerName: "Action",
-    width: 200,
+    width: 100,
     renderCell: (params) => {
       const handleBlockUnblock = async () => {
         try {
           const token = localStorage.getItem("access");
           await axios.put(
-            `http://127.0.0.1:8000/application_management/user-block/${params.row.id}/`,
+            `http://127.0.0.1:8000/application_management/workspace-block/${params.row.id}/`,
             {
               is_active: !params.row.is_active,
             },
@@ -78,12 +91,12 @@ const actionColumn = [
     fetchData()
   },[])
 
-  // const allColumns = [...userColumns, ...actionColumn];
+  const allColumns = [...userColumns, ...actionColumn];
   return (
     <div className='datatable'>
       <DataGrid
         rows={data}
-        columns={userColumns}
+        columns={allColumns}
         pageSize={5}
         pagination
         checkboxSelection

@@ -8,12 +8,15 @@ from rest_framework import status
 
 from rest_framework.parsers import MultiPartParser, FormParser
 # serializers
-from workspaces.api.serializers import WorkspaceSerializer, WorkspaceDetailsSerializer, GetWorkspaceIdSerializer, WorkspaceMemberSerializer, UserWorkspaceProfileSerializer 
+from workspaces.api.serializers import WorkspaceSerializer, WorkspaceDetailsSerializer, GetWorkspaceIdSerializer, WorkspaceMemberSerializer, UserWorkspaceProfileSerializer , WorkspaceMemberListing
 # models
 from workspaces.models import Workspaces, WorkspaceMembers, InvitationToken
 from users.models import User
 
 from workspaces.emails import send_workspace_invitation
+
+
+
 
 # view for creating a workspace 
 class CreateWorkspaceView(generics.CreateAPIView):
@@ -23,7 +26,8 @@ class CreateWorkspaceView(generics.CreateAPIView):
 
     def perform_create(self, serializer):
         # Automatically set the created_by field to the current authenticated user
-        workspace = serializer.save(created_by=self.request.user)
+        workspace = serializer.save(created_by=self.request.user, 
+                                    is_active=True)
 
         WorkspaceMembers.objects.create(workspace=workspace,
                                 user=self.request.user,
@@ -41,7 +45,10 @@ class UserWorkspacesListingView(generics.ListAPIView):
     def get_queryset(self):
          # Assuming you're passing user_id in the URL
         user_workspace_memberships = WorkspaceMembers.objects.filter(user=self.request.user)
-        user_joined_workspaces = [membership.workspace for membership in user_workspace_memberships]
+        user_joined_workspaces = [
+            membership.workspace for membership in user_workspace_memberships
+            if membership.workspace.is_active
+            ]
         return user_joined_workspaces
 
 
@@ -50,11 +57,11 @@ class WorkspaceDetailView(APIView):
     permission_classes = [IsAuthenticated]
     def get(self, request, workspace_id):
         try: 
-            workspace = Workspaces.objects.get(id=workspace_id)
+            workspace = Workspaces.objects.get(id=workspace_id, is_active=True)
             member = WorkspaceMembers.objects.get(workspace=workspace,
                                                    user=request.user)
         except:
-            return Response({"error": "Workspace does not exist or You not a member"},
+            return Response({"error": "Workspace not available or You not a member"},
                              status=status.HTTP_404_NOT_FOUND)
         serializer = WorkspaceDetailsSerializer(workspace)
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -371,4 +378,27 @@ class UserWorkspaceProfileView(APIView):
 
 
 
-            
+
+class WorkspaceMemberList(APIView):
+    permission_classes = [IsAuthenticated]
+    def get(self, request, workspace_id):
+        try:
+
+                user_obj = WorkspaceMembers.objects.filter(user=request.user,
+                                                            workspace=workspace_id).first()
+                
+                if user_obj:
+                    workspace_members = WorkspaceMembers.objects.filter(workspace=workspace_id)
+                    serilizer = WorkspaceMemberListing(workspace_members, many=True)
+                    return Response(data=serilizer.data, status=status.HTTP_200_OK)
+
+                else:
+                    return Response({'message':"not a member"}, 
+                                    status=status.HTTP_403_FORBIDDEN)
+                    
+                
+        except Exception as e:
+                print(e)
+                return Response({"message":"something went wrong"},
+                                status=status.HTTP_400_BAD_REQUEST)
+ 

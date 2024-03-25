@@ -108,7 +108,7 @@ const UserProfileOffcanvas = ({ handleClose, show }) => {
 
   return (
     <div>
-      <Offcanvas show={show} onHide={handleClose} placement='end' style={{backgroundColor:"#131114", color:'white'}}>
+      <Offcanvas show={show} onHide={handleClose} placement='end' style={{backgroundColor:"#292829", color:'white'}}>
         <Offcanvas.Header closeButton>
           <Offcanvas.Title>
             <h2>Profile</h2>

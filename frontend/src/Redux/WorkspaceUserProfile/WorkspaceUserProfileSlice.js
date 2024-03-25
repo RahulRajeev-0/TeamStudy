@@ -4,6 +4,7 @@ export const workspaceUserProfileSlice = createSlice(
     {
         name:'workspace_user_profile',
         initialState:{
+            id:null,
             displayName:null,
             phoneNo:null,
             isAdmin:null,
@@ -26,12 +27,16 @@ export const workspaceUserProfileSlice = createSlice(
               set_profile_pic: (state, action) => {
                 state.profilePic = action.payload;
               },
+              set_id: (state, action) => {
+                state.id = action.payload;
+              }
+              
         }
 
         
     }
 );
 
-export const { set_display_name, set_phone_no, set_is_admin, set_about_me, set_profile_pic } = workspaceUserProfileSlice.actions;
+export const { set_display_name, set_phone_no, set_is_admin, set_about_me, set_profile_pic, set_id } = workspaceUserProfileSlice.actions;
 
 export default workspaceUserProfileSlice.reducer;
