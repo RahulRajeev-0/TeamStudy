@@ -30,6 +30,7 @@ class IsSuperUser(BasePermission):
 
 # -----------------------------------------------  user management --------------------------------------
 
+# for user listing (getting the user details)
 class UserListView(ListAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
@@ -37,6 +38,7 @@ class UserListView(ListAPIView):
     authentication_classes = [JWTAuthentication] 
 
 
+# for user blocking and unblocking 
 class UserIsActiveUpdateView(UpdateAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
@@ -54,10 +56,26 @@ class UserIsActiveUpdateView(UpdateAPIView):
 
 #  -------------------------------- workspace management ---------------------------
     
+# for getting workspace details and listing 
 class WorkspacesListView(ListAPIView) :
     queryset = Workspaces.objects.all()
     serializer_class = WorkspaceAdminLintingSerializer
     permission_classes = [IsSuperUser]
     authentication_classes = [JWTAuthentication] 
+
+
+# for workspace blocking 
+class WorkspaceBlockView(UpdateAPIView):
+    queryset = Workspaces.objects.all()
+    serializer_class = WorkspaceAdminLintingSerializer
+    permission_classes = [IsSuperUser]
+
+    def put(self, request, *args, **kwargs):
+        instance = self.get_object()
+        instance.is_active = not instance.is_active
+        instance.save()
+        serilizer = self.get_serializer(instance)
+        return Response(serilizer.data)
+
 
 

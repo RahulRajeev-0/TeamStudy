@@ -1,4 +1,5 @@
 import React from 'react'
+import { useState } from 'react';
 import styled from "styled-components";
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import AccessTimeFilledIcon from '@mui/icons-material/AccessTimeFilled';
@@ -6,35 +7,53 @@ import SearchIcon from '@mui/icons-material/Search';
 import HelpIcon from '@mui/icons-material/Help';
 
 
+import Offcanvas from 'react-bootstrap/Offcanvas';
+
+// components
+import UserProfileOffcanvas from './UserProfileOffcanvas/userProfileOffcanvas';
+
 const WorkspaceHeader = () => {
+
+
+    const [profileShowOffcanvas, setProfileShowOffcanvas] = useState(false);
+    const handleClose = () => setProfileShowOffcanvas(false);
+    const handleShow = () => setProfileShowOffcanvas(true);
   return (
-    <div>
-      <HeaderContainer>
-       
+    <>
+        <div>
+        <HeaderContainer>
+        
 
-        {/* header left  */}
-        <HeaderLeft>
-            
-            <HeaderAvatar
-            // TODO : onclick
-            />
-            <AccessTimeFilledIcon/>
+            {/* header left  */}
+            <HeaderLeft>
+                
+                <HeaderAvatar
+                onClick={handleShow}
+                
+                />
+                <AccessTimeFilledIcon/>
 
-        </HeaderLeft>
-        {/* header search  */}
+            </HeaderLeft>
+            {/* header search  */}
 
-        <HeaderSearch>
-            <SearchIcon/>
-            <input placeholder='Search.......'/>
-        </HeaderSearch>
+            <HeaderSearch>
+                <SearchIcon/>
+                <input placeholder='Search.......'/>
+            </HeaderSearch>
 
-        {/* header right */}
-        <HeaderRight>
+            {/* header right */}
+            <HeaderRight>
 
-            <HelpIcon/>
-        </HeaderRight>
-      </HeaderContainer>
-    </div>
+                <HelpIcon/>
+            </HeaderRight>
+        </HeaderContainer>
+        </div>
+
+
+        <UserProfileOffcanvas show={profileShowOffcanvas} handleClose={handleClose}/>
+
+
+    </>
   )
 }
 
@@ -45,7 +64,7 @@ const HeaderSearch = styled.div`
     opacity:1;
     border-radius:6px;
     text-align:center;
-    background-color:#421f44;
+    background-color:#272727;
     display:flex;
     padding:0 50px;
     color:grey;
@@ -68,8 +87,8 @@ const HeaderContainer = styled.div`
     align-items: center;
     justify-content:space-between;
     padding:10px 0;
-    background: rgb(2,0,36);
-    background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(198,109,244,1) 100%, rgba(0,212,255,1) 100%);    
+    background: #080808;
+  
     color:white;
 `;
 

@@ -12,6 +12,8 @@ const BaseHomePage = () => {
 
   const [workspaces, setWorkspaces] = useState([]);
   
+  
+
   const fetchWorkspaces = async () => {
     const token = localStorage.getItem("access")
     try{

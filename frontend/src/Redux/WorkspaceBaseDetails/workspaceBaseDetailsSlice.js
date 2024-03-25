@@ -8,6 +8,7 @@ export const workspaceBaseDetailsSlice = createSlice({
         workspaceDescription:null,
         isPremium:false,
         create_on:null,
+        created_by:null,
     },
     reducers:{
         set_selected_workspace:(state, action) => {
@@ -16,6 +17,7 @@ export const workspaceBaseDetailsSlice = createSlice({
             state.workspaceDescription = action.payload.workspaceDescription; // Corrected payload to action.payload
             state.isPremium = action.payload.isPremium; // Corrected payload to action.payload
             state.create_on = action.payload.create_on; // Corrected payload to action.payload
+            state.created_by = action.payload.created_by
         }
     }
 });
