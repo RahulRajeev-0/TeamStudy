@@ -39,8 +39,20 @@ const UserProfileOffcanvas = ({ handleClose, show }) => {
   
   const handleImageChange = async (e) =>{
     const file = e.target.files[0];
+
+    if (!file) {
+      return;
+    }
+
     let formData = new FormData();
     formData.append("profilePic", file,file.name);
+
+
+    const maxSize = 2 * 1024 * 1024; // 2 MB in bytes
+    if (file.size > maxSize) {
+    toast.error("Please select an image file smaller than 2 MB.");
+    return;
+  }
 
     try{
 
@@ -117,7 +129,7 @@ const UserProfileOffcanvas = ({ handleClose, show }) => {
         <Offcanvas.Body>
           <CenteredContainer>
             <ProfileImage src={userProfileDetails.profilePic ? "http://localhost:8000/" + userProfileDetails.profilePic : profilePic} alt="Profile Picture" />
-           <input type="file" ref={inputRef} onChange={handleImageChange} style={{display:"none"}}/>
+           <input type="file" ref={inputRef} accept="image/*" onChange={handleImageChange} style={{display:"none"}}/>
             <button className='btn btn-secondary'  onClick={handleUploadImage}>Upload Image</button>
               
           </CenteredContainer>
