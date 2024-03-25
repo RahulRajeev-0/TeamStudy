@@ -6,7 +6,6 @@ import { set_selected_group } from '../../../Redux/WorkspaceGroup/GroupSlice';
 
 // components
 import ChatInput from './chatInput';
-import MemberManagementModal from '../ChannelComponents/MemberManagementModal'
 
 // styled component
 import styled from 'styled-components'
@@ -17,6 +16,9 @@ import InfoIcon from '@mui/icons-material/Info';
 
 // modals 
 import EditChannelModal from '../ChannelComponents/EditChannelDetailModal';
+import MemberManagementModal from '../ChannelComponents/MemberManagementModal'
+import DeleteChannelModal from '../ChannelComponents/DeleteChannelModal'
+
 
 import {  useParams , useNavigate} from 'react-router-dom';
 import axios from 'axios';
@@ -68,13 +70,21 @@ const Chat = () => {
                <p>[{groupInfo.topic}]</p>
             </HeaderLeft>
             <HeaderRight>
-                <p>
+                
+            
+                  
                     
-                    
-                    <EditChannelModal groupDetails={groupDetails}/>
+                    {profile.isAdmin === true &&(
+                        <span>
+                        <EditChannelModal/>
                     
                     <MemberManagementModal/>
-                </p>
+                    <DeleteChannelModal/>
+                    </span>  
+                    )}
+                
+                    
+                   
             </HeaderRight>
         </Header>
 
@@ -120,7 +130,7 @@ const HeaderLeft = styled.div`
 `;
 const HeaderRight = styled.div`
 
-    >p {
+    >span {
         display:flex;
         align-items: center;
         font-size:14px;
