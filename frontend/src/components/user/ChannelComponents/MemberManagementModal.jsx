@@ -1,8 +1,22 @@
-import * as React from 'react';
+import  React, {useEffect, useState} from 'react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
+
+// icons
+import ManageAccountsOutlinedIcon from '@mui/icons-material/ManageAccountsOutlined';
+
+// axios
+import axios from 'axios'
+
+import {  useParams } from 'react-router-dom';
+
+// react redux
+import { useSelector, useDispatch } from 'react-redux';
+
+
+// material ui table 
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -10,10 +24,9 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-// icons
-import ManageAccountsOutlinedIcon from '@mui/icons-material/ManageAccountsOutlined';
+import { toast } from 'react-toastify';
 
-// material ui table 
+
 
 const style = {
     position: 'absolute',
@@ -31,22 +44,69 @@ const style = {
   };
 
 export default function BasicModal() {
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+  const [members, setMembers] = useState([])
+  const baseURL = "http://127.0.0.1:8000";
+  const token = localStorage.getItem('access');
+  const dispatch = useDispatch();
+  const {groupId} = useParams();
+  const profile = useSelector(state => state.workspaceUserProfile);
 
 
 //  ========================== member listing table ============================
-const members = [
-    { id: 1, name: 'John Doe' },
-    { id: 2, name: 'Jane Smith' },
-    { id: 3, name: 'Alice Johnson' },
-    { id: 4, name: 'Bob Brown' },
-  ];
+const fetchMembers = async () => {
+  try {
+    const response = await axios.get(`${baseURL}/group/group-member-list/${groupId}/${profile.id}/`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+    });
+    if (response.status === 200) {
+      console.log(response.data); // Check the structure of the response data
+      setMembers(response.data); // Set the member data to the state
+      
+    }
+  } catch (error) {
+    console.error("Error fetching members:", error);
+   
+  }
+};
+
+  useEffect(()=>{
+    fetchMembers();
+  },[])
 //  =========================================================================== 
+
+
+  const handleKickOut = async (memberId) =>{
+    try{
+      const response = await axios.delete(
+        `${baseURL}/group/group-member/${groupId}/${memberId}/${profile.id}/`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.status === 200){
+        toast.success("Removed")
+        fetchMembers();
+      }
+
+    }
+  catch(error){
+    console.log(error)
+  }
+}
+
   return (
     <div>
-      <Button onClick={handleOpen}><ManageAccountsOutlinedIcon/> </Button>
+      <Button onClick={handleOpen}> <ManageAccountsOutlinedIcon/> </Button>
       <Modal
         open={open}
         onClose={handleClose}
@@ -71,10 +131,10 @@ const members = [
                 <TableBody>
                   {members.map((member) => (
                     <TableRow key={member.id}>
-                      <TableCell style={{ color: 'white' }}>{member.name}</TableCell>
+                      <TableCell style={{ color: 'white' }}>{member.username} ({member.display_name})</TableCell>
                       <TableCell>
                         {/* Add your action buttons here */}
-                        <Button >
+                        <Button color='error' onClick={() => handleKickOut(member.id)}>
                           Kick Out
                         </Button>
                       </TableCell>

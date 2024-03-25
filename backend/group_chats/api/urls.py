@@ -8,6 +8,7 @@ urlpatterns = [
 
     #  group views
     path('group-member/<int:group_id>/<int:member_id>/<int:request_id>/', views.WorkspaceGroupMemberView.as_view(), name="group-member-view"),
+    path('group-member-list/<int:group_id>/<int:member_id>/', views.GroupMembersListView.as_view(), name="group-member-list"),
 
 ]
 

@@ -18,8 +18,9 @@ import InfoIcon from '@mui/icons-material/Info';
 // modals 
 import EditChannelModal from '../ChannelComponents/EditChannelDetailModal';
 
-import {  useParams } from 'react-router-dom';
+import {  useParams , useNavigate} from 'react-router-dom';
 import axios from 'axios';
+import { toast } from 'react-toastify';
 
 const Chat = () => {
     const [groupInfo, setGroupInfo] = useState({id:null, name:null, topic:null, description:null})
@@ -27,6 +28,7 @@ const Chat = () => {
     const token = localStorage.getItem('access');
     const dispatch = useDispatch();
     const {groupId} = useParams();
+    const navigate = useNavigate();
    
     const profile = useSelector(state => state.workspaceUserProfile);
     const groupDetails = useSelector(state =>state.user_select_group);
@@ -45,21 +47,25 @@ const Chat = () => {
             setGroupInfo(response.data)
             dispatch(set_selected_group(response.data))
         }catch(error){
+            if (error.response && error.response.status === 403){
+                toast.warning(error.response.data.message)
+                navigate('/workspace')
+            }
             console.log(error);
         }
     }
 
     useEffect(()=>{
         fetchGroupInfo();
-    },[])
+    },[groupId])
 
   return (
     <ChatContainer>
         <>
         <Header>
             <HeaderLeft>
-                <h4><strong># {groupDetails.name}</strong></h4><StarBorderIcon/>
-               <p>[{groupDetails.topic}]</p>
+                <h4><strong># {groupInfo.name}</strong></h4><StarBorderIcon/>
+               <p>[{groupInfo.topic}]</p>
             </HeaderLeft>
             <HeaderRight>
                 <p>

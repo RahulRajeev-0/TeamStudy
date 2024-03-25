@@ -97,7 +97,7 @@ class WorkspaceGroupView(APIView):
             serializer = WorkspaceGroupSerializer(group)
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:
-            return Response({'message':'Your not a member of the workspace'}, status=status.HTTP_403_FORBIDDEN)
+            return Response({'message':'Your not a member of the Group'}, status=status.HTTP_403_FORBIDDEN)
         
 
 
@@ -153,8 +153,12 @@ class WorkspaceGroupView(APIView):
             group.is_private = is_private
             group.save()
             serializer = WorkspaceGroupSerializer(group)
-            return Response({"messages":"Updated Successfully", 'data':serializer.data}, 
-                            status=status.HTTP_200_OK)
+            return Response(
+                {
+                    "messages":"Updated Successfully", 
+                    'data':serializer.data
+                }, 
+                status=status.HTTP_200_OK)
         else:
             return Response({"message":"Your not an admin, only admins can edit groups info"}, 
                             status=status.HTTP_403_FORBIDDEN)  
@@ -180,12 +184,69 @@ class WorkspaceGroupMemberView(APIView):
                     group=group, 
                     member=new_member
                     )
-                return Response({'message':"Added to group"}, 
+                return Response({'message':"Added to channel"}, 
                                 status=status.HTTP_201_CREATED)
         except Exception as e:
             print(e)
             return Response({'message':"Something went wrong"}, 
                             status=status.HTTP_400_BAD_REQUEST)
+        
+
+
+
+        # for removing the member in a group 
+    def delete(self, request, group_id, member_id, request_id):
+        try:
+            group = WorkspaceGroup.objects.get(id=group_id)
+            # member = WorkspaceMembers.objects.get(id=member_id)
+            
+        except Exception as e:
+            print (e)
+            return Response({'message':'Unable find the group'},
+                             status=status.HTTP_400_BAD_REQUEST)
+
+        try:        
+            request_from = WorkspaceMembers.objects.get(id=request_id)
+            if request_from.is_admin:
+                member = WorkspaceGroupMember.objects.get(id=member_id)
+                
+                member.delete()
+                return Response({'message':"Removed from Channel"}, 
+                                status=status.HTTP_200_OK)
+        except Exception as e:
+            print(e)
+            return Response({'message':"Something went wrong"}, 
+                            status=status.HTTP_400_BAD_REQUEST)
+        
+
+        
+
+class GroupMembersListView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, group_id, member_id):
+        try:
+        # Retrieve the group
+            group = WorkspaceGroup.objects.get(id=group_id)
+            
+            # Retrieve all members of the group along with their display names and usernames
+            group_members = WorkspaceGroupMember.objects.filter(group=group).select_related('member__user')
+            member = WorkspaceMembers.objects.get(id=member_id)
+            # Extract the data you need
+            if member.is_admin:
+                members_data = []
+                for group_member in group_members:
+                    id = group_member.id
+                    display_name = group_member.member.display_name
+                    username = group_member.member.user.username
+                    members_data.append({'display_name': display_name, 'username': username, 'id':id})
+                
+                return Response(data=members_data, status=status.HTTP_200_OK)
+            else:
+                return Response({'message':"You're not an admin"}, status=status.HTTP_403_FORBIDDEN)
+        except WorkspaceGroup.DoesNotExist:
+            # Handle the case where the group does not exist
+            return Response(data=[], status=status.HTTP_400_BAD_REQUEST)
         
         
 
