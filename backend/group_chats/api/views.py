@@ -13,8 +13,8 @@ from group_chats.models import  WorkspaceGroupMember, WorkspaceGroup
 from workspaces.models import WorkspaceMembers, Workspaces
 
 # serializers 
-from group_chats.api.serializers import WorkspaceGroupSerializer, WorkspaceGroupListSerializer
-
+from group_chats.api.serializers import WorkspaceGroupSerializer, WorkspaceGroupListSerializer, WorkspaceMembersSerializer
+from workspaces.api.serializers import WorkspaceMemberListing
 
 # =================================== views =================================
 
@@ -209,13 +209,41 @@ class WorkspaceGroupMemberView(APIView):
             request_from = WorkspaceMembers.objects.get(id=request_id)
             if request_from.is_admin:
                 member = WorkspaceGroupMember.objects.get(id=member_id)
-                
                 member.delete()
                 return Response({'message':"Removed from Channel"}, 
                                 status=status.HTTP_200_OK)
         except Exception as e:
             print(e)
             return Response({'message':"Something went wrong"}, 
+                            status=status.HTTP_400_BAD_REQUEST)
+
+
+from django.db.models import Q
+# view for getting the workspace members list who is not in the group or channel (for adding member to the group  listing)
+class NotMemberOfGroupView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self,request, group_id, request_id, workspace_id):
+        try:
+        # Retrieve the group 
+            group = WorkspaceGroup.objects.get(id=group_id)
+            print(group.name)
+            # Retrieve members who are not part of the group
+            all_members = WorkspaceMembers.objects.filter(workspace=workspace_id)
+            group_member_ids = WorkspaceGroupMember.objects.filter(group=group).values_list('member__id', flat=True)
+            filtered_members = all_members.exclude(id__in=group_member_ids)
+
+            request_from = WorkspaceMembers.objects.get(id=request_id)
+            if request_from.is_admin:
+                serializer = WorkspaceMembersSerializer(filtered_members, many=True)
+                
+                return Response(data=serializer.data, status=status.HTTP_200_OK) 
+            else:
+                return Response ({"message":"You're not an Admin"}, 
+                                 status=status.HTTP_403_FORBIDDEN)
+        except WorkspaceGroup.DoesNotExist:
+            # Handle the case where the group does not exist
+            return Response({"message":"Something wend wrong"}, 
                             status=status.HTTP_400_BAD_REQUEST)
         
 

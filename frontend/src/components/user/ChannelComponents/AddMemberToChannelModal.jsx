@@ -3,10 +3,9 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
-import AddMemberToChannel from './AddMemberToChannelModal'
-// icons
-import ManageAccountsOutlinedIcon from '@mui/icons-material/ManageAccountsOutlined';
 
+// icons
+import PersonAddIcon from '@mui/icons-material/PersonAdd';
 // axios
 import axios from 'axios'
 
@@ -44,9 +43,9 @@ const style = {
   };
 
 export default function BasicModal() {
-  const [open, setOpen] = useState(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+  const [show, setShow] = useState(false);
+  const handleOpen = () => setShow(true);
+  const handleClose = () => setShow(false);
   const [members, setMembers] = useState([])
   const baseURL = "http://127.0.0.1:8000";
   const token = localStorage.getItem('access');
@@ -54,11 +53,14 @@ export default function BasicModal() {
   const {groupId} = useParams();
   const profile = useSelector(state => state.workspaceUserProfile);
 
+  
 
 //  ========================== member listing table ============================
 const fetchMembers = async () => {
+    
   try {
-    const response = await axios.get(`${baseURL}/group/group-member-list/${groupId}/${profile.id}/`, {
+    const workspaceId = sessionStorage.getItem('workspaceId')
+    const response = await axios.get(`${baseURL}/group/workspace-group-adding-list/${groupId}/${profile.id}/${workspaceId}/`, {
       headers: {
         Authorization: `Bearer ${token}`,
         Accept: "application/json",
@@ -82,19 +84,20 @@ const fetchMembers = async () => {
 //  =========================================================================== 
 
 
-  const handleKickOut = async (memberId) =>{
+  const handleAdd = async (memberId) =>{
     try{
-      const response = await axios.delete(
+      const response = await axios.post(
         `${baseURL}/group/group-member/${groupId}/${memberId}/${profile.id}/`,
+        {},
         {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
         }
       );
 
-      if (response.status === 200){
-        toast.success("Removed")
+      if (response.status === 201){
+        toast.success("Added")
         fetchMembers();
       }
 
@@ -106,38 +109,38 @@ const fetchMembers = async () => {
 
   return (
     <div>
-      <Button onClick={handleOpen}> <ManageAccountsOutlinedIcon/> </Button>
+      <Button onClick={handleOpen}> <PersonAddIcon/> Add Member </Button>
       <Modal
-        open={open}
+        open={show}
         onClose={handleClose}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
           <Typography id="modal-modal-title" variant="h6" component="h2">
-            Group Member Management 
+            Add Member 
           </Typography>
          
           <Typography id="modal-modal-description" sx={{ mt: 2 , color: 'white'}}>
-          <AddMemberToChannel/>
+         
           <TableContainer component={Paper} style={{ maxHeight: 400, overflowY: 'auto', backgroundColor:"black"}}>
               <Table>
                 <TableHead>
                   <TableRow>
                   <TableCell style={{ color: 'white' }}>User Name</TableCell>
-                  <TableCell style={{ color: 'white' }}>display Name</TableCell>
+                  <TableCell style={{ color: 'white' }}>Email</TableCell>
         <TableCell style={{ color: 'white' }}>Action</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
                   {members.map((member) => (
                     <TableRow key={member.id}>
-                      <TableCell style={{ color: 'white' }}>{member.username}</TableCell>
-                      <TableCell style={{ color: 'white' }}> ({member.display_name})</TableCell>
+                      <TableCell style={{ color: 'white' }}>{member.user.username}</TableCell>
+                      <TableCell style={{ color: 'white' }}>{member.user.email}</TableCell>
                       <TableCell>
                         {/* Add your action buttons here */}
-                        <Button color='error' onClick={() => handleKickOut(member.id)}>
-                          Kick Out
+                        <Button color='success' variant='outlined' onClick={() => handleAdd(member.id)}>
+                          Add
                         </Button>
                       </TableCell>
                     </TableRow>
