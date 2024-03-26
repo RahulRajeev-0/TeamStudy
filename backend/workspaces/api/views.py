@@ -388,7 +388,7 @@ class WorkspaceMemberList(APIView):
                                                             workspace=workspace_id).first()
                 
                 if user_obj:
-                    workspace_members = WorkspaceMembers.objects.filter(workspace=workspace_id)
+                    workspace_members = WorkspaceMembers.objects.filter(workspace=workspace_id).exclude(user=request.user)
                     serilizer = WorkspaceMemberListing(workspace_members, many=True)
                     return Response(data=serilizer.data, status=status.HTTP_200_OK)
 
