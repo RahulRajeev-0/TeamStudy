@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react'
 
 // react redux 
 import { useSelector, useDispatch } from 'react-redux'
-import { set_selected_group } from '../../../Redux/WorkspaceGroup/GroupSlice';
+// import { set_selected_group } from '../../../Redux/WorkspaceGroup/GroupSlice';
 
 // components
 import ChatInput from './chatInput';
@@ -12,12 +12,8 @@ import styled from 'styled-components'
 
 // material ui icons
 import StarBorderIcon from '@mui/icons-material/StarBorder';
-import InfoIcon from '@mui/icons-material/Info';
 
-// modals 
-import EditChannelModal from '../ChannelComponents/EditChannelDetailModal';
-import MemberManagementModal from '../ChannelComponents/MemberManagementModal'
-import DeleteChannelModal from '../ChannelComponents/DeleteChannelModal'
+
 
 
 import {  useParams , useNavigate} from 'react-router-dom';
@@ -25,7 +21,7 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 
 const DMChat = () => {
-    const [userInfo, setUserInfo] = useState({id:null, display_name:null, username:null})
+    const [userInfo, setUserInfo] = useState({id:null, display_name:null, username:null, user:{}})
     const baseURL = "http://127.0.0.1:8000"
     
     const dispatch = useDispatch();
@@ -75,7 +71,7 @@ const DMChat = () => {
         <>
         <Header>
             <HeaderLeft>
-                <h4><strong># {userInfo.display_name}</strong></h4><StarBorderIcon/>
+                <h4><strong>#{userInfo.user.username}  ({userInfo.display_name})</strong></h4><StarBorderIcon/>
                
             </HeaderLeft>
             <HeaderRight>
@@ -83,15 +79,7 @@ const DMChat = () => {
             
                   
                     
-                    {/* {profile.isAdmin === true &&(
-                        <span>
-                        <EditChannelModal/>
                     
-                    <MemberManagementModal/>
-                    <DeleteChannelModal/>
-                    </span>  
-                    )} */}
-                
                     
                    
             </HeaderRight>
