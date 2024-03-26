@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'application_management',
     'workspaces',
     'group_chats',
+    'dm_chats',
     
 
     "corsheaders",

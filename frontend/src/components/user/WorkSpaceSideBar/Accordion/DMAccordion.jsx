@@ -9,6 +9,9 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import { useSelector } from 'react-redux';
 
+// react router dom
+import { useNavigate } from 'react-router-dom';
+
 import axios from 'axios';
 
 // icon
@@ -66,7 +69,7 @@ const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
 export default function CustomizedAccordions() {
   const [expanded, setExpanded] = React.useState('panel1');
   const [workspaceMembers, setWorkspaceMembers] = useState([])
-
+  const navigate = useNavigate();
   const baseURL = "http://127.0.0.1:8000/"
   const userProfileDetails = useSelector(state => state.workspaceUserProfile);
 
@@ -108,7 +111,7 @@ export default function CustomizedAccordions() {
             <Typography>
             <div style={{ display: 'flex', flexDirection: 'column', marginTop: '8px',  }}>
               {workspaceMembers.map((user => (
-                <Button key={user.id} onClick={()=>handleGroupSelect(user.username)} size="small"  style={{ marginBottom: '8px', color:'grey', fontWeight:'bold' }} >
+                <Button key={user.id} onClick={() =>  navigate(`/workspace-dm/${user.id}`)} size="small"  style={{ marginBottom: '8px', color:'grey', fontWeight:'bold' }} >
                   {user.user.username} 
                 </Button>
               )))}
