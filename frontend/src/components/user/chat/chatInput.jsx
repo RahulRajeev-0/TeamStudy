@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useRef } from 'react'
 import styled from 'styled-components'
 
 // material ui icon
@@ -7,17 +7,29 @@ import SendIcon from '@mui/icons-material/Send';
 // material ui components
 import Button from '@mui/material/Button';
 
-const ChatInput = () => {
+const ChatInput = ({channelId, chatRef}) => {
+
+    const inputRef = useRef(null);
+
     const sendMessage = (e)=> {
         e.preventDefault();
+        // if (channelId){
+        //     return false;
+        // }
+        console.log(inputRef.current.value);
+        inputRef.current = '';
+
+        chatRef.current?.scrollIntoView({
+            behavior:'smooth',
+        });
     }
   return (
     <>
     <ChatInputContainer>
         <form>
-            <input placeholder='Message'/>
+            <input ref={inputRef} placeholder='Message'/>
             <Button variant="contained" endIcon={<SendIcon />} type='submit' onClick={sendMessage}>
-                Send
+                send
             </Button>
         </form>
     </ChatInputContainer>

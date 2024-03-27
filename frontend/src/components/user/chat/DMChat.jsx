@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react'
+import React, {useEffect, useRef, useState} from 'react'
 
 // react redux 
 import { useSelector, useDispatch } from 'react-redux'
@@ -13,21 +13,22 @@ import styled from 'styled-components'
 // material ui icons
 import StarBorderIcon from '@mui/icons-material/StarBorder';
 
-
+import Message from './Message';
 
 
 import {  useParams , useNavigate} from 'react-router-dom';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 
+
 const DMChat = () => {
     const [userInfo, setUserInfo] = useState({id:null, display_name:null, username:null, user:{}})
     const baseURL = "http://127.0.0.1:8000"
-    
+    const chatRef = useRef()
     const dispatch = useDispatch();
     const {memberId} = useParams();
     const navigate = useNavigate();
-   
+    const [message, setMessage] = useState([{"message":"hello", "username":"rahu"},{"message":"hi", "username":"rajeev"}])
     const profile = useSelector(state => state.workspaceUserProfile);
     
     // api for fetching the group info (name, description, topic)
@@ -64,7 +65,12 @@ const DMChat = () => {
 
     useEffect(()=>{
         fetchUserInfo();
+        chatRef.current?.scrollIntoView({
+            behavior:'smooth',
+        });
     },[memberId])
+
+
 
   return (
     <ChatContainer>
@@ -86,9 +92,17 @@ const DMChat = () => {
         </Header>
 
         <ChatMessages>
-            {/* llisting out the messages */}
+          {message.map((chat)=>{
+            return (
+                <Message
+                message={chat.message}
+                username={chat.username}
+                />
+            )
+          })}
+          <ChatBottom />
         </ChatMessages>
-        <ChatInput/>
+        <ChatInput chatRef={chatRef}/>
         </>
 
     </ChatContainer>
@@ -96,6 +110,11 @@ const DMChat = () => {
 }
 
 export default DMChat;
+
+const ChatBottom = styled.div`
+padding-bottom:200px;
+`;
+
 
 const Header = styled.div`
     display:flex;
