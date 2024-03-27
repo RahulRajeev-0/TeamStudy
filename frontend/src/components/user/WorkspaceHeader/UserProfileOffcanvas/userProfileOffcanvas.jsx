@@ -120,8 +120,9 @@ const UserProfileOffcanvas = ({ handleClose, show }) => {
     
   }
 
-  
 
+  console.log('=====================');
+console.log(userProfileDetails.profilePic);
   return (
     <div>
       <Offcanvas show={show} onHide={handleClose} placement='end' style={{backgroundColor:"#292829", color:'white'}}>
@@ -132,7 +133,7 @@ const UserProfileOffcanvas = ({ handleClose, show }) => {
         </Offcanvas.Header>
         <Offcanvas.Body>
           <CenteredContainer>
-            <ProfileImage src={userProfileDetails.profilePic ? "http://localhost:8000/" + userProfileDetails.profilePic : profilePic} alt="Profile Picture" />
+            <ProfileImage src={userProfileDetails.profilePic ? "http://localhost:8000" + userProfileDetails.profilePic : profilePic} alt="Profile Picture" />
            <input type="file" ref={inputRef} accept="image/*" onChange={handleImageChange} style={{display:"none"}}/>
             <button className='btn btn-secondary'  onClick={handleUploadImage}>Upload Image</button>
               
