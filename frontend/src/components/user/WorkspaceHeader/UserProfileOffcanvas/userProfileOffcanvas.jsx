@@ -24,7 +24,9 @@ const UserProfileOffcanvas = ({ handleClose, show }) => {
   const dispatch = useDispatch();
   const token = localStorage.getItem('access')
   const workspaceId = sessionStorage.getItem('workspaceId')
+
   const userProfileDetails = useSelector(state => state.workspaceUserProfile);
+  
   const [displayName, setDisplayName] = useState(userProfileDetails.displayName);
   const [phone, setPhone] = useState(userProfileDetails.phoneNo);
   const [about, setAbout] = useState(userProfileDetails.aboutMe);
@@ -37,6 +39,8 @@ const UserProfileOffcanvas = ({ handleClose, show }) => {
     }
   } 
   
+
+  // for updating the profile pic
   const handleImageChange = async (e) =>{
     const file = e.target.files[0];
 
@@ -79,7 +83,7 @@ const UserProfileOffcanvas = ({ handleClose, show }) => {
 
   }
 
-
+//  for updating the profile details
   const handleSaveAll = async ()=> {
 
    
