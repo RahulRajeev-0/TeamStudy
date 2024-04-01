@@ -10,9 +10,12 @@ class PersonalChatConsumer(AsyncWebsocketConsumer):
     # for connecting 
     async def connect(self):
         # group_id = sorted(workspace member id (sender) + workspace member id (receiver))
-        self.group_id = self.scope['url_route']['kwargs']['id'] 
-        print(self.group_id)
-        self.room_group_name = f'chat_{self.group_id}'
+        user_id1 = self.scope['url_route']['kwargs']['user_id1'] 
+        user_id2 = self.scope['url_route']['kwargs']['user_id2'] 
+        user_ids = [int(user_id1), int(user_id2)]
+        print(user_ids)
+        user_ids = sorted(user_ids)
+        self.room_group_name = f'chat_{user_ids[0]}-{user_ids[1]}'
         await self.channel_layer.group_add(
                 self.room_group_name,
                 self.channel_name
@@ -38,7 +41,7 @@ class PersonalChatConsumer(AsyncWebsocketConsumer):
     # getting the previous chats 
     @database_sync_to_async
     def get_existing_messages(self):
-        messages = ChatMessage.objects.filter(group_id=self.group_id)
+        messages = ChatMessage.objects.filter(group=self.room_group_name)
         return [{'message': message.message} for message in messages]
     
 
@@ -48,10 +51,10 @@ class PersonalChatConsumer(AsyncWebsocketConsumer):
 
     async def chat_message(self, event):
         message = event['data']['message']
-        sender_name = event['data']['sendername']
+        sender = event['data']['sender']
         await self.send(text_data=json.dumps({
             "message":message,
-            'sendername':sender_name,
+            'sender':sender,
         }))
 
 
@@ -61,7 +64,7 @@ class PersonalChatConsumer(AsyncWebsocketConsumer):
     async def receive(self, text_data=None, bytes_data=None):
         data = json.loads(text_data)
         message = data['message']
-        sender_name = data.get('username', 'Anonymous')
+        sender = data.get('sender', 'Anonymous')
 
         # await self.save_message(sender_name, message)
 
@@ -71,7 +74,7 @@ class PersonalChatConsumer(AsyncWebsocketConsumer):
                 'type':'chat.message',
                 'data':{
                     'message':message,
-                    'sendername':sender_name
+                    'sender':sender
                 },
             }
         )

@@ -32,7 +32,8 @@
     "sass": "^1.70.0",
     "styled-components": "^6.1.8",
     "three": "^0.121.0",
-    "vanta": "^0.5.24"
+    "vanta": "^0.5.24",
+    "websocket": "^1.0.34"
   },
   "devDependencies": {
     "@types/react": "^18.2.43",

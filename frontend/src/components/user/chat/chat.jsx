@@ -19,6 +19,8 @@ import EditChannelModal from '../ChannelComponents/EditChannelDetailModal';
 import MemberManagementModal from '../ChannelComponents/MemberManagementModal'
 import DeleteChannelModal from '../ChannelComponents/DeleteChannelModal'
 
+// websocket
+import { w3cwebsocket as W3CWebSocket } from 'websocket';
 
 import {  useParams , useNavigate} from 'react-router-dom';
 import axios from 'axios';
@@ -57,6 +59,7 @@ const Chat = () => {
         }
     }
 
+    
     useEffect(()=>{
         fetchGroupInfo();
     },[groupId])
