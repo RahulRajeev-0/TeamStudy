@@ -28,6 +28,7 @@ urlpatterns = [
     path('application_management/', include('application_management.api.urls')),
     path('workspace/', include('workspaces.api.urls')),
     path('group/', include('group_chats.api.urls')),
+    path('dm/', include('dm_chats.api.urls')),
     
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

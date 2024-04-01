@@ -32,6 +32,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'daphne',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -43,6 +44,7 @@ INSTALLED_APPS = [
     'application_management',
     'workspaces',
     'group_chats',
+    'dm_chats',
     
 
     "corsheaders",
@@ -51,8 +53,20 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt.token_blacklist',
 
+    # channels
+
 
 ]
+
+# defining the channel layar for chating 
+CHANNEL_LAYERS = {
+    "default":{
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("127.0.0.1", 6379)]},
+        }
+    }
+
 
 REST_FRAMEWORK = {
    
@@ -134,7 +148,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'backend.wsgi.application'
+ASGI_APPLICATION = 'backend.asgi.application'
 
 
 # Database
