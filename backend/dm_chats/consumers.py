@@ -76,7 +76,7 @@ class PersonalChatConsumer(AsyncWebsocketConsumer):
         sender = data.get('sender', 'Anonymous')
 
         if sender:
-            await self.save_message(int(sender), message)
+            await self.save_message(sender, message)
 
         await self.channel_layer.group_send(
             self.room_group_name,
@@ -102,10 +102,14 @@ class PersonalChatConsumer(AsyncWebsocketConsumer):
     @database_sync_to_async
     def get_member_instance(self, member_id):
         try:
-            member = WorkspaceMembers.objects.get(id=member_id)
-            return member
+            if member_id != 'Anonymous':
+                member = WorkspaceMembers.objects.get(id=int(member_id))
+                return member
+            else:
+                return 
         except WorkspaceMembers.DoesNotExist:
             print("can't find the member")
+           
 
     @database_sync_to_async
     def save_message_to_db(self, sender, message):
