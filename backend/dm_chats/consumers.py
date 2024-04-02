@@ -2,6 +2,7 @@ from channels.generic.websocket import AsyncWebsocketConsumer
 import json
 from asgiref.sync import sync_to_async
 from .models import ChatMessage
+from workspaces.models import WorkspaceMembers
 from channels.db import database_sync_to_async
 
 class PersonalChatConsumer(AsyncWebsocketConsumer):
@@ -42,7 +43,7 @@ class PersonalChatConsumer(AsyncWebsocketConsumer):
     @database_sync_to_async
     def get_existing_messages(self):
         messages = ChatMessage.objects.filter(group=self.room_group_name)
-        return [{'message': message.message} for message in messages]
+        return [{'message': message.message, 'sender': message.sender_id} for message in messages]
     
 
 
@@ -58,6 +59,14 @@ class PersonalChatConsumer(AsyncWebsocketConsumer):
         }))
 
 
+    # function for saving the data -> this will call the function to save data to the database
+    async def save_message(self, sender, message):
+        if sender:
+            sender = await self.get_member_instance(sender)
+            await self.save_message_to_db(sender, message)
+        else:
+            print("sender id not found ")
+
 
 
     # getting the message 
@@ -66,7 +75,8 @@ class PersonalChatConsumer(AsyncWebsocketConsumer):
         message = data['message']
         sender = data.get('sender', 'Anonymous')
 
-        # await self.save_message(sender_name, message)
+        if sender:
+            await self.save_message(int(sender), message)
 
         await self.channel_layer.group_send(
             self.room_group_name,
@@ -88,17 +98,25 @@ class PersonalChatConsumer(AsyncWebsocketConsumer):
         })
 
 
+   
+    @database_sync_to_async
+    def get_member_instance(self, member_id):
+        try:
+            member = WorkspaceMembers.objects.get(id=member_id)
+            return member
+        except WorkspaceMembers.DoesNotExist:
+            print("can't find the member")
 
-    # for saving the message to the data base 
-    # async def save_message(self, sendername, message):
-    #     if self.appointment:
-    #         sender = await self.get_user_instance(self.appointment.patient_id)
-    #         receiver = await self.get_order_instance(self.appointment.doctor_id)
-    #         sendername = sendername
-    #         await self.save_message_to_db(sender, receiver, sendername, message)
-    #     else:
-    #         print("Appointment is None. Message not saved.")
-    
+    @database_sync_to_async
+    def save_message_to_db(self, sender, message):
+        if sender:
+            ChatMessage.objects.create(
+                sender=sender,
+                message=message,
+                group=self.room_group_name,
+            )
+            print("Message saved to database.")
+        else:
+            print("Sender is None. Message not saved.")
 
-
-
+            

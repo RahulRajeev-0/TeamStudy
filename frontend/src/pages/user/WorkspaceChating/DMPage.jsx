@@ -3,6 +3,7 @@ import WorkspaceHeader from '../../../components/user/WorkspaceHeader/WorkspaceH
 import WorkSpaceSideBar from "../../../components/user/WorkSpaceSideBar/WorkSpaceSideBar"
 import DMChat from "../../../components/user/chat/DMChat"
 import styled from 'styled-components'
+import backgroundImage from "../../../../../chatBackground.jpg"
 
 const ChannelPage = () => {
   return (
@@ -23,7 +24,14 @@ export default ChannelPage;
 const WorkspaceBody = styled.div`
   display: flex;
   height: 100vh;
-  background:#282626;
+  
+  background: url(${backgroundImage});
+  background-position: center;
+  background-size: cover;
+  z-index:-1;
+  
+  
+  
 `;
 
 
