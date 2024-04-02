@@ -6,7 +6,7 @@ import SendIcon from '@mui/icons-material/Send';
 import Button from '@mui/material/Button';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { w3cwebsocket as W3CWebSocket } from 'websocket';
+import { w3cwebsocket as W3CWebSocket, connection } from 'websocket';
 import Message from './Message';
 import ChatInput from './ChatInput';
 
@@ -36,6 +36,8 @@ const DMChat = () => {
     }
   };
 
+
+  // function to connect to the websocket
   const connectToWebsocket = () => {
     const newConnection = new W3CWebSocket(`ws://127.0.0.1:8000/ws/dm_chats/${profile.id}/${userInfo.id}/`);
     newConnection.onopen = () => {
@@ -73,12 +75,14 @@ const DMChat = () => {
   useEffect(() => {
     fetchUserInfo();
     inputRef.current?.scrollIntoView({ behavior: 'smooth' });
+   
   }, [memberId]);
 
   useEffect(() => {
     if (userInfo.id) {
       connectToWebsocket();
     }
+    
   }, [userInfo.id]);
 
   return (
@@ -94,7 +98,7 @@ const DMChat = () => {
     <Message
       key={index}
       message={chat.message}
-      username={chat.username}
+      // username={chat.username}
       isSender={chat.sender === profile.id} // Add a prop to identify if the sender is the current user
     />
   ))} <ChatBottom/>
