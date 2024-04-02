@@ -27,6 +27,7 @@ class PersonalChatConsumer(AsyncWebsocketConsumer):
         for message in existing_messages:
             await self.send(text_data=json.dumps({
                 'message': message['message'],
+                'sender': message['sender'],
             }))
 
 
@@ -43,7 +44,7 @@ class PersonalChatConsumer(AsyncWebsocketConsumer):
     @database_sync_to_async
     def get_existing_messages(self):
         messages = ChatMessage.objects.filter(group=self.room_group_name)
-        return [{'message': message.message, 'sender': message.sender_id} for message in messages]
+        return [{'message': message.message, 'sender': message.sender.id} for message in messages]
     
 
 
