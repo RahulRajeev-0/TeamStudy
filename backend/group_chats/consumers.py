@@ -21,7 +21,9 @@ class GroupChatConsumer(AsyncWebsocketConsumer):
         for message in existing_messages:
             await self.send(text_data=json.dumps({
                 'message': message['message'],
-                'sender': message['sender']
+                'sender': message['sender'],
+                'username':message['username']
+
             }))
     
     # disconnecting 
@@ -35,9 +37,12 @@ class GroupChatConsumer(AsyncWebsocketConsumer):
     async def chat_message(self, event):
         message = event['data']['message']
         sender = event['data']['sender']
+        username = event['data']['username']
+
         await self.send(text_data=json.dumps({
             "message":message,
             'sender':sender,
+            'username':username,
         }))
 
 
@@ -47,6 +52,7 @@ class GroupChatConsumer(AsyncWebsocketConsumer):
         data = json.loads(text_data)
         message = data['message']
         sender = data.get('sender', 'Anonymous')
+        username = data.get('username', "unkown")
 
         if sender:
             await self.save_message(sender, message)
@@ -57,7 +63,8 @@ class GroupChatConsumer(AsyncWebsocketConsumer):
                 'type':'chat.message',
                 'data':{
                     'message':message,
-                    'sender':sender
+                    'sender':sender,
+                    'username':username,
                 },
             }
         )
@@ -69,7 +76,7 @@ class GroupChatConsumer(AsyncWebsocketConsumer):
     @database_sync_to_async
     def get_existing_messages(self):
         messages = GroupChatMessage.objects.filter(group=self.room_group_name)
-        return [{'message': message.message, 'sender': message.sender.id} for message in messages]
+        return [{'message': message.message, 'sender': message.sender.id, 'username':message.sender.user.username} for message in messages]
     
 
     # function for saving the data -> this will call the function to save data to the database
@@ -100,6 +107,7 @@ class GroupChatConsumer(AsyncWebsocketConsumer):
                 sender=sender,
                 message=message,
                 group=self.room_group_name,
+                
             )
             print("Message saved to database.")
         else:

@@ -8,7 +8,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { w3cwebsocket as W3CWebSocket, connection } from 'websocket';
 import Message from './Message';
-import ChatInput from './ChatInput';
+
 
 const DMChat = () => {
   const [userInfo, setUserInfo] = useState({ id: null, display_name: null, username: null, user: {} });

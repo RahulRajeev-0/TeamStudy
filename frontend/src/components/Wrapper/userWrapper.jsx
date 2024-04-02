@@ -125,7 +125,7 @@ function UserWrapper() {
         const isAuthenticated = await isAuthUser();
         dispatch(
             set_authentication({
-                name:isAuthenticated.name,
+                username:isAuthenticated.username,
                 isAuthenticated:isAuthenticated.isAuthenticated,
             })
         );
