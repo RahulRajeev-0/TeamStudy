@@ -94,6 +94,7 @@ const DMChat = () => {
         </HeaderLeft>
       </Header>
       <ChatMessages>
+        <ChatTop/>
       {chatMessages.map((chat, index) => (
     <Message
       key={index}
@@ -121,6 +122,8 @@ export default DMChat;
 const ChatBottom = styled.div`
 padding-bottom:200px;
 `;
+const ChatTop = styled.div`
+padding-top:100px`;
 
 
 const Header = styled.div`
@@ -131,6 +134,10 @@ const Header = styled.div`
     color:white;
     background:#3f3c42;
     border-radius:5px;
+    position: fixed;
+    width: 78%;
+    // padding-bottom:200px;
+    
    
     `;
 const HeaderLeft = styled.div`
@@ -172,6 +179,7 @@ const ChatContainer = styled.div`
 `;
 
 const ChatInputContainer = styled.div`
+  
   border-radius: 20px;
   > form {
     position: relative;

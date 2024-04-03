@@ -118,6 +118,8 @@ const Chat = () => {
         }
     }, [groupDetails.id])
 
+    
+
   return (
     <ChatContainer>
         <>
