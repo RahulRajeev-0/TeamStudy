@@ -20,6 +20,7 @@
     "@mui/x-data-grid": "^6.19.4",
     "@react-oauth/google": "^0.12.1",
     "@reduxjs/toolkit": "^2.1.0",
+    "@zegocloud/zego-uikit-prebuilt": "^2.0.1",
     "bootstrap": "^5.3.3",
     "jwt-decode": "^4.0.0",
     "react": "^18.2.0",

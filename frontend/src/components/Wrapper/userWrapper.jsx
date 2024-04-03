@@ -27,6 +27,8 @@ import BaseHomePage from '../../pages/BaseHomePage'
 import PrivateRoutes from "../private_routes/PrivateRoutes";
 import WorkspaceInvitationPage from "../../pages/user/Workspace/WorkspaceInvitationPage";
 import DMPage from "../../pages/user/WorkspaceChating/DMPage"
+import OneOnOneVideoCall from '../../components/user/OneOnOneVideo/ZegoVideoCall'
+import OneOnOneAudioCall from "../user/OneOnOneAudio/ZegoAudioCall";
 
 // google Oauth 
 import { GoogleOAuthProvider } from '@react-oauth/google';
@@ -162,7 +164,8 @@ function UserWrapper() {
         <Route path="/workspace-settings-members" element={<PrivateRoutes>  <WorkspaceAdminMemberManagementPage/>  </PrivateRoutes>} />
         <Route path="/workspace-channel/:groupId/" element={<PrivateRoutes><ChannelPage/></PrivateRoutes>} />
         <Route path="/workspace-dm/:memberId/" element={<PrivateRoutes><DMPage/></PrivateRoutes>}/>
-        
+        <Route path='/one-to-one-video/:roomId' element={<PrivateRoutes><OneOnOneVideoCall/> </PrivateRoutes>} />
+        <Route path='/one-to-one-audio/:roomId' element={<PrivateRoutes> <OneOnOneAudioCall/> </PrivateRoutes>} />
     </Routes>
         </GoogleOAuthProvider>
    )

@@ -70,25 +70,40 @@ class PersonalChatConsumer(AsyncWebsocketConsumer):
 
 
 
+    async def send_video_call_link(self, link):
+        """
+        Sends a video call link to the client.
+        """
+        await self.send(text_data=json.dumps({
+            'type': 'video_call_link',
+            'link': link,
+        }))
+
+
+
     # getting the message 
     async def receive(self, text_data=None, bytes_data=None):
         data = json.loads(text_data)
-        message = data['message']
+        message = data.get('message',"")
         sender = data.get('sender', 'Anonymous')
+        video_call_link = data.get('video_call_link')
 
-        if sender:
-            await self.save_message(sender, message)
+        if video_call_link:  # If a video call link is provided
+            await self.send_video_call_link(video_call_link)
+        else: 
+            if sender:
+                await self.save_message(sender, message)
 
-        await self.channel_layer.group_send(
-            self.room_group_name,
-            {
-                'type':'chat.message',
-                'data':{
-                    'message':message,
-                    'sender':sender
-                },
-            }
-        )
+            await self.channel_layer.group_send(
+                self.room_group_name,
+                {
+                    'type':'chat.message',
+                    'data':{
+                        'message':message,
+                        'sender':sender
+                    },
+                }
+            )
 
     
     @classmethod
