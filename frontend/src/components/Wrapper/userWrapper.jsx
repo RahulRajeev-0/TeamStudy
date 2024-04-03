@@ -49,6 +49,11 @@ function UserWrapper() {
     const fetchWorkspaces = async () => {
         
         try{
+          console.log('============');
+          console.log(workspaceId);
+          if (workspaceId == null){
+            window.location.reload();
+        }
             const response = await axios.get(baseURL+`/workspace/user-workspace-details/${workspaceId}/`,
             {
               headers: {
@@ -84,6 +89,10 @@ function UserWrapper() {
 
     // getting the user profile inside the workspace
     const fatchUserProfile = async () => {
+      const workspaceId = sessionStorage.getItem('workspaceId')
+      if (workspaceId == null){
+        window.location.reload();
+    }
       try{
         const response = await axios.get(baseURL+`/workspace/user-profile-details/${workspaceId}/`,
         {
@@ -116,7 +125,7 @@ function UserWrapper() {
         const isAuthenticated = await isAuthUser();
         dispatch(
             set_authentication({
-                name:isAuthenticated.name,
+                username:isAuthenticated.username,
                 isAuthenticated:isAuthenticated.isAuthenticated,
             })
         );
