@@ -3,12 +3,15 @@ import { useSelector, useDispatch } from 'react-redux';
 import styled from 'styled-components';
 import StarBorderIcon from '@mui/icons-material/StarBorder';
 import SendIcon from '@mui/icons-material/Send';
+import VideoCallIcon from '@mui/icons-material/VideoCall';
+import CallIcon from '@mui/icons-material/Call';
 import Button from '@mui/material/Button';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { w3cwebsocket as W3CWebSocket, connection } from 'websocket';
 import Message from './Message';
-import ChatInput from './ChatInput';
+
+import IconButton from '@mui/material/IconButton';
 
 const DMChat = () => {
   const [userInfo, setUserInfo] = useState({ id: null, display_name: null, username: null, user: {} });
@@ -72,6 +75,30 @@ const DMChat = () => {
       }, 100);
   };
 
+
+  const videoCall = ()=> {
+    const  roomId=randomID(10)
+    navigate(`/one-to-one-video/${roomId}`)
+  }
+  const AudioCall = ()=> {
+    const  roomId=randomID(10)
+    navigate(`/one-to-one-audio/${roomId}`)
+  }
+
+
+  function randomID(len) {
+    let result = '';
+    if (result) return result;
+    var chars = '12345qwertyuiopasdfgh67890jklmnbvcxzMNBVCZXASDQWERTYHGFUIOLKJP',
+      maxPos = chars.length,
+      i;
+    len = len || 5;
+    for (i = 0; i < len; i++) {
+      result += chars.charAt(Math.floor(Math.random() * maxPos));
+    }
+    return result;
+  }
+
   useEffect(() => {
     fetchUserInfo();
     inputRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -92,8 +119,20 @@ const DMChat = () => {
           <h4><strong>#{userInfo.user.username} ({userInfo.display_name})</strong></h4>
           <StarBorderIcon />
         </HeaderLeft>
+        <HeaderRight>
+        <IconButton color="secondary" onClick={videoCall} aria-label="add to shopping cart">
+          <VideoCallIcon/>
+      </IconButton>
+
+        <IconButton color="primary" onClick={AudioCall} aria-label="add to shopping cart">
+        
+          
+          <CallIcon/>
+      </IconButton>
+        </HeaderRight>
       </Header>
       <ChatMessages>
+        <ChatTop/>
       {chatMessages.map((chat, index) => (
     <Message
       key={index}
@@ -121,6 +160,8 @@ export default DMChat;
 const ChatBottom = styled.div`
 padding-bottom:200px;
 `;
+const ChatTop = styled.div`
+padding-top:100px`;
 
 
 const Header = styled.div`
@@ -131,6 +172,10 @@ const Header = styled.div`
     color:white;
     background:#3f3c42;
     border-radius:5px;
+    position: fixed;
+    width: 78%;
+    // padding-bottom:200px;
+    
    
     `;
 const HeaderLeft = styled.div`
@@ -157,6 +202,7 @@ const HeaderRight = styled.div`
         display:flex;
         align-items: center;
         font-size:14px;
+        justify-content:space-between;
         
     }
 `;
@@ -172,6 +218,7 @@ const ChatContainer = styled.div`
 `;
 
 const ChatInputContainer = styled.div`
+  
   border-radius: 20px;
   > form {
     position: relative;
