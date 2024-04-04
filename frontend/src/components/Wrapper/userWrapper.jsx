@@ -166,8 +166,8 @@ function UserWrapper() {
         <Route path="/workspace-settings-members" element={<PrivateRoutes>  <WorkspaceAdminMemberManagementPage/>  </PrivateRoutes>} />
         <Route path="/workspace-channel/:groupId/" element={<PrivateRoutes><ChannelPage/></PrivateRoutes>} />
         <Route path="/workspace-dm/:memberId/" element={<PrivateRoutes><DMPage/></PrivateRoutes>}/>
-        <Route path='/one-to-one-video/:roomId' element={<PrivateRoutes><OneOnOneVideoCall/> </PrivateRoutes>} />
-        <Route path='/one-to-one-audio/:roomId' element={<PrivateRoutes> <OneOnOneAudioCall/> </PrivateRoutes>} />
+        <Route path='/one-to-one-video/:roomId/:memberId' element={<PrivateRoutes><OneOnOneVideoCall/> </PrivateRoutes>} />
+        <Route path='/one-to-one-audio/:roomId/:memberId' element={<PrivateRoutes> <OneOnOneAudioCall/> </PrivateRoutes>} />
         <Route path='/group-video/:roomId' element={<PrivateRoutes><GroupVideoCall/> </PrivateRoutes>} />
         <Route path='/group-audio/:roomId' element={<PrivateRoutes> <GroupAudioCall/> </PrivateRoutes>} />
     </Routes>

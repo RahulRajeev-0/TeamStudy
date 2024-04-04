@@ -16,7 +16,7 @@ const GroupVideoCall = () => {
 
    
     const handleLeaveRoom = () => {
-        navigate(`/workspace`);
+        navigate(`/workspace-channel/${roomId}/`);
     }
 
     useEffect(() => {

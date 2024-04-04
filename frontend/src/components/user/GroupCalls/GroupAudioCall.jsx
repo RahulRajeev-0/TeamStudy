@@ -16,7 +16,7 @@ const GroupAudioCall = () => {
 
    
     const handleLeaveRoom = () => {
-        navigate(`/workspace`);
+        navigate(`/workspace-channel/${roomId}/`);
     }
 
     useEffect(() => {

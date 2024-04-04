@@ -122,11 +122,11 @@ const Chat = () => {
     }, [groupDetails.id])
 
     const videoCall = ()=> {
-      const  roomId=randomID(10)
+      const  roomId=groupId
       navigate(`/group-video/${roomId}`)
     }
     const AudioCall = ()=> {
-      const  roomId=randomID(10)
+      const  roomId=groupId
       navigate(`/group-audio/${roomId}`)
     }
   

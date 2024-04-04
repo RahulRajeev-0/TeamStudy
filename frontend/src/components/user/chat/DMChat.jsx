@@ -43,12 +43,17 @@ const DMChat = () => {
   // function to connect to the websocket
   const connectToWebsocket = () => {
     const newConnection = new W3CWebSocket(`ws://127.0.0.1:8000/ws/dm_chats/${profile.id}/${userInfo.id}/`);
+    
     newConnection.onopen = () => {
       console.log('WebSocket Client Connected');
     };
+    
     newConnection.onmessage = (message) => {
       const data = JSON.parse(message.data);
-      setChatMessages(prevMessages => [...prevMessages, data]);
+        console.log(data.type);
+        // Regular chat message
+        setChatMessages(prevMessages => [...prevMessages, data]);
+      
     };
     connectionRef.current = newConnection;
   };
@@ -77,12 +82,15 @@ const DMChat = () => {
 
 
   const videoCall = ()=> {
-    const  roomId=randomID(10)
-    navigate(`/one-to-one-video/${roomId}`)
+    const roomId=randomID(10)
+    
+    
+  
+    navigate(`/one-to-one-video/${roomId}/${memberId}`)
   }
   const AudioCall = ()=> {
     const  roomId=randomID(10)
-    navigate(`/one-to-one-audio/${roomId}`)
+    navigate(`/one-to-one-audio/${roomId}/${memberId}`)
   }
 
 
