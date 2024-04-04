@@ -95,7 +95,7 @@ useEffect(()=>{
 
   return (
     <>
-      <Button onClick={handleOpen}><EditOutlinedIcon /> </Button>
+      <Button onClick={handleOpen}><EditOutlinedIcon />Edit</Button>
       <Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm">
         <DialogTitle sx={{ display: 'flex', alignItems: 'center', bgcolor: '#17141a', color: 'white' }}>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>

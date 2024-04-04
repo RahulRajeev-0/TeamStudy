@@ -16,14 +16,16 @@ import StarBorderIcon from '@mui/icons-material/StarBorder';
 import InfoIcon from '@mui/icons-material/Info';
 import SendIcon from '@mui/icons-material/Send';
 import Button from '@mui/material/Button';
-
-
-
+import VideoCallIcon from '@mui/icons-material/VideoCall';
+import CallIcon from '@mui/icons-material/Call';
+import SettingsIcon from '@mui/icons-material/Settings';
+import IconButton from '@mui/material/IconButton';
 // modals 
 import EditChannelModal from '../ChannelComponents/EditChannelDetailModal';
 import MemberManagementModal from '../ChannelComponents/MemberManagementModal'
 import DeleteChannelModal from '../ChannelComponents/DeleteChannelModal'
 
+import NavDropdown from 'react-bootstrap/NavDropdown';
 // websocket
 import { w3cwebsocket as W3CWebSocket } from 'websocket';
 
@@ -119,7 +121,29 @@ const Chat = () => {
         }
     }, [groupDetails.id])
 
-    
+    const videoCall = ()=> {
+      const  roomId=randomID(10)
+      navigate(`/group-video/${roomId}`)
+    }
+    const AudioCall = ()=> {
+      const  roomId=randomID(10)
+      navigate(`/group-audio/${roomId}`)
+    }
+  
+  
+    function randomID(len) {
+      let result = '';
+      if (result) return result;
+      var chars = '12345qwertyuiopasdfgh67890jklmnbvcxzMNBVCZXASDQWERTYHGFUIOLKJP',
+        maxPos = chars.length,
+        i;
+      len = len || 5;
+      for (i = 0; i < len; i++) {
+        result += chars.charAt(Math.floor(Math.random() * maxPos));
+      }
+      return result;
+    }
+  
 
   return (
     <ChatContainer>
@@ -133,13 +157,34 @@ const Chat = () => {
                 
             
                   
-                    
+            <IconButton color="secondary" onClick={videoCall} aria-label="add to shopping cart">
+          <VideoCallIcon/>
+      </IconButton>
+
+        <IconButton color="primary" onClick={AudioCall} aria-label="add to shopping cart">
+        
+          
+          <CallIcon/>
+      </IconButton>
                     {profile.isAdmin === true &&(
+                      
                         <span>
-                        <EditChannelModal/>
+                          <NavDropdown
+              id="nav-dropdown-dark-example"
+              title="Settings"
+              menuVariant="dark"
+            >
+              <NavDropdown.Item><EditChannelModal/></NavDropdown.Item>
+              <NavDropdown.Item>
+              <MemberManagementModal/>
+              </NavDropdown.Item>
+              <NavDropdown.Item >  <DeleteChannelModal/></NavDropdown.Item>
+             
+            </NavDropdown>
+                        
                     
-                    <MemberManagementModal/>
-                    <DeleteChannelModal/>
+                  
+                  
                     </span>  
                     )}
                 

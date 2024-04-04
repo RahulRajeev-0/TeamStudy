@@ -29,6 +29,8 @@ import WorkspaceInvitationPage from "../../pages/user/Workspace/WorkspaceInvitat
 import DMPage from "../../pages/user/WorkspaceChating/DMPage"
 import OneOnOneVideoCall from '../../components/user/OneOnOneVideo/ZegoVideoCall'
 import OneOnOneAudioCall from "../user/OneOnOneAudio/ZegoAudioCall";
+import GroupVideoCall from "../user/GroupCalls/GroupVideoCall";
+import GroupAudioCall from "../user/GroupCalls/GroupAudioCall";
 
 // google Oauth 
 import { GoogleOAuthProvider } from '@react-oauth/google';
@@ -166,6 +168,8 @@ function UserWrapper() {
         <Route path="/workspace-dm/:memberId/" element={<PrivateRoutes><DMPage/></PrivateRoutes>}/>
         <Route path='/one-to-one-video/:roomId' element={<PrivateRoutes><OneOnOneVideoCall/> </PrivateRoutes>} />
         <Route path='/one-to-one-audio/:roomId' element={<PrivateRoutes> <OneOnOneAudioCall/> </PrivateRoutes>} />
+        <Route path='/group-video/:roomId' element={<PrivateRoutes><GroupVideoCall/> </PrivateRoutes>} />
+        <Route path='/group-audio/:roomId' element={<PrivateRoutes> <GroupAudioCall/> </PrivateRoutes>} />
     </Routes>
         </GoogleOAuthProvider>
    )

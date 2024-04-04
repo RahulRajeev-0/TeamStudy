@@ -107,7 +107,7 @@ const fetchMembers = async () => {
 
   return (
     <div>
-      <Button onClick={handleOpen}> <ManageAccountsOutlinedIcon/> </Button>
+      <Button onClick={handleOpen}> <ManageAccountsOutlinedIcon/> Member</Button>
       <Modal
         open={open}
         onClose={handleClose}
