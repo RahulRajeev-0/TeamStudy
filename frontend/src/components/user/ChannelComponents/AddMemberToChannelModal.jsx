@@ -42,7 +42,7 @@ const style = {
     color: 'white',
   };
 
-export default function BasicModal() {
+export default function BasicModal({fetchMembers}) {
   const [show, setShow] = useState(false);
   const handleOpen = () => setShow(true);
   const handleClose = () => setShow(false);
@@ -56,7 +56,7 @@ export default function BasicModal() {
   
 
 //  ========================== member listing table ============================
-const fetchMembers = async () => {
+const fetchNonMembers = async () => {
     
   try {
     const workspaceId = sessionStorage.getItem('workspaceId')
@@ -79,8 +79,8 @@ const fetchMembers = async () => {
 };
 
   useEffect(()=>{
-    fetchMembers();
-  },[])
+    fetchNonMembers();
+  },[fetchMembers])
 //  =========================================================================== 
 
 
@@ -98,7 +98,9 @@ const fetchMembers = async () => {
 
       if (response.status === 201){
         toast.success("Added")
-        fetchMembers();
+        fetchNonMembers();
+        fetchMembers()
+        
       }
 
     }
