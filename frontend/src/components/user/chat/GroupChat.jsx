@@ -96,6 +96,10 @@ const Chat = () => {
           setChatMessages(prevMessages => [...prevMessages, data]);
         };
         connectionRef.current = newConnection;
+
+        return () => {
+          newConnection.close();
+        };
       };
 
       const sendMessage = (e) => {
@@ -134,11 +138,15 @@ const Chat = () => {
 
     
     useEffect(()=>{
+      setChatMessages([]);
         fetchGroupInfo();
     },[groupId])
 
 
     useEffect(()=>{
+      if (connectionRef.current){
+          connectionRef.current.newConnection.close()
+      }
         if (groupDetails.id){
             connectToWebsocket();
         }
