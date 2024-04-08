@@ -66,7 +66,17 @@ const DMChat = () => {
       return;
     }
     const sender = profile.id;
-    const messageData = { message: inputRef.current.value, sender };
+
+    const currentTime = new Date();
+        const year = currentTime.getFullYear();
+        const month = ('0' + (currentTime.getMonth() + 1)).slice(-2); // Adding 1 because getMonth returns zero-based month
+        const day = ('0' + currentTime.getDate()).slice(-2);
+        const hours = ('0' + currentTime.getHours()).slice(-2);
+        const minutes = ('0' + currentTime.getMinutes()).slice(-2);
+        const seconds = ('0' + currentTime.getSeconds()).slice(-2);
+
+        const time = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+    const messageData = { message: inputRef.current.value, sender, time };
 
     const messageString = JSON.stringify(messageData);
 
@@ -145,7 +155,7 @@ const DMChat = () => {
     <Message
       key={index}
       message={chat.message}
-      // username={chat.username}
+      time={chat.time}
       isSender={chat.sender === profile.id} // Add a prop to identify if the sender is the current user
     />
   ))} <ChatBottom/>

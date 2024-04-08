@@ -19,12 +19,17 @@ class GroupChatConsumer(AsyncWebsocketConsumer):
 
         existing_messages = await self.get_existing_messages() 
         for message in existing_messages:
+            # Convert datetime object to string
+            formatted_time = message['time'].strftime("%Y-%m-%d %H:%M:%S")
+            
+            # Serialize to JSON
             await self.send(text_data=json.dumps({
                 'message': message['message'],
                 'sender': message['sender'],
-                'username':message['username']
-
+                'username': message['username'], 
+                'time': formatted_time  # Use the formatted time string
             }))
+
     
     # disconnecting 
     async def disconnect(self, code):
@@ -38,11 +43,13 @@ class GroupChatConsumer(AsyncWebsocketConsumer):
         message = event['data']['message']
         sender = event['data']['sender']
         username = event['data']['username']
-
+        time = event['data']['time']
+        
         await self.send(text_data=json.dumps({
             "message":message,
             'sender':sender,
             'username':username,
+            'time':time,
         }))
 
 
@@ -53,6 +60,7 @@ class GroupChatConsumer(AsyncWebsocketConsumer):
         message = data['message']
         sender = data.get('sender', 'Anonymous')
         username = data.get('username', "unkown")
+        time = data.get('time','unkown')
 
         if sender:
             await self.save_message(sender, message)
@@ -65,6 +73,7 @@ class GroupChatConsumer(AsyncWebsocketConsumer):
                     'message':message,
                     'sender':sender,
                     'username':username,
+                    'time':time,
                 },
             }
         )
@@ -76,7 +85,7 @@ class GroupChatConsumer(AsyncWebsocketConsumer):
     @database_sync_to_async
     def get_existing_messages(self):
         messages = GroupChatMessage.objects.filter(group=self.room_group_name)
-        return [{'message': message.message, 'sender': message.sender.id, 'username':message.sender.user.username} for message in messages]
+        return [{'message': message.message, 'sender': message.sender.id, 'username':message.sender.user.username, 'time':message.time_stamp} for message in messages]
     
 
     # function for saving the data -> this will call the function to save data to the database
