@@ -138,15 +138,13 @@ const Chat = () => {
 
     
     useEffect(()=>{
-      setChatMessages([]);
+     
+      setChatMessages([])
         fetchGroupInfo();
     },[groupId])
 
 
     useEffect(()=>{
-      if (connectionRef.current){
-          connectionRef.current.newConnection.close()
-      }
         if (groupDetails.id){
             connectToWebsocket();
         }

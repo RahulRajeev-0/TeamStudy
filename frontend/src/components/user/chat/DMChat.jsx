@@ -24,7 +24,7 @@ const DMChat = () => {
 
   const [chatMessages, setChatMessages] = useState([]);
   const inputRef = useRef(null);
-  const connectionRef = useRef(null);
+  const [connection, setConnection] = useState(null)
 
   const fetchUserInfo = async () => {
     try {
@@ -42,25 +42,33 @@ const DMChat = () => {
 
   // function to connect to the websocket
   const connectToWebsocket = () => {
-    const newConnection = new W3CWebSocket(`ws://127.0.0.1:8000/ws/dm_chats/${profile.id}/${userInfo.id}/`);
-    
-    newConnection.onopen = () => {
-      console.log('WebSocket Client Connected');
-    };
-    
-    newConnection.onmessage = (message) => {
-      const data = JSON.parse(message.data);
-        console.log(data.type);
-        // Regular chat message
-        setChatMessages(prevMessages => [...prevMessages, data]);
+    if (memberId){
+
+      const newConnection = new W3CWebSocket(`ws://127.0.0.1:8000/ws/dm_chats/${profile.id}/${userInfo.id}/`);
       
-    };
-    connectionRef.current = newConnection;
+      newConnection.onopen = () => {
+        console.log('WebSocket Client Connected');
+      };
+  
+      setConnection(newConnection);
+      
+      newConnection.onmessage = (message) => {
+        const data = JSON.parse(message.data);
+          console.log(data.type);
+          // Regular chat message
+          setChatMessages(prevMessages => [...prevMessages, data]);
+        
+      };
+
+      return () => {
+        newConnection.close();
+      };
+    }
+    
   };
 
   const sendMessage = (e) => {
     e.preventDefault();
-    const { current: connection } = connectionRef;
     if (!connection || connection.readyState !== connection.OPEN) {
       console.error("WebSocket is not open");
       return;
@@ -120,7 +128,7 @@ const DMChat = () => {
   useEffect(() => {
     fetchUserInfo();
     inputRef.current?.scrollIntoView({ behavior: 'smooth' });
-   
+    setChatMessages([])
   }, [memberId]);
 
   useEffect(() => {
