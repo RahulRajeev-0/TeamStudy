@@ -1,35 +1,49 @@
-import React, {useEffect, useState, useRef} from 'react'
+// React imports
+import React, { useEffect, useState, useRef } from 'react';
 
-// react redux 
-import { useSelector, useDispatch } from 'react-redux'
-import { set_selected_group } from '../../../Redux/WorkspaceGroup/GroupSlice';
+// Redux imports
+import { useSelector, useDispatch } from 'react-redux';
+import { set_selected_group } from '../../../Redux/WorkspaceGroup/GroupSlice'; // Assuming this is a Redux action
 
-// components
-import ChatInput from './chatInput';
-import GroupMessage from './GroupMessage';
+// Styled component import
+import styled from 'styled-components';
 
-// styled component
-import styled from 'styled-components'
-
-// material ui icons
+// Material UI icons
 import StarBorderIcon from '@mui/icons-material/StarBorder';
 import InfoIcon from '@mui/icons-material/Info';
 import SendIcon from '@mui/icons-material/Send';
 import Button from '@mui/material/Button';
+import VideoCallIcon from '@mui/icons-material/VideoCall';
+import CallIcon from '@mui/icons-material/Call';
+import SettingsIcon from '@mui/icons-material/Settings';
+import IconButton from '@mui/material/IconButton';
 
-
-
-// modals 
+// Modal imports
 import EditChannelModal from '../ChannelComponents/EditChannelDetailModal';
-import MemberManagementModal from '../ChannelComponents/MemberManagementModal'
-import DeleteChannelModal from '../ChannelComponents/DeleteChannelModal'
+import MemberManagementModal from '../ChannelComponents/MemberManagementModal';
+import DeleteChannelModal from '../ChannelComponents/DeleteChannelModal';
 
-// websocket
+// React Bootstrap imports
+import NavDropdown from 'react-bootstrap/NavDropdown';
+
+// WebSocket imports
 import { w3cwebsocket as W3CWebSocket } from 'websocket';
 
-import {  useParams , useNavigate} from 'react-router-dom';
+// React Router imports
+import { useParams, useNavigate } from 'react-router-dom';
+
+// Axios import for HTTP requests
 import axios from 'axios';
+
+// Toast notification import
 import { toast } from 'react-toastify';
+
+
+
+// Custom component imports
+import ChatInput from './chatInput';
+import GroupMessage from './GroupMessage';
+
 
 const Chat = () => {
     const [groupInfo, setGroupInfo] = useState({id:null, name:null, topic:null, description:null})
@@ -78,9 +92,14 @@ const Chat = () => {
         };
         newConnection.onmessage = (message) => {
           const data = JSON.parse(message.data);
+          console.log(data);
           setChatMessages(prevMessages => [...prevMessages, data]);
         };
         connectionRef.current = newConnection;
+
+        return () => {
+          newConnection.close();
+        };
       };
 
       const sendMessage = (e) => {
@@ -93,7 +112,17 @@ const Chat = () => {
         const sender = profile.id;
         
         const username = userDetails.username;
-        const messageData = { message: inputRef.current.value, sender, username };
+        
+        const currentTime = new Date();
+        const year = currentTime.getFullYear();
+        const month = ('0' + (currentTime.getMonth() + 1)).slice(-2); // Adding 1 because getMonth returns zero-based month
+        const day = ('0' + currentTime.getDate()).slice(-2);
+        const hours = ('0' + currentTime.getHours()).slice(-2);
+        const minutes = ('0' + currentTime.getMinutes()).slice(-2);
+        const seconds = ('0' + currentTime.getSeconds()).slice(-2);
+
+        const time = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+        const messageData = { message: inputRef.current.value, sender, username, time };
     
         const messageString = JSON.stringify(messageData);
     
@@ -109,6 +138,8 @@ const Chat = () => {
 
     
     useEffect(()=>{
+     
+      setChatMessages([])
         fetchGroupInfo();
     },[groupId])
 
@@ -119,7 +150,29 @@ const Chat = () => {
         }
     }, [groupDetails.id])
 
-    
+    const videoCall = ()=> {
+      const  roomId=groupId
+      navigate(`/group-video/${roomId}`)
+    }
+    const AudioCall = ()=> {
+      const  roomId=groupId
+      navigate(`/group-audio/${roomId}`)
+    }
+  
+  
+    function randomID(len) {
+      let result = '';
+      if (result) return result;
+      var chars = '12345qwertyuiopasdfgh67890jklmnbvcxzMNBVCZXASDQWERTYHGFUIOLKJP',
+        maxPos = chars.length,
+        i;
+      len = len || 5;
+      for (i = 0; i < len; i++) {
+        result += chars.charAt(Math.floor(Math.random() * maxPos));
+      }
+      return result;
+    }
+  
 
   return (
     <ChatContainer>
@@ -133,13 +186,34 @@ const Chat = () => {
                 
             
                   
-                    
+            <IconButton color="secondary" onClick={videoCall} aria-label="add to shopping cart">
+          <VideoCallIcon/>
+      </IconButton>
+
+        <IconButton color="primary" onClick={AudioCall} aria-label="add to shopping cart">
+        
+          
+          <CallIcon/>
+      </IconButton>
                     {profile.isAdmin === true &&(
+                      
                         <span>
-                        <EditChannelModal/>
+                          <NavDropdown
+              id="nav-dropdown-dark-example"
+              title="Settings"
+              menuVariant="dark"
+            >
+              <NavDropdown.Item><EditChannelModal/></NavDropdown.Item>
+              <NavDropdown.Item>
+              <MemberManagementModal/>
+              </NavDropdown.Item>
+              <NavDropdown.Item >  <DeleteChannelModal/></NavDropdown.Item>
+             
+            </NavDropdown>
+                        
                     
-                    <MemberManagementModal/>
-                    <DeleteChannelModal/>
+                  
+                  
                     </span>  
                     )}
                 
@@ -157,6 +231,7 @@ const Chat = () => {
       message={chat.message}
       isSender={chat.sender === profile.id} // Add a prop to identify if the sender is the current user
     username={chat.username}
+    time={chat.time}
     />
   ))}
   <ChatBottom />

@@ -24,7 +24,7 @@ const DMChat = () => {
 
   const [chatMessages, setChatMessages] = useState([]);
   const inputRef = useRef(null);
-  const connectionRef = useRef(null);
+  const [connection, setConnection] = useState(null)
 
   const fetchUserInfo = async () => {
     try {
@@ -42,26 +42,49 @@ const DMChat = () => {
 
   // function to connect to the websocket
   const connectToWebsocket = () => {
-    const newConnection = new W3CWebSocket(`ws://127.0.0.1:8000/ws/dm_chats/${profile.id}/${userInfo.id}/`);
-    newConnection.onopen = () => {
-      console.log('WebSocket Client Connected');
-    };
-    newConnection.onmessage = (message) => {
-      const data = JSON.parse(message.data);
-      setChatMessages(prevMessages => [...prevMessages, data]);
-    };
-    connectionRef.current = newConnection;
+    if (memberId){
+
+      const newConnection = new W3CWebSocket(`ws://127.0.0.1:8000/ws/dm_chats/${profile.id}/${userInfo.id}/`);
+      
+      newConnection.onopen = () => {
+        console.log('WebSocket Client Connected');
+      };
+  
+      setConnection(newConnection);
+      
+      newConnection.onmessage = (message) => {
+        const data = JSON.parse(message.data);
+          console.log(data.type);
+          // Regular chat message
+          setChatMessages(prevMessages => [...prevMessages, data]);
+        
+      };
+
+      return () => {
+        newConnection.close();
+      };
+    }
+    
   };
 
   const sendMessage = (e) => {
     e.preventDefault();
-    const { current: connection } = connectionRef;
     if (!connection || connection.readyState !== connection.OPEN) {
       console.error("WebSocket is not open");
       return;
     }
     const sender = profile.id;
-    const messageData = { message: inputRef.current.value, sender };
+
+    const currentTime = new Date();
+        const year = currentTime.getFullYear();
+        const month = ('0' + (currentTime.getMonth() + 1)).slice(-2); // Adding 1 because getMonth returns zero-based month
+        const day = ('0' + currentTime.getDate()).slice(-2);
+        const hours = ('0' + currentTime.getHours()).slice(-2);
+        const minutes = ('0' + currentTime.getMinutes()).slice(-2);
+        const seconds = ('0' + currentTime.getSeconds()).slice(-2);
+
+        const time = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+    const messageData = { message: inputRef.current.value, sender, time };
 
     const messageString = JSON.stringify(messageData);
 
@@ -77,12 +100,15 @@ const DMChat = () => {
 
 
   const videoCall = ()=> {
-    const  roomId=randomID(10)
-    navigate(`/one-to-one-video/${roomId}`)
+    const roomId=randomID(10)
+    
+    
+  
+    navigate(`/one-to-one-video/${roomId}/${memberId}`)
   }
   const AudioCall = ()=> {
     const  roomId=randomID(10)
-    navigate(`/one-to-one-audio/${roomId}`)
+    navigate(`/one-to-one-audio/${roomId}/${memberId}`)
   }
 
 
@@ -102,7 +128,7 @@ const DMChat = () => {
   useEffect(() => {
     fetchUserInfo();
     inputRef.current?.scrollIntoView({ behavior: 'smooth' });
-   
+    setChatMessages([])
   }, [memberId]);
 
   useEffect(() => {
@@ -137,7 +163,7 @@ const DMChat = () => {
     <Message
       key={index}
       message={chat.message}
-      // username={chat.username}
+      time={chat.time}
       isSender={chat.sender === profile.id} // Add a prop to identify if the sender is the current user
     />
   ))} <ChatBottom/>

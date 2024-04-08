@@ -1,14 +1,43 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 
-const GroupMessage = ({ message, isSender, username }) => {
+// Date time functions import from date-fns
+import { formatDistance, subDays } from "date-fns";
+
+
+const GroupMessage = ({ message, isSender, username, time }) => {
    
+  function formatTime(timeString) {
+    // console.log('time stamp =', timeString);
+    try {
+      // Parse the time string into a JavaScript Date object
+      const time = new Date(timeString);
+  
+      // Get the current date and time
+      const now = new Date();
+  
+      // Format the distance between the time and now
+      const formattedDistance = formatDistance(time, now, { includeSeconds: true });
+  
+      return formattedDistance;
+    } catch (error) {
+      console.error("Error formatting time:", error);
+      const time = new Date();
+      const now = new Date();
+      const formattedDistance = formatDistance(time, now, { includeSeconds: true });
+      return formattedDistance; // Return a default value or handle the error condition
+    }
+  }
+
+  
+  
   return (
     <MessageContainer isSender={isSender}>
         
       <MessageInfo isSender={isSender}>
         <Nametag>{username}</Nametag>
         <span>{message}</span>
+        <Nametag>{formatTime(time)}</Nametag>
       </MessageInfo>
     </MessageContainer>
   );

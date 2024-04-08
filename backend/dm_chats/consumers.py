@@ -25,9 +25,11 @@ class PersonalChatConsumer(AsyncWebsocketConsumer):
 
         existing_messages = await self.get_existing_messages() 
         for message in existing_messages:
+            formatted_time = message['time'].strftime("%Y-%m-%d %H:%M:%S")
             await self.send(text_data=json.dumps({
                 'message': message['message'],
                 'sender': message['sender'],
+                'time': formatted_time 
             }))
 
 
@@ -44,7 +46,7 @@ class PersonalChatConsumer(AsyncWebsocketConsumer):
     @database_sync_to_async
     def get_existing_messages(self):
         messages = ChatMessage.objects.filter(group=self.room_group_name)
-        return [{'message': message.message, 'sender': message.sender.id} for message in messages]
+        return [{'message': message.message, 'sender': message.sender.id, 'time':message.time_stamp} for message in messages]
     
 
 
@@ -54,10 +56,13 @@ class PersonalChatConsumer(AsyncWebsocketConsumer):
     async def chat_message(self, event):
         message = event['data']['message']
         sender = event['data']['sender']
+        time = event['data']['time']
         await self.send(text_data=json.dumps({
             "message":message,
             'sender':sender,
+            'time':time,
         }))
+
 
 
     # function for saving the data -> this will call the function to save data to the database
@@ -69,41 +74,40 @@ class PersonalChatConsumer(AsyncWebsocketConsumer):
             print("sender id not found ")
 
 
+    
 
-    async def send_video_call_link(self, link):
-        """
-        Sends a video call link to the client.
-        """
-        await self.send(text_data=json.dumps({
-            'type': 'video_call_link',
-            'link': link,
-        }))
-
+    # async def send_video_call_link(self, link):
+    #     """
+    #     Sends a video call link to the client.
+    #     """
+    #     # await self.send(text_data=json.dumps({
+    #     #     'type': 'video_call_link',
+    #     #     'link': link,
+    #     # }))
+       
 
 
     # getting the message 
     async def receive(self, text_data=None, bytes_data=None):
         data = json.loads(text_data)
         message = data.get('message',"")
-        sender = data.get('sender', 'Anonymous')
-        video_call_link = data.get('video_call_link')
+        sender = data.get('sender', 'Anonymous') 
+        time = data.get('time','unkown')
+        
+        if sender:
+            await self.save_message(sender, message)
 
-        if video_call_link:  # If a video call link is provided
-            await self.send_video_call_link(video_call_link)
-        else: 
-            if sender:
-                await self.save_message(sender, message)
-
-            await self.channel_layer.group_send(
-                self.room_group_name,
-                {
-                    'type':'chat.message',
-                    'data':{
-                        'message':message,
-                        'sender':sender
-                    },
-                }
-            )
+        await self.channel_layer.group_send(
+            self.room_group_name,
+            {
+                'type':'chat_message',
+                'data':{
+                    'message':message,
+                    'sender':sender,
+                    'time':time,
+                },
+            }
+        )
 
     
     @classmethod

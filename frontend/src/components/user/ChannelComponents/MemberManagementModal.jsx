@@ -107,7 +107,7 @@ const fetchMembers = async () => {
 
   return (
     <div>
-      <Button onClick={handleOpen}> <ManageAccountsOutlinedIcon/> </Button>
+      <Button onClick={handleOpen}> <ManageAccountsOutlinedIcon /> Member</Button>
       <Modal
         open={open}
         onClose={handleClose}
@@ -120,7 +120,7 @@ const fetchMembers = async () => {
           </Typography>
          
           <Typography id="modal-modal-description" sx={{ mt: 2 , color: 'white'}}>
-          <AddMemberToChannel/>
+          <AddMemberToChannel fetchMembers={fetchMembers}/>
           <TableContainer component={Paper} style={{ maxHeight: 400, overflowY: 'auto', backgroundColor:"black"}}>
               <Table>
                 <TableHead>
