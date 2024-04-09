@@ -58,7 +58,7 @@ const Chat = () => {
     const userDetails = useSelector(state=>state.authenticationUser);
 
     const inputRef = useRef(null);
-  const connectionRef = useRef(null);
+  const [connection, setConnection] = useState(null)
   const [chatMessages, setChatMessages] = useState([]);
 
     // api for fetching the group info (name, description, topic)
@@ -87,6 +87,7 @@ const Chat = () => {
     // websocket connection 
     const connectToWebsocket = () => {
         const newConnection = new W3CWebSocket(`ws://127.0.0.1:8000/ws/group_chats/${groupDetails.id}/`);
+        setConnection(newConnection)
         newConnection.onopen = () => {
           console.log('WebSocket Client Connected');
         };
@@ -95,7 +96,7 @@ const Chat = () => {
           console.log(data);
           setChatMessages(prevMessages => [...prevMessages, data]);
         };
-        connectionRef.current = newConnection;
+      
 
         return () => {
           newConnection.close();
@@ -104,7 +105,6 @@ const Chat = () => {
 
       const sendMessage = (e) => {
         e.preventDefault();
-        const { current: connection } = connectionRef;
         if (!connection || connection.readyState !== connection.OPEN) {
           console.error("WebSocket is not open");
           return;
