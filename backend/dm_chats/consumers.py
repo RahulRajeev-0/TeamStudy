@@ -75,15 +75,32 @@ class PersonalChatConsumer(AsyncWebsocketConsumer):
 
 
     
+    # for video call notification 
+   # for video call notification 
+    async def call_link_receive(self, link):
+        """
+        Sends a video call link to the client.
+        """
+        await self.channel_layer.group_send(
+            self.room_group_name,
+            {
+                'type': 'call_link',
+                'link': link,  # Send 'link' directly in the event
+            }
+        )
 
-    # async def send_video_call_link(self, link):
-    #     """
-    #     Sends a video call link to the client.
-    #     """
-    #     # await self.send(text_data=json.dumps({
-    #     #     'type': 'video_call_link',
-    #     #     'link': link,
-    #     # }))
+        
+    async def call_link(self, event):
+        """
+        Sends a video call link to the client.
+        """
+        link = event['link']  # Access 'link' directly from the event
+        await self.send(text_data=json.dumps({
+            'type': 'call_link',
+            'link': link,
+        }))
+
+    
        
 
 
@@ -93,7 +110,16 @@ class PersonalChatConsumer(AsyncWebsocketConsumer):
         message = data.get('message',"")
         sender = data.get('sender', 'Anonymous') 
         time = data.get('time','unkown')
-        
+
+        if data.get('type') == 'call':
+            link = data.get('link', '')
+            # Handle the call message as needed
+            print(f"Received video call: {message}, link: {link}")
+            # You can send the video call link to the clients in the group
+            await self.call_link_receive(link)
+            
+       
+
         if sender:
             await self.save_message(sender, message)
 

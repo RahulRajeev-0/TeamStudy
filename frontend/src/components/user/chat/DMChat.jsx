@@ -42,30 +42,33 @@ const DMChat = () => {
 
   // function to connect to the websocket
   const connectToWebsocket = () => {
-    if (memberId){
-
+    if (memberId) {
       const newConnection = new W3CWebSocket(`ws://127.0.0.1:8000/ws/dm_chats/${profile.id}/${userInfo.id}/`);
-      
+  
       newConnection.onopen = () => {
         console.log('WebSocket Client Connected');
       };
   
       setConnection(newConnection);
-      
+  
       newConnection.onmessage = (message) => {
         const data = JSON.parse(message.data);
-          console.log(data.type);
+        console.log(message);
+  
+        // Check if it's a video call message and extract the roomId
+        if (data.type === 'call_link') {
+          const roomId = data.link;
+          navigate(`/one-to-one-video/${roomId}`)
+          // Handle the received roomId as needed
+         
+        } else {
           // Regular chat message
           setChatMessages(prevMessages => [...prevMessages, data]);
-        
-      };
-
-      return () => {
-        newConnection.close();
+        }
       };
     }
-    
   };
+  
 
   const sendMessage = (e) => {
     e.preventDefault();
@@ -102,7 +105,20 @@ const DMChat = () => {
   const videoCall = ()=> {
     const roomId=randomID(10)
     
-    
+    const message = {
+      message: 'started video call ..📞',
+      link: roomId,
+      type: 'call'
+    };
+  
+    // Send the message via WebSocket
+    if (connection && connection.readyState === connection.OPEN) {
+      connection.send(JSON.stringify(message));
+    } else {
+      console.error('WebSocket is not open');
+      // Handle the case when WebSocket is not open (e.g., show an error message)
+    }
+  
   
     navigate(`/one-to-one-video/${roomId}/${memberId}`)
   }
@@ -137,7 +153,7 @@ const DMChat = () => {
     }
     
   }, [userInfo.id]);
-
+  
   return (
     <ChatContainer>
       <Header>
