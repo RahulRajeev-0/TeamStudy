@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'workspaces',
     'group_chats',
     'dm_chats',
+    'notifications',
     
 
     "corsheaders",
