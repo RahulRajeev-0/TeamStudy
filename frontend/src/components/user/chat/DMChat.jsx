@@ -56,11 +56,15 @@ const DMChat = () => {
         console.log(message);
   
         // Check if it's a video call message and extract the roomId
-        if (data.type === 'call_link') {
+        if (data.type === 'video_call') {
           const roomId = data.link;
           navigate(`/one-to-one-video/${roomId}`)
           // Handle the received roomId as needed
          
+        }
+        else if (data.type === 'audio_call') { 
+          const roomId = data.link;
+          navigate(`/one-to-one-audio/${roomId}`)
         } else {
           // Regular chat message
           setChatMessages(prevMessages => [...prevMessages, data]);
@@ -108,7 +112,7 @@ const DMChat = () => {
     const message = {
       message: 'started video call ..📞',
       link: roomId,
-      type: 'call'
+      type: 'video_call'
     };
   
     // Send the message via WebSocket
@@ -120,11 +124,26 @@ const DMChat = () => {
     }
   
   
-    navigate(`/one-to-one-video/${roomId}/${memberId}`)
+    // navigate(`/one-to-one-video/${roomId}/${memberId}`)
   }
   const AudioCall = ()=> {
-    const  roomId=randomID(10)
-    navigate(`/one-to-one-audio/${roomId}/${memberId}`)
+    const roomId = randomID(10)
+
+    const message = {
+      message: 'started video call ..📞',
+      link: roomId,
+      type: 'audio_call',
+      sender:profile.id
+    };
+  
+    // Send the message via WebSocket
+    if (connection && connection.readyState === connection.OPEN) {
+      connection.send(JSON.stringify(message));
+    } else {
+      console.error('WebSocket is not open');
+      // Handle the case when WebSocket is not open (e.g., show an error message)
+    }
+    
   }
 
 

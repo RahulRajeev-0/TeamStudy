@@ -103,6 +103,40 @@ const Chat = () => {
         };
       };
 
+      // for image sending 
+      // const uploadImageCloud = async () => {
+      //   setLoading(true);
+      //   const data = new FormData();
+      //   data.append("file", uploadImage);
+      //   data.append("upload_preset", REACT_APP_CLOUDINARY_UPLOAD_PRESET);
+      //   data.append("cloud_name", REACT_APP_CLOUDINARY_CLOUD_NAME);
+      //   data.append("folder", "Zorpia-posts");
+    
+      //   try {
+      //     const response = await fetch(
+      //       `https://api.cloudinary.com/v1_1/${REACT_APP_CLOUDINARY_CLOUD_NAME}/image/upload`,
+      //       {
+      //         method: "POST",
+      //         body: data,
+      //       }
+      //     );
+      //     const res = await response.json();
+    
+      //     if (res.public_id) {
+      //       console.log("hhh");
+      //       if (profile) {
+      //         // apply chating logic 
+      //         setProfileImageUrl(res.public_id);
+      //         setDisplayImage(res.public_id)
+      //       } else {
+      //         setCoverImageUrl(res.public_id);
+      //       }
+      //       setShowUrl(res.public_id);
+      //       setLoading(false);
+      //     }
+      //   } catch (error) {}
+      // };
+
       const sendMessage = (e) => {
         e.preventDefault();
         if (!connection || connection.readyState !== connection.OPEN) {
@@ -127,6 +161,7 @@ const Chat = () => {
         const messageString = JSON.stringify(messageData);
     
         console.log("Sending Message:", messageString);
+
         connection.send(messageString);
         inputRef.current.value = "";
         setTimeout(() => {

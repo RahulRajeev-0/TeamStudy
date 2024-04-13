@@ -77,26 +77,50 @@ class PersonalChatConsumer(AsyncWebsocketConsumer):
     
     # for video call notification 
    # for video call notification 
-    async def call_link_receive(self, link):
+    async def video_link_receive(self, link):
         """
         Sends a video call link to the client.
         """
         await self.channel_layer.group_send(
             self.room_group_name,
             {
-                'type': 'call_link',
+                'type': 'video_call_link',
                 'link': link,  # Send 'link' directly in the event
             }
         )
 
         
-    async def call_link(self, event):
+    async def video_call_link(self, event):
         """
         Sends a video call link to the client.
         """
         link = event['link']  # Access 'link' directly from the event
         await self.send(text_data=json.dumps({
-            'type': 'call_link',
+            'type': 'video_call',
+            'link': link,
+        }))
+
+
+    async def audio_link_receive(self, link):
+        """
+        Sends a video call link to the client.
+        """
+        await self.channel_layer.group_send(
+            self.room_group_name,
+            {
+                'type': 'audio_call_link',
+                'link': link,  # Send 'link' directly in the event
+            }
+        )
+
+        
+    async def audio_call_link(self, event):
+        """
+        Sends a video call link to the client.
+        """
+        link = event['link']  # Access 'link' directly from the event
+        await self.send(text_data=json.dumps({
+            'type': 'audio_call',
             'link': link,
         }))
 
@@ -111,12 +135,18 @@ class PersonalChatConsumer(AsyncWebsocketConsumer):
         sender = data.get('sender', 'Anonymous') 
         time = data.get('time','unkown')
 
-        if data.get('type') == 'call':
+        if data.get('type') == 'video_call':
             link = data.get('link', '')
             # Handle the call message as needed
             print(f"Received video call: {message}, link: {link}")
             # You can send the video call link to the clients in the group
-            await self.call_link_receive(link)
+            await self.video_link_receive(link)
+        
+        if data.get('type') == 'audio_call':
+            link = data.get('link','')
+            print(f"Received audio call: {message}, link: {link}")
+            await self.audio_link_receive(link)
+            
             
        
 
