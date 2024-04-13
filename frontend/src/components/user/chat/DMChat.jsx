@@ -13,6 +13,8 @@ import Message from './Message';
 
 import IconButton from '@mui/material/IconButton';
 
+import VideoCallAlert from '../OneOnOneVideo/VideoCallAlert'
+
 const DMChat = () => {
   const [userInfo, setUserInfo] = useState({ id: null, display_name: null, username: null, user: {} });
   const baseURL = "http://127.0.0.1:8000";
@@ -25,6 +27,9 @@ const DMChat = () => {
   const [chatMessages, setChatMessages] = useState([]);
   const inputRef = useRef(null);
   const [connection, setConnection] = useState(null)
+
+  const [showVideoCallAlert, setShowVideoCallAlert] = React.useState(false);
+  const [room_id, setRoom_id] = useState(null)
 
   const fetchUserInfo = async () => {
     try {
@@ -58,7 +63,13 @@ const DMChat = () => {
         // Check if it's a video call message and extract the roomId
         if (data.type === 'video_call') {
           const roomId = data.link;
-          navigate(`/one-to-one-video/${roomId}`)
+          if (data.sender === profile.id){
+
+            navigate(`/one-to-one-video/${roomId}`)
+          }else{
+            setRoom_id(roomId)
+           setShowVideoCallAlert(true)
+          }
           // Handle the received roomId as needed
          
         }
@@ -112,7 +123,8 @@ const DMChat = () => {
     const message = {
       message: 'started video call ..📞',
       link: roomId,
-      type: 'video_call'
+      type: 'video_call',
+      sender:profile.id
     };
   
     // Send the message via WebSocket
@@ -193,6 +205,7 @@ const DMChat = () => {
         </HeaderRight>
       </Header>
       <ChatMessages>
+      
         <ChatTop/>
       {chatMessages.map((chat, index) => (
     <Message
@@ -201,7 +214,10 @@ const DMChat = () => {
       time={chat.time}
       isSender={chat.sender === profile.id} // Add a prop to identify if the sender is the current user
     />
-  ))} <ChatBottom/>
+    
+  ))} 
+  {showVideoCallAlert && <VideoCallAlert setShowVideoCallAlert={setShowVideoCallAlert} roomId={room_id} />}
+  <ChatBottom/>
       </ChatMessages>
  
       <ChatInputContainer>

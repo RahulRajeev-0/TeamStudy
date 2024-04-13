@@ -6,9 +6,13 @@ import Collapse from '@mui/material/Collapse';
 import Button from '@mui/material/Button';
 import CloseIcon from '@mui/icons-material/Close';
 import AlertTitle from '@mui/material/AlertTitle';
-export default function TransitionAlerts() {
-  const [open, setOpen] = React.useState(true);
+import { useNavigate } from 'react-router-dom';
 
+
+
+export default function VideoCallAlert({roomId, setShowVideoCallAlert}) {
+  const [open, setOpen] = React.useState(true);
+  const navigate = useNavigate();
   return (
     <Box sx={{ width: '100%' }}>
       <Collapse in={open}>
@@ -20,7 +24,7 @@ export default function TransitionAlerts() {
                 color="secondary"
                 size="small"
                 onClick={() => {
-                  console.log("Button inside alert clicked!");
+                  navigate(`/one-to-one-video/${roomId}`)
                 }}
               >
                 Join
@@ -52,7 +56,17 @@ export default function TransitionAlerts() {
           setOpen(true);
         }}
       >
-        call
+        join video call
+      </Button>
+      <Button
+        disabled={open}
+       
+        variant="outlined"
+        onClick={() => {
+         setShowVideoCallAlert(false)
+        }}
+      >
+        Remove 
       </Button>
     </Box>
   );

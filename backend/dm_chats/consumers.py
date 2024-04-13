@@ -77,7 +77,7 @@ class PersonalChatConsumer(AsyncWebsocketConsumer):
     
     # for video call notification 
    # for video call notification 
-    async def video_link_receive(self, link):
+    async def video_link_receive(self, link, sender):
         """
         Sends a video call link to the client.
         """
@@ -85,7 +85,10 @@ class PersonalChatConsumer(AsyncWebsocketConsumer):
             self.room_group_name,
             {
                 'type': 'video_call_link',
-                'link': link,  # Send 'link' directly in the event
+                'data': {
+                    'link':link,
+                    'sender':sender
+                },  # Send 'link' directly in the event
             }
         )
 
@@ -94,10 +97,13 @@ class PersonalChatConsumer(AsyncWebsocketConsumer):
         """
         Sends a video call link to the client.
         """
-        link = event['link']  # Access 'link' directly from the event
+        link = event['data']['link']  # Access 'link' directly from the event
+        sender = event['data']['sender']  
         await self.send(text_data=json.dumps({
             'type': 'video_call',
-            'link': link,
+            'sender':sender,
+            'link':link
+            
         }))
 
 
@@ -140,7 +146,7 @@ class PersonalChatConsumer(AsyncWebsocketConsumer):
             # Handle the call message as needed
             print(f"Received video call: {message}, link: {link}")
             # You can send the video call link to the clients in the group
-            await self.video_link_receive(link)
+            await self.video_link_receive(link, sender)
         
         if data.get('type') == 'audio_call':
             link = data.get('link','')
