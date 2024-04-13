@@ -14,6 +14,7 @@ import Message from './Message';
 import IconButton from '@mui/material/IconButton';
 
 import VideoCallAlert from '../OneOnOneVideo/VideoCallAlert'
+import AudioCallAlert from '../OneOnOneAudio/AudioCallAlert';
 
 const DMChat = () => {
   const [userInfo, setUserInfo] = useState({ id: null, display_name: null, username: null, user: {} });
@@ -28,7 +29,8 @@ const DMChat = () => {
   const inputRef = useRef(null);
   const [connection, setConnection] = useState(null)
 
-  const [showVideoCallAlert, setShowVideoCallAlert] = React.useState(false);
+  const [showVideoCallAlert, setShowVideoCallAlert] = useState(false);
+  const [showAudioCallAlert, setShowAudioCallAlert] = useState(false);
   const [room_id, setRoom_id] = useState(null)
 
   const fetchUserInfo = async () => {
@@ -75,7 +77,13 @@ const DMChat = () => {
         }
         else if (data.type === 'audio_call') { 
           const roomId = data.link;
-          navigate(`/one-to-one-audio/${roomId}`)
+          if (data.sender === profile.id){
+
+            navigate(`/one-to-one-audio/${roomId}`)
+          }else{
+            setRoom_id(roomId)
+           setShowAudioCallAlert(true)
+          }
         } else {
           // Regular chat message
           setChatMessages(prevMessages => [...prevMessages, data]);
@@ -142,7 +150,7 @@ const DMChat = () => {
     const roomId = randomID(10)
 
     const message = {
-      message: 'started video call ..📞',
+      message: 'started audio call ..📞',
       link: roomId,
       type: 'audio_call',
       sender:profile.id
@@ -217,6 +225,7 @@ const DMChat = () => {
     
   ))} 
   {showVideoCallAlert && <VideoCallAlert setShowVideoCallAlert={setShowVideoCallAlert} roomId={room_id} />}
+  {showAudioCallAlert && <AudioCallAlert setShowAudioCallAlert={setShowAudioCallAlert} roomId={room_id} />}
   <ChatBottom/>
       </ChatMessages>
  
