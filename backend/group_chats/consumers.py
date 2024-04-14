@@ -53,7 +53,6 @@ class GroupChatConsumer(AsyncWebsocketConsumer):
         }))
 
 
-
     # reciving the message 
     async def receive(self, text_data=None, bytes_data=None):
         data = json.loads(text_data)
@@ -61,6 +60,12 @@ class GroupChatConsumer(AsyncWebsocketConsumer):
         sender = data.get('sender', 'Anonymous')
         username = data.get('username', "unkown")
         time = data.get('time','unkown')
+
+        if data.get('type') == 'video_call':
+            await self.video_link_receive(username, sender)
+        
+        if data.get('type') == 'audio_call':
+            await self.audio_link_receive(username, sender)
 
         if sender:
             await self.save_message(sender, message)
@@ -77,6 +82,67 @@ class GroupChatConsumer(AsyncWebsocketConsumer):
                 },
             }
         )
+#  ------------------------- for video & audio call -----------------------------
+
+    async def video_link_receive(self, sender, username):
+        """
+        Sends a video call link to the client.
+        """
+        await self.channel_layer.group_send(
+            self.room_group_name,
+            {
+                'type': 'video_call_link',
+                'data': {
+                    'sender':sender,
+                    'username':username,
+                },  
+            }
+        )
+
+        
+    async def video_call_link(self, event):
+        """
+        Sends a video call link to the client.
+        """
+  
+        sender = event['data']['sender']
+        username = event['data']['username']  
+        await self.send(text_data=json.dumps({
+            'type': 'video_call',
+            'sender':sender,
+            'username':username
+            
+        }))
+
+
+    async def audio_link_receive(self, username, sender):
+        """
+        Sends a video call link to the client.
+        """
+        await self.channel_layer.group_send(
+            self.room_group_name,
+            {
+                'type': 'audio_call_link',
+                'data': {
+                    'username':username,
+                    'sender':sender
+                },   
+            }
+        )
+
+        
+    async def audio_call_link(self, event):
+        """
+        Sends a video call link to the client.
+        """
+        username = event['data']['username']
+        sender = event['data']['sender']  
+        await self.send(text_data=json.dumps({
+            'type': 'audio_call',
+            'username': username,
+            'sender':sender
+        }))
+
 
 
     # ---------------- message saving to data base (related funtions) --------------------
