@@ -97,7 +97,7 @@ class PersonalChatConsumer(AsyncWebsocketConsumer):
         """
         Sends a video call link to the client.
         """
-        link = event['data']['link']  # Access 'link' directly from the event
+        link = event['data']['link']  
         sender = event['data']['sender']  
         await self.send(text_data=json.dumps({
             'type': 'video_call',
@@ -118,7 +118,7 @@ class PersonalChatConsumer(AsyncWebsocketConsumer):
                 'data': {
                     'link':link,
                     'sender':sender
-                },    # Send 'link' directly in the event
+                },   
             }
         )
 

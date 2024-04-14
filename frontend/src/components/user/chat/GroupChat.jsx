@@ -38,7 +38,9 @@ import axios from 'axios';
 // Toast notification import
 import { toast } from 'react-toastify';
 
-
+// call notifications 
+import VideoCallAlert from '../GroupCalls/CallAlert/VideoCallAlert';
+import AudioCallAlert from '../GroupCalls/CallAlert/AudioCallAlert';
 
 // Custom component imports
 import ChatInput from './chatInput';
@@ -60,6 +62,10 @@ const Chat = () => {
     const inputRef = useRef(null);
   const [connection, setConnection] = useState(null)
   const [chatMessages, setChatMessages] = useState([]);
+
+  // call notifications
+  const [showVideoCallAlert, setShowVideoCallAlert] = useState(false);
+  const [showAudioCallAlert, setShowAudioCallAlert] = useState(false);
 
     // api for fetching the group info (name, description, topic)
     const fetchGroupInfo = async () => {
@@ -94,7 +100,24 @@ const Chat = () => {
         newConnection.onmessage = (message) => {
           const data = JSON.parse(message.data);
           console.log(data);
-          setChatMessages(prevMessages => [...prevMessages, data]);
+
+          if (data.type === 'video_call'){
+            if (data.sender === profile.id){
+              navigate(`/group-video/${groupId}`)
+            }else{
+              setShowVideoCallAlert(true)
+            }
+          }else if (data.type === 'audio_call'){
+            if (data.sender === profile.id){
+              navigate(`/group-audio/${groupId}`)
+            }else{
+              setShowAudioCallAlert(true)
+            }
+
+          }else{
+
+            setChatMessages(prevMessages => [...prevMessages, data]);
+          }
         };
       
 
@@ -185,28 +208,64 @@ const Chat = () => {
         }
     }, [groupDetails.id])
 
+
+    // -------------------------------- call -----------------------------------
     const videoCall = ()=> {
-      const  roomId=groupId
-      navigate(`/group-video/${roomId}`)
+      // const  roomId=groupId
+      // navigate(`/group-video/${roomId}`)
+     const sender = profile.id
+
+      const message = {
+        message: 'started video call ..📞',
+        type: 'video_call',
+        sender:sender,
+        username:userDetails.username
+      };
+    
+      // Send the message via WebSocket
+      if (connection && connection.readyState === connection.OPEN) {
+        connection.send(JSON.stringify(message));
+      } else {
+        console.error('WebSocket is not open');
+        // Handle the case when WebSocket is not open (e.g., show an error message)
+      }
+    
     }
     const AudioCall = ()=> {
-      const  roomId=groupId
-      navigate(`/group-audio/${roomId}`)
-    }
-  
-  
-    function randomID(len) {
-      let result = '';
-      if (result) return result;
-      var chars = '12345qwertyuiopasdfgh67890jklmnbvcxzMNBVCZXASDQWERTYHGFUIOLKJP',
-        maxPos = chars.length,
-        i;
-      len = len || 5;
-      for (i = 0; i < len; i++) {
-        result += chars.charAt(Math.floor(Math.random() * maxPos));
+      // const  roomId=groupId
+      // navigate(`/group-audio/${roomId}`)
+      const sender = profile.id
+      const message = {
+        message: 'started audio call ..📞',
+        type: 'audio_call',
+        sender:sender,
+        username:userDetails.username
+      };
+    
+      // Send the message via WebSocket
+      if (connection && connection.readyState === connection.OPEN) {
+        connection.send(JSON.stringify(message));
+      } else {
+        console.error('WebSocket is not open');
+        // Handle the case when WebSocket is not open (e.g., show an error message)
       }
-      return result;
+
+
     }
+  
+  //  -------------------------------------------------------------------------
+    // function randomID(len) {
+    //   let result = '';
+    //   if (result) return result;
+    //   var chars = '12345qwertyuiopasdfgh67890jklmnbvcxzMNBVCZXASDQWERTYHGFUIOLKJP',
+    //     maxPos = chars.length,
+    //     i;
+    //   len = len || 5;
+    //   for (i = 0; i < len; i++) {
+    //     result += chars.charAt(Math.floor(Math.random() * maxPos));
+    //   }
+    //   return result;
+    // }
   
 
   return (
@@ -221,15 +280,16 @@ const Chat = () => {
                 
             
                   
-            <IconButton color="secondary" onClick={videoCall} aria-label="add to shopping cart">
-          <VideoCallIcon/>
-      </IconButton>
-
-        <IconButton color="primary" onClick={AudioCall} aria-label="add to shopping cart">
-        
-          
-          <CallIcon/>
-      </IconButton>
+            {!showVideoCallAlert && !showAudioCallAlert && (
+  <>
+    <IconButton color="secondary" onClick={videoCall} aria-label="Video Call">
+      <VideoCallIcon />
+    </IconButton>
+    <IconButton color="primary" onClick={AudioCall} aria-label="Audio Call">
+      <CallIcon />
+    </IconButton>
+  </>
+)}
                     {profile.isAdmin === true &&(
                       
                         <span>
@@ -269,6 +329,9 @@ const Chat = () => {
     time={chat.time}
     />
   ))}
+
+  {showVideoCallAlert && <VideoCallAlert setShowVideoCallAlert={setShowVideoCallAlert} roomId={groupId} />}
+  {showAudioCallAlert && <AudioCallAlert setShowAudioCallAlert={setShowAudioCallAlert} roomId={groupId} />}
   <ChatBottom />
 </ChatMessages>
 

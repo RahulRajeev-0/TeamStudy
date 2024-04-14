@@ -201,15 +201,19 @@ const DMChat = () => {
           <StarBorderIcon />
         </HeaderLeft>
         <HeaderRight>
-        <IconButton color="secondary" onClick={videoCall} aria-label="add to shopping cart">
-          <VideoCallIcon/>
-      </IconButton>
 
-        <IconButton color="primary" onClick={AudioCall} aria-label="add to shopping cart">
-        
-          
-          <CallIcon/>
-      </IconButton>
+        {/* call option  */}
+        {!showVideoCallAlert && !showAudioCallAlert && (
+  <>
+    <IconButton color="secondary" onClick={videoCall} aria-label="Video Call">
+      <VideoCallIcon />
+    </IconButton>
+    <IconButton color="primary" onClick={AudioCall} aria-label="Audio Call">
+      <CallIcon />
+    </IconButton>
+  </>
+)}
+
         </HeaderRight>
       </Header>
       <ChatMessages>
