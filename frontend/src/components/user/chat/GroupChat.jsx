@@ -17,6 +17,12 @@ import VideoCallIcon from '@mui/icons-material/VideoCall';
 import CallIcon from '@mui/icons-material/Call';
 import SettingsIcon from '@mui/icons-material/Settings';
 import IconButton from '@mui/material/IconButton';
+import AttachFileIcon from '@mui/icons-material/AttachFile';
+import InsertPhotoIcon from '@mui/icons-material/InsertPhoto';
+import VideoFileIcon from '@mui/icons-material/VideoFile';
+import AudioFileIcon from '@mui/icons-material/AudioFile';
+import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
+import MicIcon from '@mui/icons-material/Mic';
 
 // Modal imports
 import EditChannelModal from '../ChannelComponents/EditChannelDetailModal';
@@ -46,6 +52,11 @@ import AudioCallAlert from '../GroupCalls/CallAlert/AudioCallAlert';
 import ChatInput from './chatInput';
 import GroupMessage from './GroupMessage';
 
+// react boostrap 
+import Dropdown from 'react-bootstrap/Dropdown';
+import DropdownButton from 'react-bootstrap/DropdownButton';
+import SplitButton from 'react-bootstrap/SplitButton';
+
 
 const Chat = () => {
     const [groupInfo, setGroupInfo] = useState({id:null, name:null, topic:null, description:null})
@@ -67,6 +78,14 @@ const Chat = () => {
   const [showVideoCallAlert, setShowVideoCallAlert] = useState(false);
   const [showAudioCallAlert, setShowAudioCallAlert] = useState(false);
 
+
+  // for multimedia sending 
+  const photoInputRef = useRef(null);
+  const videoInputRef = useRef(null);
+  const fileInputRef = useRef(null);
+  const [isRecording, setIsRecording] = useState(false);
+  const recorderRef = useRef(null);
+  
     // api for fetching the group info (name, description, topic)
     const fetchGroupInfo = async () => {
         try{
@@ -253,21 +272,64 @@ const Chat = () => {
 
     }
   
-  //  -------------------------------------------------------------------------
-    // function randomID(len) {
-    //   let result = '';
-    //   if (result) return result;
-    //   var chars = '12345qwertyuiopasdfgh67890jklmnbvcxzMNBVCZXASDQWERTYHGFUIOLKJP',
-    //     maxPos = chars.length,
-    //     i;
-    //   len = len || 5;
-    //   for (i = 0; i < len; i++) {
-    //     result += chars.charAt(Math.floor(Math.random() * maxPos));
-    //   }
-    //   return result;
-    // }
   
+    const handlePhotoClick = () => {
+      if (photoInputRef.current){
+        photoInputRef.current.click()
+       
+    }
+     
+  };
+  const handlePhotoChange = (event) => {
+    const selectedFile = event.target.files[0];
 
+    if (!selectedFile) {
+      return; // Handle empty selection (optional)
+    }
+    
+    if (selectedFile.size > 3 * 1024 * 1024) { // Check for 3 MB limit
+      alert('File size exceeds the maximum limit of 3 MB. Please choose a smaller photo.');
+      return; // Prevent further processing
+    }
+
+    let formData = new FormData();
+    formData.append("file", selectedFile);
+    formData.append("upload_preset","TeamStudy");
+    formData.append("cloud_name","doafvjkhf");
+    formData.append("folder", "TeamStudy");
+
+   
+      //   data.append("file", uploadImage);
+      //   data.append("upload_preset", REACT_APP_CLOUDINARY_UPLOAD_PRESET);
+      //   data.append("cloud_name", REACT_APP_CLOUDINARY_CLOUD_NAME);
+      //   data.append("folder", "Zorpia-posts");
+
+    fetch("https://api.cloudinary.com/v1_1/doafvjkhf/image/upload", {
+      method:"post",
+      body:formData
+    }).then((res)=>res.json()).then((data)=>{
+      console.log(data);
+    }).catch((err)=>{
+      console.log(err);
+    })
+
+    // Handle valid photo selection (e.g., upload to server)
+    // ... your upload logic here ...
+  };
+  
+    const handleVideoClick = () => {
+      videoInputRef.current.click();
+  };
+  //   const handleAudioClick = () => {
+  //     InputRef.current.click();
+  // };
+    const handleFileClick = () => {
+      fileInputRef.current.click();
+  };
+
+
+
+  
   return (
     <ChatContainer>
         <>
@@ -337,9 +399,43 @@ const Chat = () => {
 
         <ChatInputContainer>
         <form>
+        <DropdownButton
+             
+              drop='up'
+              variant="secondary"
+              title={<AttachFileIcon/>}
+            >
+              <Dropdown.Item eventKey="1" onClick={handlePhotoClick}><InsertPhotoIcon/> Photo</Dropdown.Item>
+              <Dropdown.Item eventKey="2" onClick={handleVideoClick}><VideoFileIcon/> Video</Dropdown.Item>
+              {/* <Dropdown.Item eventKey="3" onClick={handleAudioClick}><AudioFileIcon/> Audio</Dropdown.Item> */}
+              <input
+                ref={photoInputRef}
+                id="fileInput"
+                type="file"
+                accept="image/*"
+                onChange={handlePhotoChange}
+                style={{ display: 'none' }} // Hide the input
+            />
+              <input
+                ref={videoInputRef}
+                id="fileInput"
+                type="file"
+                accept="video/*"
+                style={{ display: 'none' }} // Hide the input
+            />
+              <input
+                ref={fileInputRef}
+                id="fileInput"
+                type="file"
+                accept="audio/*"
+                style={{ display: 'none' }} // Hide the input
+            />
+              <Dropdown.Divider />
+              <Dropdown.Item eventKey="4"><InsertDriveFileIcon/> file</Dropdown.Item>
+            </DropdownButton>
             <input ref={inputRef} placeholder='Message'/>
+            <Button variant='outlined'><MicIcon/></Button>
             <Button variant="contained" endIcon={<SendIcon />} type='submit' onClick={sendMessage}>
-                send
             </Button>
         </form>
     </ChatInputContainer>
@@ -352,13 +448,16 @@ const Chat = () => {
 export default Chat;
 
 const Header = styled.div`
-    display:flex;
-    justify-content: space-between;
-    padding: 20px;
-    border-bottom:1px solid grey;
-    color:white;
-    background:#3f3c42;
-    border-radius:5px;
+display:flex;
+justify-content: space-between;
+padding: 20px;
+border-bottom:1px solid grey;
+color:white;
+background:#3f3c42;
+border-radius:5px;
+position: fixed;
+width: 78%;
+    
    
     `;
 const HeaderLeft = styled.div`
@@ -400,32 +499,49 @@ const ChatContainer = styled.div`
 `;
 
 const ChatInputContainer = styled.div`
-        border-radius: 20px;
+    position: fixed;
+    bottom: 0;
+    width: 78%;
+    background-color: #524159;
+    border-radius:15px;
+    z-index: 1; /* Ensure it appears above other elements */
 
-        > form {
-            position: relative;
-            display: flex;
-            justify-content: center;
+    > form {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px;
+    }
 
-        }
+    > form > input {
+        flex: 1;
+        height: 35px;
+       margin-left:15px;
+        border: none;
+        padding: 10px;
+        outline: none;
+        border-radius: 10px;
+        background-color: #333; /* Darker background */
+        color: white;
+    }
 
-        > form > input {
-            position: fixed;
-            bottom:30px;
-            width:60%;
-            height:35px;
-            border: 1px solid gray;
-            padding: 20px;
-            outline:none;
-            border-radius: 10px;
-        }
+    > form > button {
+        margin-left: 10px;
+        height: 35px;
+        padding: 0 15px;
+        border: none;
+        border-radius: 10px;
+        // background-color: #4CAF50;
+        color: white;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
 
-        > form > Button {
-            position : fixed;
-            bottom: 34px;
-            left: 1150px;
-        }
-    `;
+    > form > button:hover {
+        background-color: #45a049;
+    }
+`;
+
 
     const ChatBottom = styled.div`
 padding-bottom:200px;

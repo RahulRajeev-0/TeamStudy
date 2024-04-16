@@ -33,6 +33,7 @@ const UserProfileOffcanvas = ({ handleClose, show }) => {
   
   // profile pic
   const inputRef = useRef(null)
+  
   const handleUploadImage = ()=>{
     if (inputRef.current){
         inputRef.current.click()
