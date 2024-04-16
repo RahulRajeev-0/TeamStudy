@@ -308,26 +308,45 @@ const ChatContainer = styled.div`
 `;
 
 const ChatInputContainer = styled.div`
-  
-  border-radius: 20px;
-  > form {
-    position: relative;
-    display: flex;
-    justify-content: center;
-  }
-  > form > input {
     position: fixed;
-    bottom: 30px;
-    width: 60%;
-    height: 35px;
-    border: 1px solid gray;
-    padding: 20px;
-    outline: none;
-    border-radius: 10px;
-  }
-  > form > Button {
-    position: fixed;
-    bottom: 34px;
-    left: 1150px;
-  }
+    bottom: 0;
+    width: 78%;
+    background-color: #524159;
+    border-radius:15px;
+    z-index: 1; /* Ensure it appears above other elements */
+
+    > form {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px;
+    }
+
+    > form > input {
+        flex: 1;
+        height: 35px;
+       
+        border: none;
+        padding: 10px;
+        outline: none;
+        border-radius: 10px;
+        background-color: #333; /* Darker background */
+        color: white;
+    }
+
+    > form > button {
+        margin-left: 10px;
+        height: 35px;
+        padding: 0 15px;
+        border: none;
+        border-radius: 10px;
+        background-color: #4CAF50;
+        color: white;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+    > form > button:hover {
+        background-color: #45a049;
+    }
 `;
