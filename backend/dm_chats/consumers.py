@@ -29,7 +29,8 @@ class PersonalChatConsumer(AsyncWebsocketConsumer):
             await self.send(text_data=json.dumps({
                 'message': message['message'],
                 'sender': message['sender'],
-                'time': formatted_time 
+                'time': formatted_time ,
+                'type':message['type']
             }))
 
 
@@ -46,7 +47,7 @@ class PersonalChatConsumer(AsyncWebsocketConsumer):
     @database_sync_to_async
     def get_existing_messages(self):
         messages = ChatMessage.objects.filter(group=self.room_group_name)
-        return [{'message': message.message, 'sender': message.sender.id, 'time':message.time_stamp} for message in messages]
+        return [{'message': message.message, 'sender': message.sender.id, 'time':message.time_stamp, 'type':message.type} for message in messages]
     
 
 
@@ -57,10 +58,12 @@ class PersonalChatConsumer(AsyncWebsocketConsumer):
         message = event['data']['message']
         sender = event['data']['sender']
         time = event['data']['time']
+        type = event['data']['type']
         await self.send(text_data=json.dumps({
             "message":message,
             'sender':sender,
             'time':time,
+            'type':type
         }))
 
 
@@ -145,24 +148,24 @@ class PersonalChatConsumer(AsyncWebsocketConsumer):
         message = data.get('message',"")
         sender = data.get('sender', 'Anonymous') 
         time = data.get('time','unkown')
-
-        if data.get('type') == 'video_call':
-            link = data.get('link', '')
-            # Handle the call message as needed
-            print(f"Received video call: {message}, link: {link}")
-            # You can send the video call link to the clients in the group
+        type = data.get('type', 'text_message')
+        link = data.get('link', '')
+        
+        if type == 'video_call':
             await self.video_link_receive(link, sender)
         
-        if data.get('type') == 'audio_call':
-            link = data.get('link','')
-            print(f"Received audio call: {message}, link: {link}")
+        if type == 'audio_call':
             await self.audio_link_receive(link, sender)
-            
-            
-       
 
-        if sender:
+        if sender and (type == 'text_message' or type == 'video_call' or type == 'audio_call'):
             await self.save_message(sender, message)
+        
+        if sender and type == "photo":
+            await self.save_photo(sender, message)
+
+        if sender and type == "video":
+            await self.save_video(sender, message)
+
 
         await self.channel_layer.group_send(
             self.room_group_name,
@@ -172,6 +175,7 @@ class PersonalChatConsumer(AsyncWebsocketConsumer):
                     'message':message,
                     'sender':sender,
                     'time':time,
+                    'type':type
                 },
             }
         )
@@ -209,5 +213,52 @@ class PersonalChatConsumer(AsyncWebsocketConsumer):
             print("Message saved to database.")
         else:
             print("Sender is None. Message not saved.")
+
+    
+    async def save_photo(self, sender, message):
+        if sender:
+            sender = await self.get_member_instance(sender)
+            await self.save_photos_to_db(sender, message)
+        else:
+            print("sender id not found ")
+
+    @database_sync_to_async
+    def save_photos_to_db(self, sender, message):
+        if sender:
+            ChatMessage.objects.create(
+                sender=sender,
+                message=message,
+                group=self.room_group_name,
+                type='photo'
+                
+            )
+            print("Message saved to database.")
+        else:
+            print("Sender is None. Message not saved.")
+
+    
+    async def save_video(self, sender, message):
+        if sender:
+            sender = await self.get_member_instance(sender)
+            await self.save_video_to_db(sender, message)
+        else:
+            print("sender id not found ")
+
+
+    
+    @database_sync_to_async
+    def save_video_to_db(self, sender, message):
+        if sender:
+            ChatMessage.objects.create(
+                sender=sender,
+                message=message,
+                group=self.room_group_name,
+                type='video'
+                
+            )
+            print("Message saved to database.")
+        else:
+            print("Sender is None. Message not saved.")
+
 
             

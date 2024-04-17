@@ -276,13 +276,15 @@ const Chat = () => {
     }
   
   
-    const handlePhotoClick = () => {
+  const handlePhotoClick = () => {
       if (photoInputRef.current){
         photoInputRef.current.click()
        
     }
      
   };
+
+  // ---------- for the photo sending ------------------
   const handlePhotoChange = (event) => {
     const selectedFile = event.target.files[0];
 
@@ -343,6 +345,58 @@ const Chat = () => {
     // Handle valid photo selection (e.g., upload to server)
     // ... your upload logic here ...
   };
+
+  const handleVideoChange = (event) => {
+    const selectedFile = event.target.files[0];
+  
+    if (!selectedFile) {
+      return; // Handle empty selection (optional)
+    }
+    
+    setIsLoading(true);
+    if (selectedFile.size > 50 * 1024 * 1024) { // Check for 50 MB limit
+      toast.error("You can only send video files less than 50 MB");
+      setIsLoading(false);
+      return; // Prevent further processing
+    }
+  
+    let formData = new FormData();
+    formData.append("file", selectedFile);
+    formData.append("upload_preset","TeamStudy");
+    formData.append("cloud_name","doafvjkhf");
+    formData.append("folder", "TeamStudy");
+  
+    fetch("https://api.cloudinary.com/v1_1/doafvjkhf/video/upload", {
+      method:"post",
+      body:formData
+    }).then((res)=>res.json()).then((data)=>{
+      setIsLoading(false);
+      console.log(data);
+      // If the video is uploaded successfully, send the message
+      if (data.public_id){
+        const sender = profile.id;
+  
+        const message = {
+          message: data.secure_url,
+          type: 'video',
+          sender: sender,
+          username: userDetails.username
+        };
+      
+        // Send the message via WebSocket
+        if (connection && connection.readyState === connection.OPEN) {
+          connection.send(JSON.stringify(message));
+        } else {
+          console.error('WebSocket is not open');
+          // Handle the case when WebSocket is not open (e.g., show an error message)
+        }
+      }
+    }).catch((err)=>{
+      setIsLoading(false);
+      console.log(err);
+    });
+  };
+  
   
     const handleVideoClick = () => {
       videoInputRef.current.click();
@@ -453,6 +507,7 @@ const Chat = () => {
       ref={videoInputRef}
       id="fileInput"
       type="file"
+      onChange={handleVideoChange}
       accept="video/*"
       style={{ display: 'none' }} // Hide the input
     />
@@ -486,12 +541,13 @@ const Header = styled.div`
 display:flex;
 justify-content: space-between;
 padding: 20px;
-border-bottom:1px solid grey;
+
 color:white;
-background:#3f3c42;
-border-radius:5px;
+background:#424A86;
+border-radius:10px;
 position: fixed;
 width: 78%;
+z-index:2;
     
    
     `;
@@ -537,7 +593,7 @@ const ChatInputContainer = styled.div`
     position: fixed;
     bottom: 0;
     width: 78%;
-    background-color: #524159;
+    background-color: #424A86;
     border-radius:15px;
     z-index: 1; /* Ensure it appears above other elements */
 
