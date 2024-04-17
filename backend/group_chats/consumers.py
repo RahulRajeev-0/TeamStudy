@@ -27,7 +27,8 @@ class GroupChatConsumer(AsyncWebsocketConsumer):
                 'message': message['message'],
                 'sender': message['sender'],
                 'username': message['username'], 
-                'time': formatted_time  # Use the formatted time string
+                'time': formatted_time,  # Use the formatted time string
+                'type':message['type']
             }))
 
     
@@ -44,12 +45,14 @@ class GroupChatConsumer(AsyncWebsocketConsumer):
         sender = event['data']['sender']
         username = event['data']['username']
         time = event['data']['time']
+        type = event['data']['type']
         
         await self.send(text_data=json.dumps({
             "message":message,
             'sender':sender,
             'username':username,
             'time':time,
+            'type':type
         }))
 
 
@@ -60,15 +63,19 @@ class GroupChatConsumer(AsyncWebsocketConsumer):
         sender = data.get('sender', 'Anonymous')
         username = data.get('username', "unkown")
         time = data.get('time','unkown')
+        type = data.get('type', 'text_message')
 
-        if data.get('type') == 'video_call':
+        if type == 'video_call':
             await self.video_link_receive(username, sender)
         
-        if data.get('type') == 'audio_call':
+        if type == 'audio_call':
             await self.audio_link_receive(username, sender)
 
-        if sender:
+        if sender and (type == 'text_message' or type == 'video_call' or type == 'audio_call'):
             await self.save_message(sender, message)
+        
+        if sender and type == "photo":
+            await self.save_photo(sender, message)
 
         await self.channel_layer.group_send(
             self.room_group_name,
@@ -79,6 +86,7 @@ class GroupChatConsumer(AsyncWebsocketConsumer):
                     'sender':sender,
                     'username':username,
                     'time':time,
+                    'type':type
                 },
             }
         )
@@ -151,7 +159,7 @@ class GroupChatConsumer(AsyncWebsocketConsumer):
     @database_sync_to_async
     def get_existing_messages(self):
         messages = GroupChatMessage.objects.filter(group=self.room_group_name)
-        return [{'message': message.message, 'sender': message.sender.id, 'username':message.sender.user.username, 'time':message.time_stamp} for message in messages]
+        return [{'message': message.message, 'sender': message.sender.id, 'username':message.sender.user.username, 'time':message.time_stamp, 'type':message.type} for message in messages]
     
 
     # function for saving the data -> this will call the function to save data to the database
@@ -159,6 +167,15 @@ class GroupChatConsumer(AsyncWebsocketConsumer):
         if sender:
             sender = await self.get_member_instance(sender)
             await self.save_message_to_db(sender, message)
+        else:
+            print("sender id not found ")
+
+
+    # for storing image to the database 
+    async def save_photo(self, sender, message):
+        if sender:
+            sender = await self.get_member_instance(sender)
+            await self.save_photos_to_db(sender, message)
         else:
             print("sender id not found ")
 
@@ -182,6 +199,21 @@ class GroupChatConsumer(AsyncWebsocketConsumer):
                 sender=sender,
                 message=message,
                 group=self.room_group_name,
+                
+            )
+            print("Message saved to database.")
+        else:
+            print("Sender is None. Message not saved.")
+
+
+    @database_sync_to_async
+    def save_photos_to_db(self, sender, message):
+        if sender:
+            GroupChatMessage.objects.create(
+                sender=sender,
+                message=message,
+                group=self.room_group_name,
+                type='photo'
                 
             )
             print("Message saved to database.")

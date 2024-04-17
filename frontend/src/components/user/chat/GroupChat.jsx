@@ -80,6 +80,8 @@ const Chat = () => {
 
 
   // for multimedia sending 
+
+  const [isLoading, setIsLoading] = useState(false);
   const photoInputRef = useRef(null);
   const videoInputRef = useRef(null);
   const fileInputRef = useRef(null);
@@ -188,6 +190,7 @@ const Chat = () => {
         const sender = profile.id;
         
         const username = userDetails.username;
+
         
         const currentTime = new Date();
         const year = currentTime.getFullYear();
@@ -287,8 +290,10 @@ const Chat = () => {
       return; // Handle empty selection (optional)
     }
     
-    if (selectedFile.size > 3 * 1024 * 1024) { // Check for 3 MB limit
-      alert('File size exceeds the maximum limit of 3 MB. Please choose a smaller photo.');
+    setIsLoading(true);
+    if (selectedFile.size > 2 * 1024 * 1024) { // Check for 3 MB limit
+      toast.error("You can only send image less than 2 mb ")
+      setIsLoading(false)
       return; // Prevent further processing
     }
 
@@ -308,8 +313,30 @@ const Chat = () => {
       method:"post",
       body:formData
     }).then((res)=>res.json()).then((data)=>{
-      console.log(data);
+      setIsLoading(false);
+      console.log(data.public_id);
+      // if the image is uploaded successfully then send the message
+      if (data.public_id){
+        const sender = profile.id
+
+      const message = {
+        message: data.public_id,
+        type: 'photo',
+        sender:sender,
+        username:userDetails.username
+      };
+    
+      // Send the message via WebSocket
+      if (connection && connection.readyState === connection.OPEN) {
+        connection.send(JSON.stringify(message));
+      } else {
+        console.error('WebSocket is not open');
+        // Handle the case when WebSocket is not open (e.g., show an error message)
+      }
+      }
+      
     }).catch((err)=>{
+      setIsLoading(false);
       console.log(err);
     })
 
@@ -381,6 +408,7 @@ const Chat = () => {
 
         // In the Chat component
 <ChatMessages>
+<ChatTop/>
   {/* Listing out the messages */}
   {chatMessages.map((chat, index) => (
     <GroupMessage
@@ -388,6 +416,7 @@ const Chat = () => {
       message={chat.message}
       isSender={chat.sender === profile.id} // Add a prop to identify if the sender is the current user
     username={chat.username}
+    type={chat.type}
     time={chat.time}
     />
   ))}
@@ -399,40 +428,46 @@ const Chat = () => {
 
         <ChatInputContainer>
         <form>
-        <DropdownButton
-             
-              drop='up'
-              variant="secondary"
-              title={<AttachFileIcon/>}
-            >
-              <Dropdown.Item eventKey="1" onClick={handlePhotoClick}><InsertPhotoIcon/> Photo</Dropdown.Item>
-              <Dropdown.Item eventKey="2" onClick={handleVideoClick}><VideoFileIcon/> Video</Dropdown.Item>
-              {/* <Dropdown.Item eventKey="3" onClick={handleAudioClick}><AudioFileIcon/> Audio</Dropdown.Item> */}
-              <input
-                ref={photoInputRef}
-                id="fileInput"
-                type="file"
-                accept="image/*"
-                onChange={handlePhotoChange}
-                style={{ display: 'none' }} // Hide the input
-            />
-              <input
-                ref={videoInputRef}
-                id="fileInput"
-                type="file"
-                accept="video/*"
-                style={{ display: 'none' }} // Hide the input
-            />
-              <input
-                ref={fileInputRef}
-                id="fileInput"
-                type="file"
-                accept="audio/*"
-                style={{ display: 'none' }} // Hide the input
-            />
-              <Dropdown.Divider />
-              <Dropdown.Item eventKey="4"><InsertDriveFileIcon/> file</Dropdown.Item>
-            </DropdownButton>
+        {isLoading ? ( // If loading is true, render a different button
+  <Button variant="secondary" onClick={() => {}}>
+    Loading...
+  </Button>
+) : ( // If loading is false, render the attachment button
+  <DropdownButton
+    drop='up'
+    variant="secondary"
+    title={<AttachFileIcon/>}
+  >
+    <Dropdown.Item eventKey="1" onClick={handlePhotoClick}><InsertPhotoIcon/> Photo</Dropdown.Item>
+    <Dropdown.Item eventKey="2" onClick={handleVideoClick}><VideoFileIcon/> Video</Dropdown.Item>
+    {/* <Dropdown.Item eventKey="3" onClick={handleAudioClick}><AudioFileIcon/> Audio</Dropdown.Item> */}
+    <input
+      ref={photoInputRef}
+      id="fileInput"
+      type="file"
+      accept="image/*"
+      onChange={handlePhotoChange}
+      style={{ display: 'none' }} // Hide the input
+    />
+    <input
+      ref={videoInputRef}
+      id="fileInput"
+      type="file"
+      accept="video/*"
+      style={{ display: 'none' }} // Hide the input
+    />
+    <input
+      ref={fileInputRef}
+      id="fileInput"
+      type="file"
+      accept="audio/*"
+      style={{ display: 'none' }} // Hide the input
+    />
+    <Dropdown.Divider />
+    <Dropdown.Item eventKey="4"><InsertDriveFileIcon/> file</Dropdown.Item>
+  </DropdownButton>
+)}
+
             <input ref={inputRef} placeholder='Message'/>
             <Button variant='outlined'><MicIcon/></Button>
             <Button variant="contained" endIcon={<SendIcon />} type='submit' onClick={sendMessage}>
@@ -546,3 +581,6 @@ const ChatInputContainer = styled.div`
     const ChatBottom = styled.div`
 padding-bottom:200px;
 `;
+
+const ChatTop = styled.div`
+padding-top:100px`;
