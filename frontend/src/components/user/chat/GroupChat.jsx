@@ -276,7 +276,7 @@ const Chat = () => {
     }
   
   
-    const handlePhotoClick = () => {
+  const handlePhotoClick = () => {
       if (photoInputRef.current){
         photoInputRef.current.click()
        

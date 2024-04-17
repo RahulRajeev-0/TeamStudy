@@ -9,9 +9,22 @@ import Button from '@mui/material/Button';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { w3cwebsocket as W3CWebSocket, connection } from 'websocket';
-import Message from './Message';
+import DirectMessage from './Message';
 
 import IconButton from '@mui/material/IconButton';
+
+// icons
+import AttachFileIcon from '@mui/icons-material/AttachFile';
+import InsertPhotoIcon from '@mui/icons-material/InsertPhoto';
+import VideoFileIcon from '@mui/icons-material/VideoFile';
+import AudioFileIcon from '@mui/icons-material/AudioFile';
+import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
+import MicIcon from '@mui/icons-material/Mic';
+
+// boostrap react 
+import NavDropdown from 'react-bootstrap/NavDropdown';
+import Dropdown from 'react-bootstrap/Dropdown';
+import DropdownButton from 'react-bootstrap/DropdownButton';
 
 import VideoCallAlert from '../OneOnOneVideo/VideoCallAlert'
 import AudioCallAlert from '../OneOnOneAudio/AudioCallAlert';
@@ -32,6 +45,15 @@ const DMChat = () => {
   const [showVideoCallAlert, setShowVideoCallAlert] = useState(false);
   const [showAudioCallAlert, setShowAudioCallAlert] = useState(false);
   const [room_id, setRoom_id] = useState(null)
+
+  // for multimedia sending 
+
+  const [isLoading, setIsLoading] = useState(false);
+  const photoInputRef = useRef(null);
+  const videoInputRef = useRef(null);
+  const fileInputRef = useRef(null);
+  const [isRecording, setIsRecording] = useState(false);
+  const recorderRef = useRef(null);
 
   const fetchUserInfo = async () => {
     try {
@@ -192,6 +214,142 @@ const DMChat = () => {
     }
     
   }, [userInfo.id]);
+
+
+  // functions for multimedia senting 
+  const handlePhotoClick = () => {
+    if (photoInputRef.current){
+      photoInputRef.current.click()
+     
+  }
+   
+};
+
+// ---------- for the photo sending ------------------
+const handlePhotoChange = (event) => {
+  const selectedFile = event.target.files[0];
+
+  if (!selectedFile) {
+    return; // Handle empty selection (optional)
+  }
+  
+  setIsLoading(true);
+  if (selectedFile.size > 2 * 1024 * 1024) { // Check for 3 MB limit
+    toast.error("You can only send image less than 2 mb ")
+    setIsLoading(false)
+    return; // Prevent further processing
+  }
+
+  let formData = new FormData();
+  formData.append("file", selectedFile);
+  formData.append("upload_preset","TeamStudy");
+  formData.append("cloud_name","doafvjkhf");
+  formData.append("folder", "TeamStudy");
+
+ 
+    //   data.append("file", uploadImage);
+    //   data.append("upload_preset", REACT_APP_CLOUDINARY_UPLOAD_PRESET);
+    //   data.append("cloud_name", REACT_APP_CLOUDINARY_CLOUD_NAME);
+    //   data.append("folder", "Zorpia-posts");
+
+  fetch("https://api.cloudinary.com/v1_1/doafvjkhf/image/upload", {
+    method:"post",
+    body:formData
+  }).then((res)=>res.json()).then((data)=>{
+    setIsLoading(false);
+    console.log(data.public_id);
+    // if the image is uploaded successfully then send the message
+    if (data.public_id){
+      const sender = profile.id
+
+    const message = {
+      message: data.public_id,
+      type: 'photo',
+      sender:sender,
+      
+    };
+  
+    // Send the message via WebSocket
+    if (connection && connection.readyState === connection.OPEN) {
+      connection.send(JSON.stringify(message));
+    } else {
+      console.error('WebSocket is not open');
+      // Handle the case when WebSocket is not open (e.g., show an error message)
+    }
+    }
+    
+  }).catch((err)=>{
+    setIsLoading(false);
+    console.log(err);
+  })
+
+  // Handle valid photo selection (e.g., upload to server)
+  // ... your upload logic here ...
+};
+
+const handleVideoChange = (event) => {
+  const selectedFile = event.target.files[0];
+
+  if (!selectedFile) {
+    return; // Handle empty selection (optional)
+  }
+  
+  setIsLoading(true);
+  if (selectedFile.size > 50 * 1024 * 1024) { // Check for 50 MB limit
+    toast.error("You can only send video files less than 50 MB");
+    setIsLoading(false);
+    return; // Prevent further processing
+  }
+
+  let formData = new FormData();
+  formData.append("file", selectedFile);
+  formData.append("upload_preset","TeamStudy");
+  formData.append("cloud_name","doafvjkhf");
+  formData.append("folder", "TeamStudy");
+
+  fetch("https://api.cloudinary.com/v1_1/doafvjkhf/video/upload", {
+    method:"post",
+    body:formData
+  }).then((res)=>res.json()).then((data)=>{
+    setIsLoading(false);
+    console.log(data);
+    // If the video is uploaded successfully, send the message
+    if (data.public_id){
+      const sender = profile.id;
+
+      const message = {
+        message: data.secure_url,
+        type: 'video',
+        sender: sender,
+       
+      };
+    
+      // Send the message via WebSocket
+      if (connection && connection.readyState === connection.OPEN) {
+        connection.send(JSON.stringify(message));
+      } else {
+        console.error('WebSocket is not open');
+        // Handle the case when WebSocket is not open (e.g., show an error message)
+      }
+    }
+  }).catch((err)=>{
+    setIsLoading(false);
+    console.log(err);
+  });
+};
+
+
+  const handleVideoClick = () => {
+    videoInputRef.current.click();
+};
+//   const handleAudioClick = () => {
+//     InputRef.current.click();
+// };
+  const handleFileClick = () => {
+    fileInputRef.current.click();
+};
+
+
   
   return (
     <ChatContainer>
@@ -220,10 +378,11 @@ const DMChat = () => {
       
         <ChatTop/>
       {chatMessages.map((chat, index) => (
-    <Message
+    <DirectMessage
       key={index}
       message={chat.message}
       time={chat.time}
+      type={chat.type}
       isSender={chat.sender === profile.id} // Add a prop to identify if the sender is the current user
     />
     
@@ -234,13 +393,57 @@ const DMChat = () => {
       </ChatMessages>
  
       <ChatInputContainer>
-        <form>
-          <input ref={inputRef} placeholder='Message' />
-          <Button variant="contained" endIcon={<SendIcon />} type='submit' onClick={sendMessage}>
-            Send
-          </Button>
+      <form>
+        {isLoading ? ( // If loading is true, render a different button
+  <Button variant="secondary" onClick={() => {}}>
+    Loading...
+  </Button>
+) : ( // If loading is false, render the attachment button
+  <DropdownButton
+    drop='up'
+    variant="secondary"
+    title={<AttachFileIcon/>}
+  >
+    <Dropdown.Item eventKey="1" onClick={handlePhotoClick}><InsertPhotoIcon/> Photo</Dropdown.Item>
+    <Dropdown.Item eventKey="2" onClick={handleVideoClick}><VideoFileIcon/> Video</Dropdown.Item>
+    {/* <Dropdown.Item eventKey="3" onClick={handleAudioClick}><AudioFileIcon/> Audio</Dropdown.Item> */}
+    <input
+      ref={photoInputRef}
+      id="fileInput"
+      type="file"
+      accept="image/*"
+      onChange={handlePhotoChange}
+      style={{ display: 'none' }} // Hide the input
+    />
+    <input
+      ref={videoInputRef}
+      id="fileInput"
+      type="file"
+      onChange={handleVideoChange}
+      accept="video/*"
+      style={{ display: 'none' }} // Hide the input
+    />
+    <input
+      ref={fileInputRef}
+      id="fileInput"
+      type="file"
+      accept="audio/*"
+      style={{ display: 'none' }} // Hide the input
+    />
+    <Dropdown.Divider />
+    <Dropdown.Item eventKey="4"><InsertDriveFileIcon/> file</Dropdown.Item>
+  </DropdownButton>
+)}
+
+            <input ref={inputRef} placeholder='Message'/>
+            <Button variant='outlined'><MicIcon/></Button>
+            <Button variant="contained" endIcon={<SendIcon />} type='submit' onClick={sendMessage}>
+            </Button>
         </form>
       </ChatInputContainer>
+
+
+
     </ChatContainer>
   );
 };
@@ -260,8 +463,9 @@ const Header = styled.div`
     padding: 20px;
     border-bottom:1px solid grey;
     color:white;
-    background:#3f3c42;
+    background:#424A86;
     border-radius:5px;
+    z-index:1;
     position: fixed;
     width: 78%;
     // padding-bottom:200px;
@@ -308,45 +512,45 @@ const ChatContainer = styled.div`
 `;
 
 const ChatInputContainer = styled.div`
-    position: fixed;
-    bottom: 0;
-    width: 78%;
-    background-color: #524159;
-    border-radius:15px;
-    z-index: 1; /* Ensure it appears above other elements */
+position: fixed;
+bottom: 0;
+width: 78%;
+background-color: #424A86;
+border-radius:15px;
+z-index: 1; /* Ensure it appears above other elements */
 
-    > form {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 10px;
-    }
+> form {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+}
 
-    > form > input {
-        flex: 1;
-        height: 35px;
-       
-        border: none;
-        padding: 10px;
-        outline: none;
-        border-radius: 10px;
-        background-color: #333; /* Darker background */
-        color: white;
-    }
+> form > input {
+    flex: 1;
+    height: 35px;
+   margin-left:15px;
+    border: none;
+    padding: 10px;
+    outline: none;
+    border-radius: 10px;
+    background-color: #333; /* Darker background */
+    color: white;
+}
 
-    > form > button {
-        margin-left: 10px;
-        height: 35px;
-        padding: 0 15px;
-        border: none;
-        border-radius: 10px;
-        background-color: #4CAF50;
-        color: white;
-        cursor: pointer;
-        transition: background-color 0.3s;
-    }
+> form > button {
+    margin-left: 10px;
+    height: 35px;
+    padding: 0 15px;
+    border: none;
+    border-radius: 10px;
+    // background-color: #4CAF50;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
 
-    > form > button:hover {
-        background-color: #45a049;
-    }
+> form > button:hover {
+    background-color: #45a049;
+}
 `;

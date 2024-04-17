@@ -4,7 +4,7 @@ import WorkSpaceSideBar from "../../../components/user/WorkSpaceSideBar/WorkSpac
 import Chat from "../../../components/user/chat/GroupChat"
 import styled from 'styled-components'
 
-import backgroundPic from '../../../../../chatBackground.jpeg'
+// import backgroundPic from '../../../../../chatBackground.jpeg'
 
 const ChannelPage = () => {
   return (
