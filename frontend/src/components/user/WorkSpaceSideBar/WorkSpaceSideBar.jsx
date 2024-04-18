@@ -22,7 +22,9 @@ import { toast } from 'react-toastify';
 // react router dom 
 import { useNavigate } from 'react-router-dom';
 
-
+// 
+import UnlockButton from '../premiumWorkspace/UnlockPremiumButton';
+import KeepMountedModal from '../premiumWorkspace/PremiumModal';
 
 //  redux and redux store 
 import { useSelector } from 'react-redux'
@@ -76,7 +78,6 @@ const WorkSpaceSideBar = () => {
         </SidebarHeader>
                   
        
-       
         <NavDropdown
                         id="nav-dropdown-dark-example"
                         title="Workspace options"
@@ -107,11 +108,15 @@ const WorkSpaceSideBar = () => {
  
 
 <hr/>
+
 <ChannelAccordion/>
 <hr/>
 <DMAccordion/>
-<hr/>
 
+<hr/>
+<KeepMountedModal/>
+
+<hr/>
     </SidebarContainer>
   )
 }
