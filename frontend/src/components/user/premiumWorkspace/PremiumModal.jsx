@@ -42,7 +42,7 @@ export default function KeepMountedModal() {
           <Typography id="keep-mounted-modal-description" sx={{ mt: 2 }}>
           </Typography>
           {/* Display the OutlinedCard component here */}
-          <OutlinedCard />
+          <OutlinedCard handleClose={handleClose} />
         </Box>
       </Modal>
     </div>

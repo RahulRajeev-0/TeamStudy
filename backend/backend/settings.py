@@ -233,4 +233,13 @@ EMAIL_HOST_USER = 'ravanan0908@gmail.com' # EMAIL
 EMAIL_HOST_PASSWORD = "qsyz duay caoi wuir" # PASSWORD
 
 
-CORS_ORIGIN_ALLOW_ALL = True
+CORS_ALLOW_ALL_ORIGINS = True
+
+
+
+# payment 
+STRIPE_SECRET_KEY = 'sk_test_51P6ub5SFKduoB8YQ4gcNAMVw9ZZoNjwuDSbwlEe2LV7Q08oybp2ghwuiNbO3WdkZzsiz6AxIfZwZoj3Q2M2ZkJq900Jy6gZsrE'
+STRIPE_PUBLIC_KEY = 'pk_test_51P6ub5SFKduoB8YQLu1JC20uRvZRe7nFIAA72A9JbwxehC4spW9JFh0W5TxMZWUYJu3y8aUt47iCniXwwmWPwzZJ00JrBedFMN'
+
+SITE_URL='http://localhost:5173/payment/'
+
