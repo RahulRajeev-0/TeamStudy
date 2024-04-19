@@ -4,7 +4,7 @@ from asgiref.sync import sync_to_async
 from .models import ChatMessage
 from workspaces.models import WorkspaceMembers
 from channels.db import database_sync_to_async
-
+from django.utils import timezone
 class PersonalChatConsumer(AsyncWebsocketConsumer):
     
 
@@ -25,7 +25,7 @@ class PersonalChatConsumer(AsyncWebsocketConsumer):
 
         existing_messages = await self.get_existing_messages() 
         for message in existing_messages:
-            formatted_time = message['time'].strftime("%Y-%m-%d %H:%M:%S")
+            formatted_time = message['time'].astimezone(timezone.get_current_timezone()).strftime("%Y-%m-%d %H:%M:%S")
             await self.send(text_data=json.dumps({
                 'message': message['message'],
                 'sender': message['sender'],

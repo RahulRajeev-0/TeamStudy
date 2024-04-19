@@ -114,9 +114,12 @@ const WorkSpaceSideBar = () => {
 <DMAccordion/>
 
 <hr/>
-<KeepMountedModal/>
-
-<hr/>
+{!workspaceDetails.isPremium && (
+                <div>
+                    <KeepMountedModal />
+                    <hr />
+                </div>
+            )}
     </SidebarContainer>
   )
 }

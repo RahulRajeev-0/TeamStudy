@@ -3,6 +3,7 @@ import json
 from channels.db import database_sync_to_async
 from .models import GroupChatMessage
 from workspaces.models import WorkspaceMembers
+from django.utils import timezone
 
 
 class GroupChatConsumer(AsyncWebsocketConsumer):
@@ -20,7 +21,7 @@ class GroupChatConsumer(AsyncWebsocketConsumer):
         existing_messages = await self.get_existing_messages() 
         for message in existing_messages:
             # Convert datetime object to string
-            formatted_time = message['time'].strftime("%Y-%m-%d %H:%M:%S")
+            formatted_time = message['time'].astimezone(timezone.get_current_timezone()).strftime("%Y-%m-%d %H:%M:%S")
             
             # Serialize to JSON
             await self.send(text_data=json.dumps({

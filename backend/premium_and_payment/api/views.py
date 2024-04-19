@@ -7,6 +7,8 @@ from rest_framework import status
 
 # models
 from workspaces.models import Workspaces
+from ..models import PremiumPayments
+
 from django.shortcuts import redirect
 import stripe
 from django.conf import settings
@@ -40,10 +42,12 @@ class CreateStripeCheckoutSession(APIView):
                 ],
                        mode='payment',
                        metadata={
-                            'product_id':workspace.id
+                            'workspace_id':workspace.id
                        },
-                       success_url = settings.SITE_URL + '?success=true' ,
+                       customer_email=workspace.created_by.email,
+                       success_url = "http://127.0.0.1:8000/payment/payment-success/?session_id={CHECKOUT_SESSION_ID}",
                        cancel_url = settings.SITE_URL + '?cancel=true' ,
+                       
             )
             return redirect(checkout_session.url, code=303)
         except Exception as e:
@@ -51,3 +55,31 @@ class CreateStripeCheckoutSession(APIView):
             return Response({'message':'something wend wrong'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
              
+class StripeSuccessView(APIView):
+    def get(self, request):
+        try:
+            session_id = request.GET.get('session_id')
+
+            
+            # Retrieve the session from Stripe to confirm payment success
+            session = stripe.checkout.Session.retrieve(session_id)
+
+            # Get the workspace ID from the session's metadata
+            workspace_id = session.metadata.get('workspace_id')
+
+            workspace = Workspaces.objects.get(id=workspace_id)
+            workspace.is_premium = True
+            workspace.save()
+
+            
+            # creating payment 
+            PremiumPayments.objects.create(workspace=workspace)
+                
+
+            return redirect(settings.SITE_URL + '?success=true')
+
+        except stripe.error.StripeError as e:
+            return Response(
+                {'error': str(e)},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )  
