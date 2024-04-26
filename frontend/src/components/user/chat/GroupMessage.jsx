@@ -40,7 +40,14 @@ const GroupMessage = ({ message, isSender, username, time, type }) => {
           
           <StyledVideo src={message} alt="Group video" controls />
           
-        ) : (
+        ) : type === 'audio' ? (
+          
+          <audio controls>
+  <source src={message} type="audio/mpeg"/>
+  Your browser does not support the audio element.
+       </audio>
+          
+        ): (
           <span>{message}</span>
         )}
         <Nametag>{formatTime(time)}</Nametag>

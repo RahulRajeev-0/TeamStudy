@@ -33,6 +33,7 @@ const OutlinedCard = ({ handleClose }) => {
       if (error.response && error.response.status === 403) {
         toast.error("You are not authorized to perform this action.");
       } else {
+        // console.log(error.);
         console.log(error);
       }
     }
@@ -64,7 +65,10 @@ const OutlinedCard = ({ handleClose }) => {
           </Typography>
         </CardContent>
         <CardActions>
-          <Button  color='secondary' onClick={handlePayment} variant='contained' size="large">Buy Premium</Button>
+          <form action={`http://127.0.0.1:8000/payment/create-checkout-session/${workspaceDetails.workspaceId}/`} method="POST">
+
+          <Button  color='secondary' type='submit' variant='contained' size="large">Buy Premium</Button>
+          </form>
           <Button color='error' onClick={handleClose} size="large">Cancel</Button>
         </CardActions>
       </Card>

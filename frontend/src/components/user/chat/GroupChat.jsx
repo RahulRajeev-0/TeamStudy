@@ -85,7 +85,7 @@ const Chat = () => {
   const [isLoading, setIsLoading] = useState(false);
   const photoInputRef = useRef(null);
   const videoInputRef = useRef(null);
-  const fileInputRef = useRef(null);
+  const audioInputRef = useRef(null);
   const [isRecording, setIsRecording] = useState(false);
   const recorderRef = useRef(null);
   
@@ -378,6 +378,58 @@ const Chat = () => {
       console.log(err);
     });
   };
+
+
+  const handleAudioChange = (event) => {
+    const selectedFile = event.target.files[0];
+  
+    if (!selectedFile) {
+      return; // Handle empty selection (optional)
+    }
+    
+    setIsLoading(true);
+    if (selectedFile.size > 20 * 1024 * 1024) { // Check for 50 MB limit
+      toast.error("You can only send video files less than 50 MB");
+      setIsLoading(false);
+      return; // Prevent further processing
+    }
+  
+    let formData = new FormData();
+    formData.append("file", selectedFile);
+    formData.append("upload_preset","TeamStudy");
+    formData.append("cloud_name","doafvjkhf");
+    formData.append("folder", "TeamStudy");
+  
+    fetch("https://api.cloudinary.com/v1_1/doafvjkhf/video/upload", {
+      method:"post",
+      body:formData
+    }).then((res)=>res.json()).then((data)=>{
+      setIsLoading(false);
+      console.log(data);
+      // If the video is uploaded successfully, send the message
+      if (data.public_id){
+        const sender = profile.id;
+  
+        const message = {
+          message: data.secure_url,
+          type: 'audio',
+          sender: sender,
+          username: userDetails.username
+        };
+      
+        // Send the message via WebSocket
+        if (connection && connection.readyState === connection.OPEN) {
+          connection.send(JSON.stringify(message));
+        } else {
+          console.error('WebSocket is not open');
+          // Handle the case when WebSocket is not open (e.g., show an error message)
+        }
+      }
+    }).catch((err)=>{
+      setIsLoading(false);
+      console.log(err);
+    });
+  };
   
   
     const handleVideoClick = () => {
@@ -386,8 +438,8 @@ const Chat = () => {
   //   const handleAudioClick = () => {
   //     InputRef.current.click();
   // };
-    const handleFileClick = () => {
-      fileInputRef.current.click();
+    const handleAudioClick = () => {
+      audioInputRef.current.click();
   };
 
 
@@ -456,6 +508,7 @@ const Chat = () => {
     time={chat.time}
     />
   ))}
+  
 
   {showVideoCallAlert && <VideoCallAlert setShowVideoCallAlert={setShowVideoCallAlert} roomId={groupId} />}
   {showAudioCallAlert && <AudioCallAlert setShowAudioCallAlert={setShowAudioCallAlert} roomId={groupId} />}
@@ -494,19 +547,20 @@ const Chat = () => {
       style={{ display: 'none' }} // Hide the input
     />
     <input
-      ref={fileInputRef}
+      ref={audioInputRef}
       id="fileInput"
       type="file"
+      onChange={handleAudioChange}
       accept="audio/*"
       style={{ display: 'none' }} // Hide the input
     />
     <Dropdown.Divider />
-    <Dropdown.Item eventKey="4"><InsertDriveFileIcon/> file</Dropdown.Item>
+    {/* <Dropdown.Item eventKey="4"><InsertDriveFileIcon/> file</Dropdown.Item> */}
   </DropdownButton>
 )}
 
             <input ref={inputRef} placeholder='Message'/>
-            <Button variant='outlined'><MicIcon/></Button>
+            {/* <Button variant='outlined'><MicIcon/></Button> */}
             <Button variant="contained" endIcon={<SendIcon />} type='submit' onClick={sendMessage}>
             </Button>
         </form>

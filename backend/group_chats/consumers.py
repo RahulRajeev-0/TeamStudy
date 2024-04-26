@@ -81,6 +81,9 @@ class GroupChatConsumer(AsyncWebsocketConsumer):
         if sender and type == "video":
             await self.save_video(sender, message)
 
+        if sender and type == 'audio':
+            await self.save_audio(sender, message)
+
         await self.channel_layer.group_send(
             self.room_group_name,
             {
@@ -192,6 +195,14 @@ class GroupChatConsumer(AsyncWebsocketConsumer):
             print("sender id not found ")
 
 
+    async def save_audio(self, sender, message):
+        if sender:
+            sender = await self.get_member_instance(sender)
+            await self.save_audio_to_db(sender, message)
+        else:
+            print("sender id not found ")
+
+
     @database_sync_to_async
     def get_member_instance(self, member_id):
         try:
@@ -241,6 +252,21 @@ class GroupChatConsumer(AsyncWebsocketConsumer):
                 message=message,
                 group=self.room_group_name,
                 type='video'
+                
+            )
+            print("Message saved to database.")
+        else:
+            print("Sender is None. Message not saved.")
+
+
+    @database_sync_to_async
+    def save_audio_to_db(self, sender, message):
+        if sender:
+            GroupChatMessage.objects.create(
+                sender=sender,
+                message=message,
+                group=self.room_group_name,
+                type='audio'
                 
             )
             print("Message saved to database.")

@@ -5,6 +5,7 @@ import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import UnlockButton from './UnlockPremiumButton';
 import OutlinedCard from './PremiumCard'; // Import the OutlinedCard component
+import { useSelector } from 'react-redux'
 
 const style = {
   position: 'absolute',
@@ -21,10 +22,15 @@ const style = {
 };
 
 export default function KeepMountedModal() {
+
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
+  const userProfileDetails = useSelector(state => state.authenticationUser);
+  const workspaceDetails = useSelector(state => state.user_workspace_select);
+  React.useEffect(()=>{console.log(workspaceDetails.created_by.id)
+  console.log(userProfileDetails.id);},[])
   return (
     <div>
       <Button onClick={handleOpen}><UnlockButton/></Button>
@@ -42,7 +48,11 @@ export default function KeepMountedModal() {
           <Typography id="keep-mounted-modal-description" sx={{ mt: 2 }}>
           </Typography>
           {/* Display the OutlinedCard component here */}
-          <OutlinedCard handleClose={handleClose} />
+          {userProfileDetails.id == workspaceDetails.created_by.id ? (
+              <OutlinedCard handleClose={handleClose} />
+            ) : (
+              <Typography variant="h6">Only the Owner Can Do This Action</Typography>
+            )}
         </Box>
       </Modal>
     </div>

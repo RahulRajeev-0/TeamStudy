@@ -18,16 +18,14 @@ stripe.api_key = settings.STRIPE_SECRET_KEY
 
 
 class CreateStripeCheckoutSession(APIView):
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
 
-    def post(self, request):
+    def post(self,request, workspace_id):
     
-        try:
-            workspace_id = request.data.get('workspace_id')
-            
+        try: 
             workspace = Workspaces.objects.get(id=workspace_id)
-            if request.user != workspace.created_by:
-                return Response({"message":"Only the Owner of  the workspace can buy premium"}, status=status.HTTP_403_FORBIDDEN)
+            # if request.user != workspace.created_by:
+            #     return Response({"message":"Only the Owner of  the workspace can buy premium"}, status=status.HTTP_403_FORBIDDEN)
             checkout_session = stripe.checkout.Session.create(
                 line_items=[{
                        'price_data':{
@@ -49,7 +47,7 @@ class CreateStripeCheckoutSession(APIView):
                        cancel_url = settings.SITE_URL + '?cancel=true' ,
                        
             )
-            return redirect(checkout_session.url, code=303)
+            return redirect(checkout_session.url, status=status.HTTP_303_SEE_OTHER)
         except Exception as e:
             print(e)
             return Response({'message':'something wend wrong'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
