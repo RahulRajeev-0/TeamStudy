@@ -151,7 +151,7 @@ export default WorkSpaceSideBar;
 
 const SidebarContainer = styled.div`
     color:white;
-    background: #1D1D1D;
+    background: #13101f;
     // background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(198,109,244,1) 100%, rgba(0,212,255,1) 100%);    
     flex:0.3;
     border-top:1px solid #49274b;

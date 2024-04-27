@@ -193,7 +193,7 @@ export default function CustomizedAccordions() {
           <AccordionDetails>
             <Typography>
            
-            <Button color="secondary" variant="outlined" onClick={handleShow}  ><AddIcon/> Create Channel</Button>
+            <Button color="secondary" variant="contained" onClick={handleShow}  ><AddIcon/> Create Channel</Button>
             <div style={{ display: 'flex', flexDirection: 'column', marginTop: '8px',  }}>
             {workspaceGroups.map(group => (
               <Button  key={group.id} onClick={() =>  navigate(`/workspace-channel/${group.id}`)} size="small"  style={{ marginBottom: '8px', color:'grey', fontWeight:'bold' }}>

@@ -15,8 +15,9 @@ $ pip install google-generativeai
 """
 
 import google.generativeai as genai
-
-genai.configure(api_key="AIzaSyDcGolDTugjNDLXfdaipzJ7lzRdbEuqd6E")
+from django.conf import settings
+from decouple import config
+genai.configure(api_key=config('api_key'))
 
 # Set up the model
 generation_config = {

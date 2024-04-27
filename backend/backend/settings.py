@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 
 from pathlib import Path
 from datetime import timedelta
+from decouple import config
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -21,12 +22,12 @@ import os
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-r0mh5otc=+xy!1+6@xb64xtzjmmsl=((hfnfacf3!6$&#211xd'
+SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = config('DEBUG')
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -160,9 +161,9 @@ ASGI_APPLICATION = 'backend.asgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'teamstudy',
-        'USER':'postgres',
-        'PASSWORD': 'rahul',
+        'NAME': config('NAME'),
+        'USER':config('USER'),
+        'PASSWORD': config('PASSWORD'),
         'HOST': 'localhost',
         'PORT': '5432'
     }
@@ -230,8 +231,8 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_USE_TLS = True
 EMAIL_PORT = 587
-EMAIL_HOST_USER = 'ravanan0908@gmail.com' # EMAIL
-EMAIL_HOST_PASSWORD = "qsyz duay caoi wuir" # PASSWORD
+EMAIL_HOST_USER = config('EMAIL_HOST_USER') # EMAIL
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD') # PASSWORD
 
 
 CORS_ALLOWED_ORIGINS = [
@@ -241,8 +242,9 @@ CORS_ALLOWED_ORIGINS = [
 
 
 # payment 
-STRIPE_SECRET_KEY = 'sk_test_51P6ub5SFKduoB8YQ4gcNAMVw9ZZoNjwuDSbwlEe2LV7Q08oybp2ghwuiNbO3WdkZzsiz6AxIfZwZoj3Q2M2ZkJq900Jy6gZsrE'
-STRIPE_PUBLIC_KEY = 'pk_test_51P6ub5SFKduoB8YQLu1JC20uRvZRe7nFIAA72A9JbwxehC4spW9JFh0W5TxMZWUYJu3y8aUt47iCniXwwmWPwzZJ00JrBedFMN'
+STRIPE_SECRET_KEY = config('STRIPE_SECRET_KEY')
+STRIPE_PUBLIC_KEY = config('STRIPE_PUBLIC_KEY')
 
 SITE_URL='http://localhost:5173/payment/'
 
+api_key=config('api_key')

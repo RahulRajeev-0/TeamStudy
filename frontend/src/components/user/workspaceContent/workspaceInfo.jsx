@@ -13,7 +13,7 @@ const WorkspaceInfo = ({ workspace }) => {
     const dateObject = new Date(workspaceDetails.create_on);
     const formattedDate = `${dateObject.getDate()}/${dateObject.getMonth() + 1}/${dateObject.getFullYear()}`;
   return (
-    <Card className="text-center" style={{backgroundColor:"#717070"}} text='secondary'>
+    <Card className="text-center" style={{backgroundColor:"#4b527b"}} text='secondary'>
       <Card.Header className='text-light'>Info  </Card.Header>
       <Card.Body>
         <Card.Title style={{color:"white"}}><HomeIcon/> {workspaceDetails.workspaceName}</Card.Title>
