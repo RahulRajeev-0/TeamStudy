@@ -54,8 +54,7 @@ six==1.16.0
 sqlparse==0.4.4
 stripe==9.2.0
 tqdm==4.66.2
-Twisted==24.3.0
-twisted-iocpsupport==1.0.4    
+Twisted==24.3.0 
 txaio==23.1.1
 typing_extensions==4.10.0     
 tzdata==2023.4
