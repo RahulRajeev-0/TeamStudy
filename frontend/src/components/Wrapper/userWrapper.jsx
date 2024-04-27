@@ -1,5 +1,5 @@
 import React, {useEffect} from "react";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useNavigate } from "react-router-dom";
 
 // utility Functions
 import isAuthUser from "../../utils/isAuth";
@@ -44,6 +44,7 @@ import ChannelPage from "../../pages/user/WorkspaceChating/ChannelPage";
 
 
 function UserWrapper() {
+    const navigate = useNavigate();
 
     const baseURL = "http://127.0.0.1:8000"
     const token = localStorage.getItem('access');
@@ -121,7 +122,7 @@ function UserWrapper() {
         }
 
       }catch(error){
-        console.log(error);
+        navigate('/')
       }
     }
     

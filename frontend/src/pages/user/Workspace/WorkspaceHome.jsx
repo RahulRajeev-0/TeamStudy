@@ -30,7 +30,8 @@ const WorkspaceBody = styled.div`
 `;
 
 const WorkspaceContent = styled.div`
-  background:#282626;
+background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(198,109,244,1) 100%, rgba(0,212,255,1) 100%);
+background-size: cover;
   flex: 0.8; /* Adjust the width as needed */
   padding: 60px; /* Add padding for spacing */
   overflow-y: auto; /* Add scroll if content exceeds container height */

@@ -20,12 +20,16 @@
   
   .workspace-item {
     display: flex;
-    background-color: #ffffff;
+    background-color: #4b527b;
     border-radius: 8px;
     box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
     padding: 20px;
     margin-bottom: 20px;
     align-items: center;
+    transition: transform 0.3s ease-in-out;
+  }
+  .workspace-item:hover {
+    transform: scale(1.1);
   }
   
   .workspace-item img {
@@ -37,13 +41,13 @@
   
   .workspace-details {
     flex-grow: 1;
-    color: black;
+    color: rgb(181, 40, 206);
   }
   
   .workspace-details h3 {
-    font-size: 20px;
+    font-size: 23px;
     margin: 0;
-    color: black;
+    color: rgb(218, 179, 209);
   }
   
   .workspace-details p {
