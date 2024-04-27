@@ -25,6 +25,7 @@ import { useNavigate } from 'react-router-dom';
 // 
 import UnlockButton from '../premiumWorkspace/UnlockPremiumButton';
 import KeepMountedModal from '../premiumWorkspace/PremiumModal';
+import SparkleButton from '../chatBot/ChatbotButton';
 
 //  redux and redux store 
 import { useSelector } from 'react-redux'
@@ -61,6 +62,16 @@ const WorkSpaceSideBar = () => {
     sessionStorage.setItem("workspaceId", null)
     toast.success("Logged out of Workspace")
   }
+
+  const chatBot = () =>{
+    console.log('working');
+    if (workspaceDetails.isPremium){
+      navigate('/chatbot')
+    }else{
+      toast("Unlock premium to use chat bot")
+    }
+  }
+
   return (
     <SidebarContainer>
         <SidebarHeader>
@@ -114,12 +125,21 @@ const WorkSpaceSideBar = () => {
 <DMAccordion/>
 
 <hr/>
+
+<div onClick={chatBot} style={{display:'flex', alignItems:'center', flexDirection:'column'}}>
+
+<SparkleButton  />
+</div>
+
+<hr/>
 {!workspaceDetails.isPremium && (
                 <div>
                     <KeepMountedModal />
                     <hr />
                 </div>
             )}
+
+
     </SidebarContainer>
   )
 }

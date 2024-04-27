@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'dm_chats',
     'notifications',
     'premium_and_payment',
+    'chatbot',
     
 
     "corsheaders",

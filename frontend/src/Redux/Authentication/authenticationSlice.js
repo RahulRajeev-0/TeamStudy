@@ -10,7 +10,7 @@ export const authenticationSlice = createSlice({
     },
     reducers: {
         set_authentication:(state, action) =>{
-            state.id = action.payload.id
+            state.id = action.payload.id,
             state.username = action.payload.username,
             state.isAuthenticated = action.payload.isAuthenticated,
             state.isAdmin = action.payload.isAdmin

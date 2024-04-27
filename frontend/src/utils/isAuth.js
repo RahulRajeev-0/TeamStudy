@@ -46,8 +46,9 @@ const isAuthUser = async ()=> {
     const currentTime = Date.now()/1000;
     
     let decoded = jwtDecode(accessToken)
+    
     if (decoded.exp > currentTime){
-        return {'username':decoded.username,'id':decoded.user_id, isAuthenticated:true}
+        return {'id':decoded.user_id, 'username':decoded.username, isAuthenticated:true}
 
     } else{
         const updateSuccess = await updateUserToken();
