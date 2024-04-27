@@ -431,12 +431,12 @@ const handleVideoChange = (event) => {
       style={{ display: 'none' }} // Hide the input
     />
     <Dropdown.Divider />
-    <Dropdown.Item eventKey="4"><InsertDriveFileIcon/> file</Dropdown.Item>
+    {/* <Dropdown.Item eventKey="4"><InsertDriveFileIcon/> file</Dropdown.Item> */}
   </DropdownButton>
 )}
 
             <input ref={inputRef} placeholder='Message'/>
-            <Button variant='outlined'><MicIcon/></Button>
+            {/* <Button variant='outlined'><MicIcon/></Button> */}
             <Button variant="contained" endIcon={<SendIcon />} type='submit' onClick={sendMessage}>
             </Button>
         </form>

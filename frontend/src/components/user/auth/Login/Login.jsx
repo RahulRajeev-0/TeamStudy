@@ -62,6 +62,7 @@ const Login = () => {
           // add data to the redux store here 
           dispatch(
             set_authentication({
+              id:jwtDecode(res.data.access).user_id,
               username:jwtDecode(res.data.access).username,
               isAuthenticated:true,
               isAdmin:res.data.is_admin
@@ -107,6 +108,7 @@ const Login = () => {
         // add data to the redux store here 
         dispatch(
           set_authentication({
+            id:jwtDecode(res.data.access).user_id,
             username:jwtDecode(res.data.access).username,
             isAuthenticated:true,
             isAdmin:res.data.is_admin

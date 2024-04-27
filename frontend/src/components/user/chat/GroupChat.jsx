@@ -69,6 +69,7 @@ const Chat = () => {
     const profile = useSelector(state => state.workspaceUserProfile);
     const groupDetails = useSelector(state =>state.user_select_group);
     const userDetails = useSelector(state=>state.authenticationUser);
+  const workspaceDetails = useSelector(state => state.user_workspace_select);
 
     const inputRef = useRef(null);
   const [connection, setConnection] = useState(null)
@@ -84,7 +85,7 @@ const Chat = () => {
   const [isLoading, setIsLoading] = useState(false);
   const photoInputRef = useRef(null);
   const videoInputRef = useRef(null);
-  const fileInputRef = useRef(null);
+  const audioInputRef = useRef(null);
   const [isRecording, setIsRecording] = useState(false);
   const recorderRef = useRef(null);
   
@@ -147,39 +148,7 @@ const Chat = () => {
         };
       };
 
-      // for image sending 
-      // const uploadImageCloud = async () => {
-      //   setLoading(true);
-      //   const data = new FormData();
-      //   data.append("file", uploadImage);
-      //   data.append("upload_preset", REACT_APP_CLOUDINARY_UPLOAD_PRESET);
-      //   data.append("cloud_name", REACT_APP_CLOUDINARY_CLOUD_NAME);
-      //   data.append("folder", "Zorpia-posts");
-    
-      //   try {
-      //     const response = await fetch(
-      //       `https://api.cloudinary.com/v1_1/${REACT_APP_CLOUDINARY_CLOUD_NAME}/image/upload`,
-      //       {
-      //         method: "POST",
-      //         body: data,
-      //       }
-      //     );
-      //     const res = await response.json();
-    
-      //     if (res.public_id) {
-      //       console.log("hhh");
-      //       if (profile) {
-      //         // apply chating logic 
-      //         setProfileImageUrl(res.public_id);
-      //         setDisplayImage(res.public_id)
-      //       } else {
-      //         setCoverImageUrl(res.public_id);
-      //       }
-      //       setShowUrl(res.public_id);
-      //       setLoading(false);
-      //     }
-      //   } catch (error) {}
-      // };
+      
 
       const sendMessage = (e) => {
         e.preventDefault();
@@ -235,41 +204,54 @@ const Chat = () => {
     const videoCall = ()=> {
       // const  roomId=groupId
       // navigate(`/group-video/${roomId}`)
-     const sender = profile.id
+      if (workspaceDetails.isPremium){
 
-      const message = {
-        message: 'started video call ..📞',
-        type: 'video_call',
-        sender:sender,
-        username:userDetails.username
-      };
-    
-      // Send the message via WebSocket
-      if (connection && connection.readyState === connection.OPEN) {
-        connection.send(JSON.stringify(message));
-      } else {
-        console.error('WebSocket is not open');
-        // Handle the case when WebSocket is not open (e.g., show an error message)
+        const sender = profile.id
+   
+         const message = {
+           message: 'started video call ..📞',
+           type: 'video_call',
+           sender:sender,
+           username:userDetails.username
+         };
+       
+         // Send the message via WebSocket
+         if (connection && connection.readyState === connection.OPEN) {
+           connection.send(JSON.stringify(message));
+         } else {
+           console.error('WebSocket is not open');
+           // Handle the case when WebSocket is not open (e.g., show an error message)
+         }
+      }
+      else{
+        toast.warning("Please Upgrade to Premium Workspace To Enjoy Group Video and Audio Call Features")
       }
     
     }
     const AudioCall = ()=> {
       // const  roomId=groupId
       // navigate(`/group-audio/${roomId}`)
-      const sender = profile.id
-      const message = {
-        message: 'started audio call ..📞',
-        type: 'audio_call',
-        sender:sender,
-        username:userDetails.username
-      };
-    
-      // Send the message via WebSocket
-      if (connection && connection.readyState === connection.OPEN) {
-        connection.send(JSON.stringify(message));
-      } else {
-        console.error('WebSocket is not open');
-        // Handle the case when WebSocket is not open (e.g., show an error message)
+
+      if (workspaceDetails.isPremium){
+
+        const sender = profile.id
+        const message = {
+          message: 'started audio call ..📞',
+          type: 'audio_call',
+          sender:sender,
+          username:userDetails.username
+        };
+      
+        // Send the message via WebSocket
+        if (connection && connection.readyState === connection.OPEN) {
+          connection.send(JSON.stringify(message));
+        } else {
+          console.error('WebSocket is not open');
+          // Handle the case when WebSocket is not open (e.g., show an error message)
+        }
+      }else{
+        toast.warning("Please Upgrade to Premium Workspace To Enjoy Group Video and Audio Call Features")
+
       }
 
 
@@ -396,6 +378,58 @@ const Chat = () => {
       console.log(err);
     });
   };
+
+
+  const handleAudioChange = (event) => {
+    const selectedFile = event.target.files[0];
+  
+    if (!selectedFile) {
+      return; // Handle empty selection (optional)
+    }
+    
+    setIsLoading(true);
+    if (selectedFile.size > 20 * 1024 * 1024) { // Check for 50 MB limit
+      toast.error("You can only send video files less than 50 MB");
+      setIsLoading(false);
+      return; // Prevent further processing
+    }
+  
+    let formData = new FormData();
+    formData.append("file", selectedFile);
+    formData.append("upload_preset","TeamStudy");
+    formData.append("cloud_name","doafvjkhf");
+    formData.append("folder", "TeamStudy");
+  
+    fetch("https://api.cloudinary.com/v1_1/doafvjkhf/video/upload", {
+      method:"post",
+      body:formData
+    }).then((res)=>res.json()).then((data)=>{
+      setIsLoading(false);
+      console.log(data);
+      // If the video is uploaded successfully, send the message
+      if (data.public_id){
+        const sender = profile.id;
+  
+        const message = {
+          message: data.secure_url,
+          type: 'audio',
+          sender: sender,
+          username: userDetails.username
+        };
+      
+        // Send the message via WebSocket
+        if (connection && connection.readyState === connection.OPEN) {
+          connection.send(JSON.stringify(message));
+        } else {
+          console.error('WebSocket is not open');
+          // Handle the case when WebSocket is not open (e.g., show an error message)
+        }
+      }
+    }).catch((err)=>{
+      setIsLoading(false);
+      console.log(err);
+    });
+  };
   
   
     const handleVideoClick = () => {
@@ -404,8 +438,8 @@ const Chat = () => {
   //   const handleAudioClick = () => {
   //     InputRef.current.click();
   // };
-    const handleFileClick = () => {
-      fileInputRef.current.click();
+    const handleAudioClick = () => {
+      audioInputRef.current.click();
   };
 
 
@@ -474,6 +508,7 @@ const Chat = () => {
     time={chat.time}
     />
   ))}
+  
 
   {showVideoCallAlert && <VideoCallAlert setShowVideoCallAlert={setShowVideoCallAlert} roomId={groupId} />}
   {showAudioCallAlert && <AudioCallAlert setShowAudioCallAlert={setShowAudioCallAlert} roomId={groupId} />}
@@ -512,19 +547,20 @@ const Chat = () => {
       style={{ display: 'none' }} // Hide the input
     />
     <input
-      ref={fileInputRef}
+      ref={audioInputRef}
       id="fileInput"
       type="file"
+      onChange={handleAudioChange}
       accept="audio/*"
       style={{ display: 'none' }} // Hide the input
     />
     <Dropdown.Divider />
-    <Dropdown.Item eventKey="4"><InsertDriveFileIcon/> file</Dropdown.Item>
+    {/* <Dropdown.Item eventKey="4"><InsertDriveFileIcon/> file</Dropdown.Item> */}
   </DropdownButton>
 )}
 
             <input ref={inputRef} placeholder='Message'/>
-            <Button variant='outlined'><MicIcon/></Button>
+            {/* <Button variant='outlined'><MicIcon/></Button> */}
             <Button variant="contained" endIcon={<SendIcon />} type='submit' onClick={sendMessage}>
             </Button>
         </form>

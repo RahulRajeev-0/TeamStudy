@@ -31,6 +31,8 @@ import OneOnOneVideoCall from '../../components/user/OneOnOneVideo/ZegoVideoCall
 import OneOnOneAudioCall from "../user/OneOnOneAudio/ZegoAudioCall";
 import GroupVideoCall from "../user/GroupCalls/GroupVideoCall";
 import GroupAudioCall from "../user/GroupCalls/GroupAudioCall";
+import AfterPaymentPage from "../../pages/user/Workspace/AfterPaymentPage";
+import ChatBotPage from "../../pages/user/ChatBot/ChatBotPage";
 
 // google Oauth 
 import { GoogleOAuthProvider } from '@react-oauth/google';
@@ -129,6 +131,7 @@ function UserWrapper() {
         const isAuthenticated = await isAuthUser();
         dispatch(
             set_authentication({
+                id:isAuthenticated.id,
                 username:isAuthenticated.username,
                 isAuthenticated:isAuthenticated.isAuthenticated,
             })
@@ -170,6 +173,8 @@ function UserWrapper() {
         <Route path='/one-to-one-audio/:roomId' element={<PrivateRoutes> <OneOnOneAudioCall/> </PrivateRoutes>} />
         <Route path='/group-video/:roomId' element={<PrivateRoutes><GroupVideoCall/> </PrivateRoutes>} />
         <Route path='/group-audio/:roomId' element={<PrivateRoutes> <GroupAudioCall/> </PrivateRoutes>} />
+        <Route path='/payment' element={<PrivateRoutes> <AfterPaymentPage/> </PrivateRoutes>} />
+        <Route path='/chatbot' element={<PrivateRoutes> <ChatBotPage/> </PrivateRoutes>} />
     </Routes>
         </GoogleOAuthProvider>
    )
