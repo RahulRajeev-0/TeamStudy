@@ -1,0 +1,278 @@
+from channels.generic.websocket import AsyncWebsocketConsumer
+import json
+from channels.db import database_sync_to_async
+from .models import GroupChatMessage
+from workspaces.models import WorkspaceMembers
+from django.utils import timezone
+
+
+class GroupChatConsumer(AsyncWebsocketConsumer):
+    
+    # handshake and connecting to websocket
+    async def connect(self):
+        group_id = self.scope['url_route']['kwargs']['id'] 
+        self.room_group_name = f'chat_{group_id}'
+        await self.channel_layer.group_add(
+                self.room_group_name,
+                self.channel_name
+            )
+        await self.accept()
+
+        existing_messages = await self.get_existing_messages() 
+        for message in existing_messages:
+            # Convert datetime object to string
+            formatted_time = message['time'].astimezone(timezone.get_current_timezone()).strftime("%Y-%m-%d %H:%M:%S")
+            
+            # Serialize to JSON
+            await self.send(text_data=json.dumps({
+                'message': message['message'],
+                'sender': message['sender'],
+                'username': message['username'], 
+                'time': formatted_time,  # Use the formatted time string
+                'type':message['type']
+            }))
+
+    
+    # disconnecting 
+    async def disconnect(self, code):
+        self.channel_layer.group_discard(
+            self.room_group_name,
+            self.channel_name
+        )
+    
+    
+    async def chat_message(self, event):
+        message = event['data']['message']
+        sender = event['data']['sender']
+        username = event['data']['username']
+        time = event['data']['time']
+        type = event['data']['type']
+        
+        await self.send(text_data=json.dumps({
+            "message":message,
+            'sender':sender,
+            'username':username,
+            'time':time,
+            'type':type
+        }))
+
+
+    # reciving the message 
+    async def receive(self, text_data=None, bytes_data=None):
+        data = json.loads(text_data)
+        message = data['message']
+        sender = data.get('sender', 'Anonymous')
+        username = data.get('username', "unkown")
+        time = data.get('time','unkown')
+        type = data.get('type', 'text_message')
+
+        if type == 'video_call':
+            await self.video_link_receive(username, sender)
+        
+        if type == 'audio_call':
+            await self.audio_link_receive(username, sender)
+
+        if sender and (type == 'text_message' or type == 'video_call' or type == 'audio_call'):
+            await self.save_message(sender, message)
+        
+        if sender and type == "photo":
+            await self.save_photo(sender, message)
+
+        if sender and type == "video":
+            await self.save_video(sender, message)
+
+        if sender and type == 'audio':
+            await self.save_audio(sender, message)
+
+        await self.channel_layer.group_send(
+            self.room_group_name,
+            {
+                'type':'chat.message',
+                'data':{
+                    'message':message,
+                    'sender':sender,
+                    'username':username,
+                    'time':time,
+                    'type':type
+                },
+            }
+        )
+#  ------------------------- for video & audio call -----------------------------
+
+    async def video_link_receive(self, sender, username):
+        """
+        Sends a video call link to the client.
+        """
+        await self.channel_layer.group_send(
+            self.room_group_name,
+            {
+                'type': 'video_call_link',
+                'data': {
+                    'sender':sender,
+                    'username':username,
+                },  
+            }
+        )
+
+        
+    async def video_call_link(self, event):
+        """
+        Sends a video call link to the client.
+        """
+  
+        sender = event['data']['sender']
+        username = event['data']['username']  
+        await self.send(text_data=json.dumps({
+            'type': 'video_call',
+            'sender':sender,
+            'username':username
+            
+        }))
+
+
+    async def audio_link_receive(self, username, sender):
+        """
+        Sends a video call link to the client.
+        """
+        await self.channel_layer.group_send(
+            self.room_group_name,
+            {
+                'type': 'audio_call_link',
+                'data': {
+                    'username':username,
+                    'sender':sender
+                },   
+            }
+        )
+
+        
+    async def audio_call_link(self, event):
+        """
+        Sends a video call link to the client.
+        """
+        username = event['data']['username']
+        sender = event['data']['sender']  
+        await self.send(text_data=json.dumps({
+            'type': 'audio_call',
+            'username': username,
+            'sender':sender
+        }))
+
+
+
+    # ---------------- message saving to data base (related funtions) --------------------
+
+        # funtion for getting the previous messages in the database 
+    @database_sync_to_async
+    def get_existing_messages(self):
+        messages = GroupChatMessage.objects.filter(group=self.room_group_name)
+        return [{'message': message.message, 'sender': message.sender.id, 'username':message.sender.user.username, 'time':message.time_stamp, 'type':message.type} for message in messages]
+    
+
+    # function for saving the data -> this will call the function to save data to the database
+    async def save_message(self, sender, message):
+        if sender:
+            sender = await self.get_member_instance(sender)
+            await self.save_message_to_db(sender, message)
+        else:
+            print("sender id not found ")
+
+
+    # for storing image to the database 
+    async def save_photo(self, sender, message):
+        if sender:
+            sender = await self.get_member_instance(sender)
+            await self.save_photos_to_db(sender, message)
+        else:
+            print("sender id not found ")
+
+
+    async def save_video(self, sender, message):
+        if sender:
+            sender = await self.get_member_instance(sender)
+            await self.save_video_to_db(sender, message)
+        else:
+            print("sender id not found ")
+
+
+    async def save_audio(self, sender, message):
+        if sender:
+            sender = await self.get_member_instance(sender)
+            await self.save_audio_to_db(sender, message)
+        else:
+            print("sender id not found ")
+
+
+    @database_sync_to_async
+    def get_member_instance(self, member_id):
+        try:
+            if member_id != 'Anonymous':
+                member = WorkspaceMembers.objects.get(id=int(member_id))
+                return member
+            else:
+                return 
+        except WorkspaceMembers.DoesNotExist:
+            print("can't find the member")
+
+    
+    @database_sync_to_async
+    def save_message_to_db(self, sender, message):
+        if sender:
+            GroupChatMessage.objects.create(
+                sender=sender,
+                message=message,
+                group=self.room_group_name,
+                
+            )
+            print("Message saved to database.")
+        else:
+            print("Sender is None. Message not saved.")
+
+
+    @database_sync_to_async
+    def save_photos_to_db(self, sender, message):
+        if sender:
+            GroupChatMessage.objects.create(
+                sender=sender,
+                message=message,
+                group=self.room_group_name,
+                type='photo'
+                
+            )
+            print("Message saved to database.")
+        else:
+            print("Sender is None. Message not saved.")
+
+
+    @database_sync_to_async
+    def save_video_to_db(self, sender, message):
+        if sender:
+            GroupChatMessage.objects.create(
+                sender=sender,
+                message=message,
+                group=self.room_group_name,
+                type='video'
+                
+            )
+            print("Message saved to database.")
+        else:
+            print("Sender is None. Message not saved.")
+
+
+    @database_sync_to_async
+    def save_audio_to_db(self, sender, message):
+        if sender:
+            GroupChatMessage.objects.create(
+                sender=sender,
+                message=message,
+                group=self.room_group_name,
+                type='audio'
+                
+            )
+            print("Message saved to database.")
+        else:
+            print("Sender is None. Message not saved.")
+
+
+
+

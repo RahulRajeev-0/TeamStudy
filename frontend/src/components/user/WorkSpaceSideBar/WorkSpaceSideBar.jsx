@@ -22,7 +22,10 @@ import { toast } from 'react-toastify';
 // react router dom 
 import { useNavigate } from 'react-router-dom';
 
-
+// 
+import UnlockButton from '../premiumWorkspace/UnlockPremiumButton';
+import KeepMountedModal from '../premiumWorkspace/PremiumModal';
+import SparkleButton from '../chatBot/ChatbotButton';
 
 //  redux and redux store 
 import { useSelector } from 'react-redux'
@@ -59,6 +62,16 @@ const WorkSpaceSideBar = () => {
     sessionStorage.setItem("workspaceId", null)
     toast.success("Logged out of Workspace")
   }
+
+  const chatBot = () =>{
+    console.log('working');
+    if (workspaceDetails.isPremium){
+      navigate('/chatbot')
+    }else{
+      toast("Unlock premium to use chat bot")
+    }
+  }
+
   return (
     <SidebarContainer>
         <SidebarHeader>
@@ -75,7 +88,6 @@ const WorkSpaceSideBar = () => {
                       
         </SidebarHeader>
                   
-       
        
         <NavDropdown
                         id="nav-dropdown-dark-example"
@@ -107,10 +119,26 @@ const WorkSpaceSideBar = () => {
  
 
 <hr/>
+
 <ChannelAccordion/>
 <hr/>
 <DMAccordion/>
+
 <hr/>
+
+<div onClick={chatBot} style={{display:'flex', alignItems:'center', flexDirection:'column'}}>
+
+<SparkleButton  />
+</div>
+
+<hr/>
+{!workspaceDetails.isPremium && (
+                <div>
+                    <KeepMountedModal />
+                    <hr />
+                </div>
+            )}
+
 
     </SidebarContainer>
   )
@@ -123,7 +151,7 @@ export default WorkSpaceSideBar;
 
 const SidebarContainer = styled.div`
     color:white;
-    background: #1D1D1D;
+    background: #13101f;
     // background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(198,109,244,1) 100%, rgba(0,212,255,1) 100%);    
     flex:0.3;
     border-top:1px solid #49274b;

@@ -24,19 +24,24 @@ const UserProfileOffcanvas = ({ handleClose, show }) => {
   const dispatch = useDispatch();
   const token = localStorage.getItem('access')
   const workspaceId = sessionStorage.getItem('workspaceId')
+
   const userProfileDetails = useSelector(state => state.workspaceUserProfile);
+  
   const [displayName, setDisplayName] = useState(userProfileDetails.displayName);
   const [phone, setPhone] = useState(userProfileDetails.phoneNo);
   const [about, setAbout] = useState(userProfileDetails.aboutMe);
   
   // profile pic
   const inputRef = useRef(null)
+  
   const handleUploadImage = ()=>{
     if (inputRef.current){
         inputRef.current.click()
     }
   } 
   
+
+  // for updating the profile pic
   const handleImageChange = async (e) =>{
     const file = e.target.files[0];
 
@@ -79,7 +84,7 @@ const UserProfileOffcanvas = ({ handleClose, show }) => {
 
   }
 
-
+//  for updating the profile details
   const handleSaveAll = async ()=> {
 
    
@@ -116,8 +121,9 @@ const UserProfileOffcanvas = ({ handleClose, show }) => {
     
   }
 
-  
 
+  console.log('=====================');
+console.log(userProfileDetails.profilePic);
   return (
     <div>
       <Offcanvas show={show} onHide={handleClose} placement='end' style={{backgroundColor:"#292829", color:'white'}}>
@@ -128,7 +134,7 @@ const UserProfileOffcanvas = ({ handleClose, show }) => {
         </Offcanvas.Header>
         <Offcanvas.Body>
           <CenteredContainer>
-            <ProfileImage src={userProfileDetails.profilePic ? "http://localhost:8000/" + userProfileDetails.profilePic : profilePic} alt="Profile Picture" />
+            <ProfileImage src={userProfileDetails.profilePic ? "http://localhost:8000" + userProfileDetails.profilePic : profilePic} alt="Profile Picture" />
            <input type="file" ref={inputRef} accept="image/*" onChange={handleImageChange} style={{display:"none"}}/>
             <button className='btn btn-secondary'  onClick={handleUploadImage}>Upload Image</button>
               

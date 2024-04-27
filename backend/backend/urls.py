@@ -22,12 +22,28 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 
+# websocket 
+from dm_chats.consumers import PersonalChatConsumer
+from group_chats.consumers import GroupChatConsumer
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('user/', include('users.api.urls')),
     path('application_management/', include('application_management.api.urls')),
     path('workspace/', include('workspaces.api.urls')),
     path('group/', include('group_chats.api.urls')),
+    path('dm/', include('dm_chats.api.urls')),
+    path('payment/', include('premium_and_payment.api.urls')),
+    path('chatbot/', include('chatbot.api.urls')),
     
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+
+
+
+websocket_urlpatterns = [
+     path('ws/dm_chats/<int:user_id1>/<int:user_id2>/', PersonalChatConsumer.as_asgi()),
+     path('ws/group_chats/<int:id>/', GroupChatConsumer.as_asgi())
+
+]

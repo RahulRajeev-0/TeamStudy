@@ -1,5 +1,5 @@
 import React, {useEffect} from "react";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useNavigate } from "react-router-dom";
 
 // utility Functions
 import isAuthUser from "../../utils/isAuth";
@@ -26,7 +26,13 @@ import OtpPage from "../../pages/user/auth/OtpPage";
 import BaseHomePage from '../../pages/BaseHomePage'
 import PrivateRoutes from "../private_routes/PrivateRoutes";
 import WorkspaceInvitationPage from "../../pages/user/Workspace/WorkspaceInvitationPage";
-
+import DMPage from "../../pages/user/WorkspaceChating/DMPage"
+import OneOnOneVideoCall from '../../components/user/OneOnOneVideo/ZegoVideoCall'
+import OneOnOneAudioCall from "../user/OneOnOneAudio/ZegoAudioCall";
+import GroupVideoCall from "../user/GroupCalls/GroupVideoCall";
+import GroupAudioCall from "../user/GroupCalls/GroupAudioCall";
+import AfterPaymentPage from "../../pages/user/Workspace/AfterPaymentPage";
+import ChatBotPage from "../../pages/user/ChatBot/ChatBotPage";
 
 // google Oauth 
 import { GoogleOAuthProvider } from '@react-oauth/google';
@@ -38,6 +44,7 @@ import ChannelPage from "../../pages/user/WorkspaceChating/ChannelPage";
 
 
 function UserWrapper() {
+    const navigate = useNavigate();
 
     const baseURL = "http://127.0.0.1:8000"
     const token = localStorage.getItem('access');
@@ -49,6 +56,11 @@ function UserWrapper() {
     const fetchWorkspaces = async () => {
         
         try{
+          console.log('============');
+          console.log(workspaceId);
+          if (workspaceId == null){
+            window.location.reload();
+        }
             const response = await axios.get(baseURL+`/workspace/user-workspace-details/${workspaceId}/`,
             {
               headers: {
@@ -84,6 +96,10 @@ function UserWrapper() {
 
     // getting the user profile inside the workspace
     const fatchUserProfile = async () => {
+      const workspaceId = sessionStorage.getItem('workspaceId')
+      if (workspaceId == null){
+        window.location.reload();
+    }
       try{
         const response = await axios.get(baseURL+`/workspace/user-profile-details/${workspaceId}/`,
         {
@@ -106,7 +122,7 @@ function UserWrapper() {
         }
 
       }catch(error){
-        console.log(error);
+        navigate('/')
       }
     }
     
@@ -116,7 +132,8 @@ function UserWrapper() {
         const isAuthenticated = await isAuthUser();
         dispatch(
             set_authentication({
-                name:isAuthenticated.name,
+                id:isAuthenticated.id,
+                username:isAuthenticated.username,
                 isAuthenticated:isAuthenticated.isAuthenticated,
             })
         );
@@ -152,8 +169,13 @@ function UserWrapper() {
         <Route path="/workspace-settings" element={<PrivateRoutes>  <WorkspaceAdminSettingsPage/>  </PrivateRoutes>} />
         <Route path="/workspace-settings-members" element={<PrivateRoutes>  <WorkspaceAdminMemberManagementPage/>  </PrivateRoutes>} />
         <Route path="/workspace-channel/:groupId/" element={<PrivateRoutes><ChannelPage/></PrivateRoutes>} />
-
-
+        <Route path="/workspace-dm/:memberId/" element={<PrivateRoutes><DMPage/></PrivateRoutes>}/>
+        <Route path='/one-to-one-video/:roomId' element={<PrivateRoutes><OneOnOneVideoCall/> </PrivateRoutes>} />
+        <Route path='/one-to-one-audio/:roomId' element={<PrivateRoutes> <OneOnOneAudioCall/> </PrivateRoutes>} />
+        <Route path='/group-video/:roomId' element={<PrivateRoutes><GroupVideoCall/> </PrivateRoutes>} />
+        <Route path='/group-audio/:roomId' element={<PrivateRoutes> <GroupAudioCall/> </PrivateRoutes>} />
+        <Route path='/payment' element={<PrivateRoutes> <AfterPaymentPage/> </PrivateRoutes>} />
+        <Route path='/chatbot' element={<PrivateRoutes> <ChatBotPage/> </PrivateRoutes>} />
     </Routes>
         </GoogleOAuthProvider>
    )

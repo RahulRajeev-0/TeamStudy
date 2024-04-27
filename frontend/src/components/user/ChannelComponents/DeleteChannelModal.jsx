@@ -54,9 +54,7 @@ export default function TransitionsModal() {
 
   return (
     <div>
-        <IconButton aria-label="delete" color='' onClick={handleOpen}>
-        <DeleteIcon />
-      </IconButton>
+        <Button onClick={handleOpen}><DeleteIcon/> Delete</Button>
       
       <Modal
         aria-labelledby="transition-modal-title"

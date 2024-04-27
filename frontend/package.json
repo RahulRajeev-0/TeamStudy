@@ -10,6 +10,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@cloudinary/react": "^1.13.0",
+    "@cloudinary/url-gen": "^1.19.0",
     "@emotion/react": "^11.11.3",
     "@emotion/styled": "^11.11.0",
     "@fortawesome/fontawesome-svg-core": "^6.5.1",
@@ -20,8 +22,11 @@
     "@mui/x-data-grid": "^6.19.4",
     "@react-oauth/google": "^0.12.1",
     "@reduxjs/toolkit": "^2.1.0",
+    "@zegocloud/zego-uikit-prebuilt": "^2.0.1",
     "bootstrap": "^5.3.3",
+    "date-fns": "^3.6.0",
     "jwt-decode": "^4.0.0",
+    "mdb-react-ui-kit": "^8.0.0",
     "react": "^18.2.0",
     "react-bootstrap": "^2.10.1",
     "react-dom": "^18.2.0",
@@ -32,7 +37,8 @@
     "sass": "^1.70.0",
     "styled-components": "^6.1.8",
     "three": "^0.121.0",
-    "vanta": "^0.5.24"
+    "vanta": "^0.5.24",
+    "websocket": "^1.0.34"
   },
   "devDependencies": {
     "@types/react": "^18.2.43",

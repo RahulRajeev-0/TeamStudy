@@ -12,26 +12,28 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 
 from pathlib import Path
 from datetime import timedelta
+from decouple import config
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 import os
-
+STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-r0mh5otc=+xy!1+6@xb64xtzjmmsl=((hfnfacf3!6$&#211xd'
+SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = config('DEBUG')
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
 
 INSTALLED_APPS = [
+    'daphne',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -43,6 +45,10 @@ INSTALLED_APPS = [
     'application_management',
     'workspaces',
     'group_chats',
+    'dm_chats',
+    'notifications',
+    'premium_and_payment',
+    'chatbot',
     
 
     "corsheaders",
@@ -51,8 +57,20 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt.token_blacklist',
 
+    # channels
+
 
 ]
+
+# defining the channel layar for chating 
+CHANNEL_LAYERS = {
+    "default":{
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("127.0.0.1", 6379)]},
+        }
+    }
+
 
 REST_FRAMEWORK = {
    
@@ -134,7 +152,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'backend.wsgi.application'
+ASGI_APPLICATION = 'backend.asgi.application'
 
 
 # Database
@@ -143,9 +161,9 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'teamstudy',
-        'USER':'postgres',
-        'PASSWORD': 'rahul',
+        'NAME': config('NAME'),
+        'USER':config('USER'),
+        'PASSWORD': config('PASSWORD'),
         'HOST': 'localhost',
         'PORT': '5432'
     }
@@ -201,7 +219,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
@@ -213,8 +231,20 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_USE_TLS = True
 EMAIL_PORT = 587
-EMAIL_HOST_USER = 'ravanan0908@gmail.com' # EMAIL
-EMAIL_HOST_PASSWORD = "qsyz duay caoi wuir" # PASSWORD
+EMAIL_HOST_USER = config('EMAIL_HOST_USER') # EMAIL
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD') # PASSWORD
 
 
-CORS_ORIGIN_ALLOW_ALL = True
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:5173',
+]
+
+
+
+# payment 
+STRIPE_SECRET_KEY = config('STRIPE_SECRET_KEY')
+STRIPE_PUBLIC_KEY = config('STRIPE_PUBLIC_KEY')
+
+SITE_URL='http://localhost:5173/payment/'
+
+api_key=config('api_key')
