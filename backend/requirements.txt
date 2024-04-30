@@ -15,6 +15,7 @@ cryptography==42.0.5
 daphne==4.1.0
 Django==5.0.1
 django-cors-headers==4.3.1    
+django-environ==0.11.2        
 djangorestframework==3.14.0   
 djangorestframework-simplejwt==5.3.1
 google-ai-generativelanguage==0.6.2
@@ -54,7 +55,8 @@ six==1.16.0
 sqlparse==0.4.4
 stripe==9.2.0
 tqdm==4.66.2
-Twisted==24.3.0 
+Twisted==24.3.0
+twisted-iocpsupport==1.0.4    
 txaio==23.1.1
 typing_extensions==4.10.0     
 tzdata==2023.4
