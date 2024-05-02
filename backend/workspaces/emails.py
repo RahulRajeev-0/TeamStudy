@@ -16,7 +16,7 @@ def send_workspace_invitation(email, newMember, workspaceId, admin, workspace):
         token=token
         )
     subject = f"Invitation to Join [{workspace}] Workspace"
-    url = f"http://localhost:5173/workspace-invitation/{token}/"
+    url = f"https://main.d255kw86o8asly.amplifyapp.com/workspace-invitation/{token}/"
     message = f"You've been invited to join the [{workspace}] workspace \n invited by : {admin} \n click the link to accept : {url} "
     email_from = settings.EMAIL_HOST 
     send_mail(subject, message, email_from, [email])

@@ -234,13 +234,15 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_USE_TLS = True
 EMAIL_PORT = 587
-EMAIL_HOST_USER = 'teamstudy011@gmail.com' # EMAIL
-EMAIL_HOST_PASSWORD = 'qlpl tjxv tuhg qjtg' # PASSWORD
+EMAIL_HOST_USER = 'studyteam86@gmail.com' # EMAIL
+EMAIL_HOST_PASSWORD = 'hadm dkmk guzc vfvq' # PASSWORD
 
 
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:5173',
+    'https://main.d255kw86o8asly.amplifyapp.com',
 ]
+
 
 
 
@@ -248,6 +250,6 @@ CORS_ALLOWED_ORIGINS = [
 STRIPE_SECRET_KEY = config('STRIPE_SECRET_KEY')
 STRIPE_PUBLIC_KEY = config('STRIPE_PUBLIC_KEY')
 
-SITE_URL='http://localhost:5173/payment/'
+SITE_URL='https://main.d255kw86o8asly.amplifyapp.com/payment/'
 
 api_key=config('api_key')
