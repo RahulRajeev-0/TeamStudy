@@ -60,7 +60,9 @@ import SplitButton from 'react-bootstrap/SplitButton';
 
 const Chat = () => {
     const [groupInfo, setGroupInfo] = useState({id:null, name:null, topic:null, description:null})
-    const baseURL = "http://127.0.0.1:8000"
+    const baseURL = import.meta.env.VITE_API_BASE_URL
+    const webSocketURL = import.meta.env.VITE_API_WEB_SOCKET_URL
+
     const token = localStorage.getItem('access');
     const dispatch = useDispatch();
     const {groupId} = useParams();
@@ -114,7 +116,7 @@ const Chat = () => {
 
     // websocket connection 
     const connectToWebsocket = () => {
-        const newConnection = new W3CWebSocket(`ws://127.0.0.1:8000/ws/group_chats/${groupDetails.id}/`);
+        const newConnection = new W3CWebSocket(webSocketURL+`/ws/group_chats/${groupDetails.id}/`);
         setConnection(newConnection)
         newConnection.onopen = () => {
           console.log('WebSocket Client Connected');
@@ -288,11 +290,7 @@ const Chat = () => {
     formData.append("folder", "TeamStudy");
 
    
-      //   data.append("file", uploadImage);
-      //   data.append("upload_preset", REACT_APP_CLOUDINARY_UPLOAD_PRESET);
-      //   data.append("cloud_name", REACT_APP_CLOUDINARY_CLOUD_NAME);
-      //   data.append("folder", "Zorpia-posts");
-
+      
     fetch("https://api.cloudinary.com/v1_1/doafvjkhf/image/upload", {
       method:"post",
       body:formData

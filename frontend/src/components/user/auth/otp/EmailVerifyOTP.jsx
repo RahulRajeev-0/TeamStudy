@@ -10,7 +10,7 @@ const EmailVerifiyOTP = () => {
 
     const [formError, setFormError] = useState([])
     const navigate = useNavigate();
-    const baseURL = 'http://127.0.0.1:8000'
+    const baseURL = import.meta.env.VITE_API_BASE_URL
     const registrationEmail = sessionStorage.getItem('registrationEmail');  // data stored in session when uesr registered 
 
 

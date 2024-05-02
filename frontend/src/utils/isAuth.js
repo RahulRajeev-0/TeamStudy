@@ -5,7 +5,7 @@ import axios from 'axios'
 
 const updateUserToken = async () =>{
     const refreshToken = localStorage.getItem('refresh');
-    const baseURL = 'http://127.0.0.1:8000'
+    const baseURL = import.meta.env.VITE_API_BASE_URL
 
     try {
         const res = await axios.post(baseURL+'/user/token/refresh/',

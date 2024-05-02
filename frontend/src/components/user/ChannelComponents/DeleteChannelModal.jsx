@@ -29,7 +29,7 @@ export default function TransitionsModal() {
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-  const baseURL = "http://127.0.0.1:8000"
+  const baseURL = import.meta.env.VITE_API_BASE_URL
   const profile = useSelector(state => state.workspaceUserProfile);
  const navigate = useNavigate()
     const token = localStorage.getItem('access')

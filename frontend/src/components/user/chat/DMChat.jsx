@@ -31,7 +31,8 @@ import AudioCallAlert from '../OneOnOneAudio/AudioCallAlert';
 
 const DMChat = () => {
   const [userInfo, setUserInfo] = useState({ id: null, display_name: null, username: null, user: {} });
-  const baseURL = "http://127.0.0.1:8000";
+  const baseURL = import.meta.env.VITE_API_BASE_URL
+  const webSocketURL = import.meta.env.VITE_API_WEB_SOCKET_URL
   const chatRef = useRef();
   const dispatch = useDispatch();
   const { memberId } = useParams();
@@ -72,7 +73,7 @@ const DMChat = () => {
   // function to connect to the websocket
   const connectToWebsocket = () => {
     if (memberId) {
-      const newConnection = new W3CWebSocket(`ws://127.0.0.1:8000/ws/dm_chats/${profile.id}/${userInfo.id}/`);
+      const newConnection = new W3CWebSocket(webSocketURL+`/ws/dm_chats/${profile.id}/${userInfo.id}/`);
   
       newConnection.onopen = () => {
         console.log('WebSocket Client Connected');
@@ -247,10 +248,7 @@ const handlePhotoChange = (event) => {
   formData.append("folder", "TeamStudy");
 
  
-    //   data.append("file", uploadImage);
-    //   data.append("upload_preset", REACT_APP_CLOUDINARY_UPLOAD_PRESET);
-    //   data.append("cloud_name", REACT_APP_CLOUDINARY_CLOUD_NAME);
-    //   data.append("folder", "Zorpia-posts");
+    
 
   fetch("https://api.cloudinary.com/v1_1/doafvjkhf/image/upload", {
     method:"post",

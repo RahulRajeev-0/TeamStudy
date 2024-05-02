@@ -47,7 +47,7 @@ export default function BasicModal({fetchMembers}) {
   const handleOpen = () => setShow(true);
   const handleClose = () => setShow(false);
   const [members, setMembers] = useState([])
-  const baseURL = "http://127.0.0.1:8000";
+  const baseURL = import.meta.env.VITE_API_BASE_URL
   const token = localStorage.getItem('access');
   const dispatch = useDispatch();
   const {groupId} = useParams();

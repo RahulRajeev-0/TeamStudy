@@ -31,11 +31,12 @@ const DataTables = () => {
 
 
 ]
+const baseURL = import.meta.env.VITE_API_BASE_URL
 
  const fetchData = async () => {
   const token = localStorage.getItem('access');
   try {
-    const response = await axios.get('http://127.0.0.1:8000/application_management/workspace-listing/', {
+    const response = await axios.get(baseURL+'/application_management/workspace-listing/', {
       headers: {
         Authorization: `Bearer ${token}`,
         Accept: 'application/json',
@@ -58,7 +59,7 @@ const actionColumn = [
         try {
           const token = localStorage.getItem("access");
           await axios.put(
-            `http://127.0.0.1:8000/application_management/workspace-block/${params.row.id}/`,
+            baseURL+`/application_management/workspace-block/${params.row.id}/`,
             {
               is_active: !params.row.is_active,
             },

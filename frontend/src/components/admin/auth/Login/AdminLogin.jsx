@@ -12,7 +12,7 @@ import { useSelector } from 'react-redux';
 
 const AdminLogin = () => {
 
-  const baseURL = 'http://127.0.0.1:8000'
+  const baseURL = import.meta.env.VITE_API_BASE_URL
   const navigate = useNavigate();
   const dispatch = useDispatch();
 

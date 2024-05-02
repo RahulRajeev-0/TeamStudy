@@ -19,7 +19,7 @@ import { GoogleLogin } from '@react-oauth/google';
 
 const Login = () => {
 
-  const baseURL = 'http://127.0.0.1:8000'
+  const baseURL = import.meta.env.VITE_API_BASE_URL
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -46,7 +46,7 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    
     if (validate(e)){
      const formData = new FormData();
      formData.append('email', e.target.email.value);
