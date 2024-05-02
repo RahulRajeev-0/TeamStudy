@@ -10,12 +10,7 @@ const ApplicationManagementHome = () => {
       <Sidebar/>
       <div className='homeContainer'>
         <Navbar/>
-        {/* <div className='widgets'>
-          <Widget/>
-          <Widget/>
-          <Widget/>
-          <Widget/>
-        </div> */}
+       
       </div>
     </div>
   )

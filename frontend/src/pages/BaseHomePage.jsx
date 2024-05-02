@@ -9,6 +9,7 @@ import axios from 'axios'
 const BaseHomePage = () => {
 
  
+  const baseURL = import.meta.env.VITE_API_BASE_URL
 
   const [workspaces, setWorkspaces] = useState([]);
   
@@ -17,7 +18,7 @@ const BaseHomePage = () => {
   const fetchWorkspaces = async () => {
     const token = localStorage.getItem("access")
     try{
-      const response = await axios.get('http://127.0.0.1:8000/workspace/user-workspace-list/',{
+      const response = await axios.get(baseURL+'/workspace/user-workspace-list/',{
         headers: {
           Authorization:`Bearer ${token}`,
           Accept:'application/json',

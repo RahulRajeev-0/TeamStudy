@@ -35,34 +35,3 @@ const WorkspaceInfo = ({ workspace }) => {
 
 export default WorkspaceInfo;
 
-// // Styled components
-// const InfoContainer = styled.div`
-//   background-color: black;
-//   color: #CECECE;
-//   padding: 20px;
-//   border-radius: 10px;
-// `;
-
-// const InfoHeader = styled.h2`
-//   font-size: 20px;
-//   margin-bottom: 15px;
-// `;
-
-// const InfoContent = styled.div`
-//   display: flex;
-//   flex-direction: column;
-// `;
-
-// const InfoItem = styled.div`
-//   display: flex;
-//   margin-bottom: 10px;
-// `;
-
-// const InfoLabel = styled.span`
-//   font-weight: bold;
-//   margin-right: 10px;
-// `;
-
-// const InfoValue = styled.span`
-//   flex: 1;
-// `;

@@ -70,13 +70,16 @@ export default function CustomizedAccordions() {
   const [expanded, setExpanded] = React.useState('panel1');
   const [workspaceMembers, setWorkspaceMembers] = useState([])
   const navigate = useNavigate();
-  const baseURL = "http://127.0.0.1:8000/"
+  
+  const baseURL = import.meta.env.VITE_API_BASE_URL
+
   const userProfileDetails = useSelector(state => state.workspaceUserProfile);
 
   const handleChange = (panel) => (event, newExpanded) => {
     setExpanded(newExpanded ? panel : false);
   };
 
+  // for getting the workspace members
   const fetchDM = async () => {
     try{
       const token = localStorage.getItem('access')
@@ -85,7 +88,7 @@ export default function CustomizedAccordions() {
       };
       const workspace_id = sessionStorage.getItem("workspaceId")
       const member_id = userProfileDetails.id
-      const response = await axios.get(baseURL+`workspace/workspace-member-list/${workspace_id}/`, {headers})
+      const response = await axios.get(baseURL+`/workspace/workspace-member-list/${workspace_id}/`, {headers})
       console.log(response.data);
       setWorkspaceMembers(response.data)
 

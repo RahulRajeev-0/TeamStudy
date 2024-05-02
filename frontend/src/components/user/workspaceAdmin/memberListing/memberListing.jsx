@@ -12,13 +12,13 @@ const MemberListing = () => {
 
   const workspaceId = sessionStorage.getItem('workspaceId');
   const token = localStorage.getItem('access');
-  const baseURL = 'http://127.0.0.1:8000/workspace/member-list/'
+  const baseURL = import.meta.env.VITE_API_BASE_URL
   // function to fetch list of members 
   const fetchData = async () => {
     
   
     try {
-      const response = await axios.get(baseURL, {
+      const response = await axios.get(baseURL +'/workspace/member-list/', {
         headers: {
           Authorization: `Bearer ${token}`,
           Accept: 'application/json',
@@ -42,7 +42,7 @@ const MemberListing = () => {
       workspaceId:workspaceId
     }
     try{
-      const response = await axios.put(baseURL,
+      const response = await axios.put(baseURL + '/workspace/member-list/',
       data,
       {
         headers: {
@@ -74,7 +74,7 @@ const MemberListing = () => {
     };
 
     try {
-        const response = await axios.delete(baseURL, {
+        const response = await axios.delete(baseURL+'/workspace/member-list/', {
             headers: {
                 Authorization: `Bearer ${token}`
             },

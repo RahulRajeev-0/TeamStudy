@@ -86,7 +86,8 @@ const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
 
 export default function CustomizedAccordions() {
 
-  const baseURL = "http://127.0.0.1:8000/"
+  const baseURL = import.meta.env.VITE_API_BASE_URL
+  
   const userProfileDetails = useSelector(state => state.workspaceUserProfile);
   const [show, setShow] = useState(false);
 
@@ -129,7 +130,7 @@ export default function CustomizedAccordions() {
         const workspace_id = sessionStorage.getItem('workspaceId')
         const  member_id = userProfileDetails.id
         
-        const response = await axios.post(baseURL+`group/workspace-group-create/${workspace_id}/${member_id}/`,
+        const response = await axios.post(baseURL+`/group/workspace-group-create/${workspace_id}/${member_id}/`,
         channelData,{ headers }
          )
 
@@ -167,7 +168,7 @@ export default function CustomizedAccordions() {
       };
       const workspace_id = sessionStorage.getItem("workspaceId")
       const member_id = userProfileDetails.id
-      const response = await axios.get(baseURL+`group/workspace-group-list/${workspace_id}/${member_id}/`, {headers})
+      const response = await axios.get(baseURL+`/group/workspace-group-list/${workspace_id}/${member_id}/`, {headers})
       setWorkspaceGroups(response.data)
 
     }catch(error){

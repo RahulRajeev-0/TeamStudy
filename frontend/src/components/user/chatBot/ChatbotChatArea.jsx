@@ -10,7 +10,7 @@ import BotMessage from './BotMessage';
 
 const BotChat = () => {
   const [userInfo, setUserInfo] = useState({ id: null, display_name: null, username: null, user: {} });
-  const baseURL = "http://127.0.0.1:8000";
+  const baseURL = import.meta.env.VITE_API_BASE_URL
   const profile = useSelector(state => state.workspaceUserProfile);
 
   const [chatMessages, setChatMessages] = useState([]);

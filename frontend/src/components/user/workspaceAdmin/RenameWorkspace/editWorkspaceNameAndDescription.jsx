@@ -14,7 +14,7 @@ function EditWorkspaceNameAndDescription() {
   const [isEditingDescription, setIsEditingDescription] = useState(false);
   const [workspaceDescription, setWorkspaceDescription] = useState('Workspace Description');
 
-  const baseURL = 'http://127.0.0.1:8000'
+  const baseURL = import.meta.env.VITE_API_BASE_URL
   const workspaceId = sessionStorage.getItem('workspaceId')
   const token = localStorage.getItem('access')
 
@@ -24,6 +24,8 @@ function EditWorkspaceNameAndDescription() {
     setIsEditingName(true);
   };
 
+  
+  // changing the name of the workspace 
   const handleSaveNameClick = async () => {
     const formData = new FormData()
     formData.append("workspaceId", workspaceId)
@@ -55,6 +57,8 @@ function EditWorkspaceNameAndDescription() {
     setIsEditingDescription(true);
   };
 
+
+  // for changing the workspace descirption 
   const handleSaveDescriptionClick = async () => {
     const formData = new FormData()
     formData.append("workspaceId", workspaceId)
@@ -80,6 +84,8 @@ function EditWorkspaceNameAndDescription() {
     }
     setIsEditingDescription(false);
   };
+
+
 
 // need to remove this function and use useselector for dispalying the name 
   const fetchWorkspaceDetails = async()=>{

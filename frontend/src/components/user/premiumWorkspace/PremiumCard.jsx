@@ -11,7 +11,7 @@ import axios from 'axios';
 import { useSelector } from 'react-redux';
 
 const OutlinedCard = ({ handleClose }) => {
-  const baseURL = "http://127.0.0.1:8000/";
+  const baseURL = import.meta.env.VITE_API_BASE_URL
 
   const workspaceDetails = useSelector(state => state.user_workspace_select);
   
@@ -21,7 +21,7 @@ const OutlinedCard = ({ handleClose }) => {
       const token = localStorage.getItem('access');
 
       const response = await axios.post(
-        baseURL + `payment/create-checkout-session/`,
+        baseURL + `/payment/create-checkout-session/`,
         {"workspace_id": workspaceDetails.workspaceId}, 
         {
           headers: {
@@ -65,7 +65,7 @@ const OutlinedCard = ({ handleClose }) => {
           </Typography>
         </CardContent>
         <CardActions>
-          <form action={`http://127.0.0.1:8000/payment/create-checkout-session/${workspaceDetails.workspaceId}/`} method="POST">
+          <form action={baseURL+`/payment/create-checkout-session/${workspaceDetails.workspaceId}/`} method="POST">
 
           <Button  color='secondary' type='submit' variant='contained' size="large">Buy Premium</Button>
           </form>

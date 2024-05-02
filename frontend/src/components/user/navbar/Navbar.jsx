@@ -20,7 +20,7 @@ const Navbar = ({onCreateWorkspaceSuccess}) => {
   const [clicked, setClicked] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
+  const baseURL = import.meta.env.VITE_API_BASE_URL
   //  for creating the workspace
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
@@ -42,7 +42,7 @@ const Navbar = ({onCreateWorkspaceSuccess}) => {
     };
     
     try {
-      const res = await axios.post('http://127.0.0.1:8000/workspace/create-workspace/', formData, { headers });
+      const res = await axios.post(baseURL+'/workspace/create-workspace/', formData, { headers });
       
       if (res.status === 201) {
         toast.success("Workspace Created Successfully");

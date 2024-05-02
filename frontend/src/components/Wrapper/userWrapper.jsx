@@ -46,7 +46,8 @@ import ChannelPage from "../../pages/user/WorkspaceChating/ChannelPage";
 function UserWrapper() {
     const navigate = useNavigate();
 
-    const baseURL = "http://127.0.0.1:8000"
+  const baseURL = import.meta.env.VITE_API_BASE_URL
+    
     const token = localStorage.getItem('access');
     const dispatch = useDispatch();
     const authentication_user = useSelector(state=>state.authentication_user)

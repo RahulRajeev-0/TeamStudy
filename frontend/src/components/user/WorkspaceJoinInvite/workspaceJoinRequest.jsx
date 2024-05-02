@@ -7,6 +7,7 @@ import { toast } from 'react-toastify';
 const WorkspaceJoinRequest =  () => {
   const { token } = useParams();
   const navigate = useNavigate();
+  const baseURL = import.meta.env.VITE_API_BASE_URL
 
   const JoinSubmit = async ()=>{
     const formData = new FormData();
@@ -15,7 +16,7 @@ const WorkspaceJoinRequest =  () => {
   //  try block to send request 
 try{
 
-  const response = await axios.post('http://127.0.0.1:8000/workspace/join-user/',formData)
+  const response = await axios.post(baseURL+'/workspace/join-user/',formData)
   if (response.status === 200){
     toast.success("Joined to Workspace")
     navigate('/')

@@ -24,6 +24,7 @@ const UserProfileOffcanvas = ({ handleClose, show }) => {
   const dispatch = useDispatch();
   const token = localStorage.getItem('access')
   const workspaceId = sessionStorage.getItem('workspaceId')
+  const baseURL = import.meta.env.VITE_API_BASE_URL
 
   const userProfileDetails = useSelector(state => state.workspaceUserProfile);
   
@@ -61,7 +62,7 @@ const UserProfileOffcanvas = ({ handleClose, show }) => {
 
     try{
 
-      const response = await axios.patch(`http://127.0.0.1:8000/workspace/user-profile-details/${workspaceId}/`,
+      const response = await axios.patch(baseURL + `/workspace/user-profile-details/${workspaceId}/`,
       formData,
       {
         headers: {
@@ -96,7 +97,7 @@ const UserProfileOffcanvas = ({ handleClose, show }) => {
     
     try{
 
-      const response = await axios.put(`http://127.0.0.1:8000/workspace/user-profile-details/${workspaceId}/`,
+      const response = await axios.put(baseURL+`/workspace/user-profile-details/${workspaceId}/`,
     data,
     {
       headers: {
@@ -134,7 +135,7 @@ console.log(userProfileDetails.profilePic);
         </Offcanvas.Header>
         <Offcanvas.Body>
           <CenteredContainer>
-            <ProfileImage src={userProfileDetails.profilePic ? "http://localhost:8000" + userProfileDetails.profilePic : profilePic} alt="Profile Picture" />
+            <ProfileImage src={userProfileDetails.profilePic ? baseURL + userProfileDetails.profilePic : profilePic} alt="Profile Picture" />
            <input type="file" ref={inputRef} accept="image/*" onChange={handleImageChange} style={{display:"none"}}/>
             <button className='btn btn-secondary'  onClick={handleUploadImage}>Upload Image</button>
               
