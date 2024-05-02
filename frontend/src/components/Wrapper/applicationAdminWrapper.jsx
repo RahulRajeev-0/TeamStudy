@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import ApplicationAdminPrivateRoute from '../private_routes/ApplicationAdminPrivateRoute';
-import axios from 'axios';
+
 import isApplicationAdmin from '../../utils/isApplicationAdminAuth';
 import { Routes, Route } from "react-router-dom";
 import { set_authentication } from '../../Redux/Authentication/authenticationSlice';

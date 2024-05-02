@@ -42,7 +42,7 @@ const BaseHomePage = () => {
     <>
     <div className='Home'>
 
-    <Navbar onCreateWorkspaceSuccess={fetchWorkspaces}/>
+    <Navbar onCreateWorkspaceSuccess={fetchWorkspaces} />
     <div className='HomeContainer'> 
    <h2>👋 Welcome Back </h2>
    
