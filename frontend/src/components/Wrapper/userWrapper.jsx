@@ -6,7 +6,7 @@ import isAuthUser from "../../utils/isAuth";
 
 // Redux
 import { useDispatch, useSelector } from "react-redux";
-import { set_authentication } from "../../Redux/authentication/authenticationSlice";
+import { set_authentication } from "../../Redux/Authentication/authenticationSlice";
 import { set_selected_workspace } from "../../Redux/WorkspaceBaseDetails/workspaceBaseDetailsSlice";
 
 import { set_display_name } from "../../Redux/WorkspaceUserProfile/WorkspaceUserProfileSlice";

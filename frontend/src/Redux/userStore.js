@@ -1,8 +1,8 @@
 import { configureStore } from '@reduxjs/toolkit';
 
 // slices
-import authenticationSliceReducer from './authentication/authenticationSlice';
-import workspaceBaseDetailsSliceReducer from './workspaceBaseDetails/workspaceBaseDetailsSlice'; // Corrected naming
+import authenticationSliceReducer from './Authentication/authenticationSlice';
+import workspaceBaseDetailsSliceReducer from './WorkspaceBaseDetails/workspaceBaseDetailsSlice'; // Corrected naming
 import WorkspaceUserProfileSliceReducer from './WorkspaceUserProfile/WorkspaceUserProfileSlice';
 import GroupSliceReducer from './WorkspaceGroup/GroupSlice';
 
