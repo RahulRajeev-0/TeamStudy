@@ -43,7 +43,7 @@ class CreateStripeCheckoutSession(APIView):
                             'workspace_id':workspace.id
                        },
                        customer_email=workspace.created_by.email,
-                       success_url = "http://127.0.0.1:8000/payment/payment-success/?session_id={CHECKOUT_SESSION_ID}",
+                       success_url = "https://main.d255kw86o8asly.amplifyapp.com/payment/payment-success/?session_id={CHECKOUT_SESSION_ID}",
                        cancel_url = settings.SITE_URL + '?cancel=true' ,
                        
             )
