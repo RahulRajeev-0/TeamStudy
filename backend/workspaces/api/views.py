@@ -280,7 +280,7 @@ class MemberLeaveWorkspaceView(APIView):
                                  status=status.HTTP_200_OK)
             else:
                 return Response({"message":"You are the Owner You cannot leave"},
-                                status=status.HTTP_400_BAD_REQUEST)
+                                status=status.HTTP_403_FORBIDDEN)
         except Exception as e:
             print(e)
             return Response({"message":"Something went wronge , Unable to exit from workspace"},

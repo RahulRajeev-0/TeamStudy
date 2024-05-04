@@ -21,7 +21,7 @@ import { toast } from 'react-toastify';
 
 // react router dom 
 import { useNavigate } from 'react-router-dom';
-
+import Modal from 'react-bootstrap/Modal';
 // 
 import UnlockButton from '../premiumWorkspace/UnlockPremiumButton';
 import KeepMountedModal from '../premiumWorkspace/PremiumModal';
@@ -40,7 +40,9 @@ import { jwtDecode } from "jwt-decode";
 const WorkSpaceSideBar = () => {
 
   const [activeIndex, setActiveIndex] = useState(null);
-
+  const [show, setShow] = useState(false);
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
   const toggleAccordion = (index) => {
     setActiveIndex((prevIndex) => (prevIndex === index ? null : index));
   };
@@ -70,6 +72,27 @@ const WorkSpaceSideBar = () => {
     }else{
       toast("Unlock premium to use chat bot")
     }
+  }
+  const userLeaveWorkspace = async () =>{
+    const token = localStorage.getItem('access')
+  try {
+      const response = await axios.delete(baseURL+'/workspace/member-leave-workspace/', {
+          headers: {
+              Authorization: `Bearer ${token}`
+          }
+      });
+
+      if (response.status === 200) {
+          toast.success(response.data.message);
+      }
+
+      fetchData();
+  } catch (error) {
+      if (error.response && error.response.status === 403) {
+          toast(error.response.data.message);
+      }
+      console.log(error);
+  }
   }
 
   return (
@@ -111,7 +134,7 @@ const WorkSpaceSideBar = () => {
 
                         
                         <NavDropdown.Item >
-                          <ExitToAppIcon style={{color:"red"}}/> Leave Workspace
+                          <ExitToAppIcon onClick={handleShow} style={{color:"red"}}/> Leave Workspace
                         </NavDropdown.Item>
                       </NavDropdown>
         
@@ -138,7 +161,20 @@ const WorkSpaceSideBar = () => {
                     <hr />
                 </div>
             )}
-
+  <Modal show={show} onHide={handleClose}>
+        <Modal.Header closeButton>
+          <Modal.Title>Confirm !</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>Are sure you want to leave {workspaceDetails.workspaceName}  </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleClose}>
+            Close
+          </Button>
+          <Button variant="danger" onClick={userLeaveWorkspace}>
+            Comfirm
+          </Button>
+        </Modal.Footer>
+      </Modal>
 
     </SidebarContainer>
   )
