@@ -72,7 +72,8 @@ function UserWrapper() {
               },
             })
         
-            if (response.status === 200){
+            if (response.status === 200 && response.data.is_active === true){
+             
               const workspaceDetails = {
                 workspaceId:response.data.id,
                 workspaceName:response.data.workspace_name,
