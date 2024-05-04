@@ -22,6 +22,7 @@ import { toast } from 'react-toastify';
 // react router dom 
 import { useNavigate } from 'react-router-dom';
 import Modal from 'react-bootstrap/Modal';
+import Button from 'react-bootstrap/Button';
 // 
 import UnlockButton from '../premiumWorkspace/UnlockPremiumButton';
 import KeepMountedModal from '../premiumWorkspace/PremiumModal';
