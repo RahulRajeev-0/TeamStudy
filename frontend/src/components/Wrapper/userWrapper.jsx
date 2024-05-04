@@ -89,11 +89,12 @@ function UserWrapper() {
              
               
             }else{
-              return {}
+              navigate('/')
             }
             
         }catch(error) {
             console.error("Error Fetching data:". error);
+            navigate('/')
         }
     };
 
