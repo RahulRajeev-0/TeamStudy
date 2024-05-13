@@ -270,6 +270,7 @@ class MemberLeaveWorkspaceView(APIView):
     permission_classes = [IsAuthenticated]
 
     def delete(self, request):
+        print("++++++++++++++++++++")
         try:
             member = WorkspaceMembers.objects.get(
                 workspace=request.data.get("workspaceId"),

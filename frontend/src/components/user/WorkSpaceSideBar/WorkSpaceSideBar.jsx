@@ -34,11 +34,13 @@ import { useSelector } from 'react-redux'
 
 import { jwtDecode } from "jwt-decode";
 
-
+import axios from 'axios';
 
 
 
 const WorkSpaceSideBar = () => {
+
+  const baseURL = import.meta.env.VITE_API_BASE_URL
 
   const [activeIndex, setActiveIndex] = useState(null);
   const [show, setShow] = useState(false);
@@ -74,26 +76,33 @@ const WorkSpaceSideBar = () => {
       toast("Unlock premium to use chat bot")
     }
   }
+
+  
   const userLeaveWorkspace = async () =>{
+    
     const token = localStorage.getItem('access')
-  try {
-      const response = await axios.delete(baseURL+'/workspace/member-leave-workspace/', {
-          headers: {
-              Authorization: `Bearer ${token}`
+      try {
+          const response = await axios.delete(baseURL+'/workspace/member-leave-workspace/', {
+              headers: {
+                  Authorization: `Bearer ${token}`
+              },
+              data: {
+                workspaceId: workspaceDetails.workspaceId // Include workspaceId in request body if required
+            }
+          });
+
+          if (response.status === 200) {
+              toast.success(response.data.message);
+              navigate('/')
           }
-      });
 
-      if (response.status === 200) {
-          toast.success(response.data.message);
+          
+      } catch (error) {
+          if (error.response && error.response.status === 403) {
+              toast(error.response.data.message);
+          }
+          console.log(error);
       }
-
-      fetchData();
-  } catch (error) {
-      if (error.response && error.response.status === 403) {
-          toast(error.response.data.message);
-      }
-      console.log(error);
-  }
   }
 
   return (
@@ -134,8 +143,8 @@ const WorkSpaceSideBar = () => {
                       )}
 
                         
-                        <NavDropdown.Item >
-                          <ExitToAppIcon onClick={handleShow} style={{color:"red"}}/> Leave Workspace
+                        <NavDropdown.Item onClick={handleShow}>
+                          <ExitToAppIcon  style={{color:"red"}}/> Leave Workspace
                         </NavDropdown.Item>
                       </NavDropdown>
         
