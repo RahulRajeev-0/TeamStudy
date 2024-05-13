@@ -99,7 +99,7 @@ const WorkSpaceSideBar = () => {
   return (
     <SidebarContainer>
         <SidebarHeader>
-          <SidebarInfo>
+          <SidebarInfo onClick={()=>navigate('/workspace')}>
                 <h2>{workspaceDetails.workspaceName} </h2>
                   <h3>
                     <FiberManualRecordIcon/>
@@ -225,6 +225,7 @@ const SidebarHeader = styled.div`
 
 const SidebarInfo = styled.div` 
   flex:1;
+  cursor:pointer;
 
   >h2{
     font-size:20px;
