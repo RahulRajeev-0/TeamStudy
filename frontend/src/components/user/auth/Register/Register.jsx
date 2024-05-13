@@ -177,9 +177,9 @@ const Register = () => {
                         <FontAwesomeIcon icon={faUser} className="fa-lg me-3 fa-fw" />
                         <div className="form-outline flex-fill mb-0">
 
+                          <label className="form-label" htmlFor="form3Example1c">Username</label>
                           <input type="text" id="form3Example1c" className="form-control" name="username" required/>
 
-                          <label className="form-label" htmlFor="form3Example1c">Username</label>
                         </div>
                       </div>
 
@@ -188,9 +188,9 @@ const Register = () => {
                         <FontAwesomeIcon icon={faEnvelope} className="fa-lg me-3 fa-fw" />
                         <div className="form-outline flex-fill mb-0">
 
+                          <label className="form-label" htmlFor="form3Example3c">Your Email</label>
                           <input type="email" id="form3Example3c" className="form-control" name="email" required/>
 
-                          <label className="form-label" htmlFor="form3Example3c">Your Email</label>
                         </div>
                       </div>
 
@@ -198,9 +198,9 @@ const Register = () => {
                         <FontAwesomeIcon icon={faLock} className="fa-lg me-3 fa-fw" />
                         <div className="form-outline flex-fill mb-0">
 
+                          <label className="form-label" htmlFor="form3Example4c">Password</label>
                           <input type="password" id="form3Example4c" className="form-control" name="password" required/>
 
-                          <label className="form-label" htmlFor="form3Example4c">Password</label>
                         </div>
                       </div>
 
@@ -208,9 +208,9 @@ const Register = () => {
                         <FontAwesomeIcon icon={faKey} className="fa-lg me-3 fa-fw" />
                         <div className="form-outline flex-fill mb-0">
 
+                          <label className="form-label" htmlFor="form3Example4cd">Repeat your password</label>
                           <input type="password" id="form3Example4cd" className="form-control" name="confirmpassword" required />
 
-                          <label className="form-label" htmlFor="form3Example4cd">Repeat your password</label>
                         </div>
                       </div>
 

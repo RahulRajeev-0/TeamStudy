@@ -99,14 +99,14 @@ const AdminLogin = () => {
                 <h3>Admin Login</h3>
                 {/* <!-- Email input --> */}
                 <div className=" mb-4">
-                  <input type="email" name='email' id="form1Example13" className="form-control form-control-lg" required />
                   <label className="form-label" htmlFor="form1Example13">Email address</label>
+                  <input type="email" name='email' id="form1Example13" className="form-control form-control-lg" required />
                 </div>
       
                 {/* <!-- Password input --> */}
                 <div className=" mb-4">
-                  <input type="password" name='password' id="form1Example23" className="form-control form-control-lg" required/>
                   <label className="form-label" htmlFor="form1Example23">Password</label>
+                  <input type="password" name='password' id="form1Example23" className="form-control form-control-lg" required/>
                 </div>
       
               

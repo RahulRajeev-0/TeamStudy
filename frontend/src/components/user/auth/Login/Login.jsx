@@ -152,15 +152,15 @@ const Login = () => {
                   <div className="d-flex flex-row align-items-center mb-4">
                     <FontAwesomeIcon icon={faEnvelope} className="fa-lg me-3 fa-fw" />
                     <div className="form-outline flex-fill mb-0">
-                      <input type="email" id="form3Example3c" className="form-control" name='email' required />
                       <label className="form-label fw-bold bg-white" htmlFor="form3Example3c">Email</label>
+                      <input type="email" id="form3Example3c" className="form-control" name='email' required />
                     </div>
                   </div>
                   <div className="d-flex flex-row align-items-center mb-4">
                     <FontAwesomeIcon icon={faKey} className="fa-lg me-3 fa-fw" />
                     <div className="form-outline flex-fill mb-0">
-                      <input type="password" id="form3Example4cd" className="form-control" name='password' required />
                       <label className="form-label fw-bold bg-white" htmlFor="form3Example4cd">Password</label>
+                      <input type="password" id="form3Example4cd" className="form-control" name='password' required />
                     </div>
                   </div>
                   <div className="form-check d-flex justify-content-center mb-5">
