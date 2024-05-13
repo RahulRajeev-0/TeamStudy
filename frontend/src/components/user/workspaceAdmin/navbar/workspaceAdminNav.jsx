@@ -9,7 +9,7 @@ import HomeIcon from '@mui/icons-material/Home';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import DeleteIcon from '@mui/icons-material/Delete';
-
+import WorkspacesIcon from '@mui/icons-material/Workspaces';
 
 // axios 
 import axios from 'axios';
@@ -142,29 +142,11 @@ const WorkspaceAdminNav = () => {
                 <Nav.Link onClick={()=>navigate('/workspace-settings-members')}><ManageAccountsIcon/> Manage Memebers</Nav.Link>
                 <Nav.Link style={{color:'green'}} onClick={AddHandleShow}><PersonAddIcon/> Add Member</Nav.Link>
                 <Nav.Link onClick={handleShow} style={{color:'red'}}><DeleteIcon/> Delete Workspace</Nav.Link>
-                <NavDropdown
-                  title="Dropdown"
-                  id={`offcanvasNavbarDropdown-expand-${expand}`}
-                >
-                  <NavDropdown.Item href="#action3">Action</NavDropdown.Item>
-                  <NavDropdown.Item href="#action4">
-                    Another action
-                  </NavDropdown.Item>
-                  <NavDropdown.Divider />
-                  <NavDropdown.Item href="#action5">
-                    Something else here
-                  </NavDropdown.Item>
-                </NavDropdown>
+                <Nav.Link onClick={()=>navigate('/workspace')} ><WorkspacesIcon/>Back to workspace</Nav.Link>
+                
+                
               </Nav>
-              <Form className="d-flex">
-                <Form.Control
-                  type="search"
-                  placeholder="Search"
-                  className="me-2"
-                  aria-label="Search"
-                />
-                <Button variant="outline-success">Search</Button>
-              </Form>
+              
             </Offcanvas.Body>
           </Navbar.Offcanvas>
         </Container>
