@@ -41,7 +41,7 @@ import WorkspaceHome from "../../pages/user/Workspace/WorkspaceHome";
 import WorkspaceAdminSettingsPage from "../../pages/user/workspaceAdmin/workspaceAdminSettingsPage";
 import WorkspaceAdminMemberManagementPage from "../../pages/user/workspaceAdmin/workspaceAdminMemberManagement/workspaceAdminMemberManagementPage";
 import ChannelPage from "../../pages/user/WorkspaceChating/ChannelPage";
-
+// import PasswordResetModal from "../user/Restpassword/Restpassword";
 
 
 function UserWrapper() {
@@ -178,6 +178,9 @@ function UserWrapper() {
         <Route path='/one-to-one-audio/:roomId' element={<PrivateRoutes> <OneOnOneAudioCall/> </PrivateRoutes>} />
         <Route path='/group-video/:roomId' element={<PrivateRoutes><GroupVideoCall/> </PrivateRoutes>} />
         <Route path='/group-audio/:roomId' element={<PrivateRoutes> <GroupAudioCall/> </PrivateRoutes>} />
+
+        {/* <Route path='/restpassword' element={<PrivateRoutes> <TextMobileStepper/> </PrivateRoutes>} /> */}
+        
         <Route path='/payment' element={<PrivateRoutes> <AfterPaymentPage/> </PrivateRoutes>} />
         <Route path='/chatbot' element={<PrivateRoutes> <ChatBotPage/> </PrivateRoutes>} />
     </Routes>

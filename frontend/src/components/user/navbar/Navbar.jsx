@@ -7,14 +7,14 @@ import { set_authentication } from '../../../Redux/Authentication/authentication
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from 'react-router-dom';
-
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 // boostrap react 
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
 import axios from 'axios';
-
-
+import Dropdown from 'react-bootstrap/Dropdown';
+import PasswordResetModal from '../Restpassword/Restpassword';
 
 const Navbar = ({onCreateWorkspaceSuccess}) => {
   const [clicked, setClicked] = useState(false);
@@ -26,6 +26,23 @@ const Navbar = ({onCreateWorkspaceSuccess}) => {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [modalOpen, setModalOpen] = React.useState(false);
+
+  // const handleMenu = (event) => {
+  //   setAnchorEl(event.currentTarget);
+  // };
+
+  
+
+  const handleModalOpen = () => {
+    setModalOpen(true);
+    handleClose();
+  };
+
+  const handleModalClose = () => {
+    setModalOpen(false);
+  };
 
   // api function for creating the workspace 
   const createWorkspace = async (e) => {
@@ -89,9 +106,25 @@ const Navbar = ({onCreateWorkspaceSuccess}) => {
         <li>
           <button onClick={handleShow} className='btn btn-light navButton btn-lg' href=''>Create Workspace </button>
         </li>
+        {/* <li>
+          <button onClick={logout} className='btn btn-light navButton btn-md' href="">Logout</button>
+        </li> */}
         <li>
-          <button onClick={logout} className='btn btn-light navButton btn-lg' href="">Logout</button>
+
+        <Dropdown>
+      <Dropdown.Toggle variant="secondary" id="dropdown-basic">
+      <AccountCircleIcon/>
+      </Dropdown.Toggle>
+
+      <Dropdown.Menu>
+        {/* <Dropdown.Item href="#/action-1">Action</Dropdown.Item> */}
+        {/* <Dropdown.Item href="#/action-2">Profile</Dropdown.Item> */}
+        <Dropdown.Item onClick={logout}>Logout</Dropdown.Item>
+        <Dropdown.Item onClick={handleModalOpen}>Reset Password</Dropdown.Item>
+      </Dropdown.Menu>
+    </Dropdown>
         </li>
+        
       </ul>
 
     </nav>
@@ -134,7 +167,7 @@ const Navbar = ({onCreateWorkspaceSuccess}) => {
     </Form>
   </Modal.Body>
 </Modal>
-
+<PasswordResetModal open={modalOpen} handleClose={handleModalClose} />
     </>
    
   )

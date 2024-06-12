@@ -17,5 +17,6 @@ urlpatterns = [
     path('verifyOTP/',views.VerifyOTP.as_view(), name='user-verify'),
     path('userDetails/',views.UserDetails.as_view(), name='user-details'),
 
+    path('userprofile/', views.UserProfile.as_view(), name='user-profile'),
 
 ]
