@@ -42,7 +42,7 @@ const Register = () => {
 
    const regex = /^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d]*[a-zA-Z][a-zA-Z\d]*$/;
    if (!regex.test(username)){
-    toast.warning("Invalid Format")
+    toast.warning("Invalid Username Format , Username should contain alphanumeric characters")
     return false;
    }
 
