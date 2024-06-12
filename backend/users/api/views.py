@@ -10,14 +10,18 @@ from rest_framework.exceptions import AuthenticationFailed, ParseError
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.permissions import IsAuthenticated
 
+
 # google login
 from google.oauth2 import id_token
 from google.auth.transport import requests
 # --------------------- --- Custom imports ---------------------------
+
+# -------- serializers 
 from .serializers import (
     UserRegisterSerializer,
     VerifyEmailSerializer,
-    UserSerializer
+    UserSerializer,
+    PasswordChangeSerializer
 )
 from users.emails import send_otp_via_email
 from users.models import User
@@ -164,6 +168,35 @@ class GoogleRegisterView(APIView):
         return Response(content,status=status.HTTP_200_OK)
 
 
+# user reset password view
+
+class UserProfile(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def patch(self, request):
+        
+        user = request.user
+        serializer = PasswordChangeSerializer(data=request.data)
+
+        if serializer.is_valid():
+            current_password = serializer.validated_data['current_password']
+            new_password = serializer.validated_data['new_password']
+# if the current password is worng 
+            if not user.check_password(current_password):
+                return Response(
+                    {"message": "Current password is incorrect."},
+                                 status=status.HTTP_400_BAD_REQUEST)
+            
+            
+            
+            user.set_password(new_password)
+            user.save()
+            return Response({"message": "Password has been changed."}, 
+                            status=status.HTTP_200_OK)
+
+        return Response(serializer.errors, 
+                        status=status.HTTP_400_BAD_REQUEST)
+    
 
 
 class UserDetails(APIView):

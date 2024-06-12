@@ -44,3 +44,26 @@ class UserRegisterSerializer(ModelSerializer):
 class VerifyEmailSerializer(Serializer):
     email = EmailField()
     otp = CharField()
+
+
+# serializers.py
+# from rest_framework import serializers
+
+class PasswordChangeSerializer(Serializer):
+    current_password = CharField(write_only=True)
+    new_password = CharField(write_only=True)
+    # confirm_password = CharField(write_only=True)
+
+    def validate(self, attrs):
+        new_password = attrs.get('new_password')
+        # confirm_password = attrs.get('confirm_password')
+
+        if ' ' in new_password:
+            raise ValidationError("New password should not contain spaces.")
+        
+        if len(new_password) < 8:
+            raise ValidationError("New password should be at least 8 characters long.")
+        
+        return attrs
+
+

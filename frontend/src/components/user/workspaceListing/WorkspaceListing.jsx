@@ -28,10 +28,6 @@ const WorkspaceList = ({ workspaces }) => {
   const dispatch = useDispatch();
   
 
- 
-
- 
-
   const fetchWorkspaces = async () => {
         console.log("runinng")
   const workspaceId = sessionStorage.getItem('workspaceId')
@@ -122,7 +118,7 @@ const WorkspaceList = ({ workspaces }) => {
 
               <p style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', width: '150px' }}>{workspace.description}</p>
             </div>
-            <sapn onClick={()=>launchWorkspace(workspace)}><LaunchButton/></sapn>
+            <span onClick={()=>launchWorkspace(workspace)}><LaunchButton/></span>
           </li>
         ))}
       </ul>
